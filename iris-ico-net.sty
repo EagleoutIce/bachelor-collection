@@ -117,16 +117,12 @@
 
 %%% The Lists (why not rndlist? Manipulating them can be quite tedious)
 \def\iinet@setup@matrix{
-    \setcounter{iinet@y}{0}
-    \@whilenum\value{iinet@y}<\iinet@matrix@y\do{% for each y
-        \setcounter{iinet@x}{0}
+    \iinet@m@for@y{% for each y
         \expandafter\let\csname iinet@m@\arabic{iinet@y}\endcsname\iinet@element
-        \@whilenum\value{iinet@x}<\iinet@matrix@x\do{% for each x
+        \iinet@m@for@x{% for each x
             \expandafter\let\csname iinet@m@\arabic{iinet@y}@%
                         \arabic{iinet@x}\endcsname\iinet@element
-            \stepcounter{iinet@x}
         }
-        \stepcounter{iinet@y}
     }
 }
 
@@ -144,9 +140,16 @@
     \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter%
     \undef\iinet@m@get(#1,#2)}
 
-\def\iinet@m@for@y#1{
+\long\def\iinet@m@for@y#1{%
+\setcounter{iinet@y}{0}%
+\@whilenum\value{iinet@y}<\iinet@matrix@y\do{%
+    \setcounter{iinet@x}{0}#1\stepcounter{iinet@y}%
+}}
 
-}
+\long\def\iinet@m@for@x#1{%
+\@whilenum\value{iinet@x}<\iinet@matrix@x\do{% for each x
+    #1\stepcounter{iinet@x}%
+}}
 
 \def\iinet@update@present@squares{%
 
@@ -156,20 +159,14 @@
 \def\iinet@debug@show@matrix{%
     \typeout{\iinet@debug@line}%
     \typeout{[Constructed \iinet@matrix@x x\iinet@matrix@y; \@nameuse{iinet@max@y}]}
-    \setcounter{iinet@y}{0}
-    \@whilenum\value{iinet@y}<\iinet@matrix@y\do{% for each y
-        \setcounter{iinet@x}{0}
+    \iinet@m@for@y{% for each y
         \def\iinet@linebuf{}% clear
-        \@whilenum\value{iinet@x}<\iinet@matrix@x\do{% for each x
-            \iinet@if@m@cfree(iinet@x,iinet@y){%
-                \g@addto@macro\iinet@linebuf{_}
-            }{%
-                \g@addto@macro\iinet@linebuf{O}
-            }
-            \stepcounter{iinet@x}
+        \iinet@m@for@x{% for each x
+            \iinet@if@m@cfree(iinet@x,iinet@y)%
+                {\g@addto@macro\iinet@linebuf{_}}% free
+                {\g@addto@macro\iinet@linebuf{O}}% occupied
         }
-        \typeout{\iinet@linebuf\space[\@nameuse{iinet@max@\arabic{iinet@y} @x}]}
-        \stepcounter{iinet@y}
+        \typeout{\iinet@linebuf\space[\arabic{iinet@y}, \@nameuse{iinet@max@\arabic{iinet@y} @x}]}
     }
     \typeout{\iinet@debug@line}
 }

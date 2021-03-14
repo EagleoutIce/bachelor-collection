@@ -122,15 +122,15 @@
 
 % footnote handling NOTE: we know there is a chapter!
 \deffootnote{2em}{1em}{%
-    \makebox[2em][r]{\nohyper{\hyperref[lecture@fn:\thesection:\@nameuse{lecture@footnoteref@\@mpfn}]{\thefootnotemark}}}~}
+    \makebox[2em][r]{\nohyper{\hyperref[lecture@fn:\thesection:\csname lecture@footnoteref@\@mpfn\endcsname]{\thefootnotemark}}}~}
 
-\renewcommand*{\thefootnote}{$\langle$\arabic{footnote}$\rangle$}
-\renewcommand*{\thempfootnote}{$\langle$\alph{mpfootnote}$\rangle$}
+\renewcommand*\thefootnote{$\langle$\arabic{footnote}$\rangle$}
+\renewcommand*\thempfootnote{$\langle$\alph{mpfootnote}$\rangle$}
 
 \def\lecture@footnoteref@footnote{fn@\arabic{footnote}}
 \def\lecture@footnoteref@mpfootnote{fn@\alph{mpfootnote}}
 
-\preto\@footnotemark{\phantomsection\label{lecture@fn:\thesection:\@nameuse{lecture@footnoteref@\@mpfn}}\disablehyper}
+\preto\@footnotemark{\phantomsection\label{lecture@fn:\thesection:\csname lecture@footnoteref@\@mpfn\endcsname}\disablehyper}
 
 %% (non) Rectangular paragraphs & hyphenation
 %% -----------------------------------------------------------------------------
@@ -153,7 +153,7 @@
 %% Header and footer
 %% -----------------------------------------------------------------------------
 
-\renewcommand*{\sectionmark}[1]{\markboth{#1}{}}
+\renewcommand*\sectionmark[1]{\markboth{#1}{}}
 
 \DeclareNewLayer[%
 topmargin,background,contents={%
@@ -175,12 +175,11 @@ topmargin,background,contents={%
 \AddLayersAtBeginOfPageStyle{scrheadings}{mepro.digital.head.ruler}
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{mepro.digital.head.ruler}
 
-
 \pagestyle{scrheadings}
 
 %% Coverpage
 %% -----------------------------------------------------------------------------
-\selectcoverpage{sp-half}%
+\selectcoverpage{sp-half}
 
 %% Figures, Tables and refs
 %% -----------------------------------------------------------------------------
@@ -188,11 +187,11 @@ topmargin,background,contents={%
 \addto\captionsngerman{\def\figurename{Abbildung}\def\figureautorefname{\figurename}\def\tablename{Tabelle}\def\tableautorefname{\tablename}}
 \addto\captionsenglish{\def\figurename{Figure}\def\figureautorefname{\figurename}\def\tablename{Table}\def\tableautorefname{\tablename}}
 
-\renewcommand*{\captionformat}{~~}
+\renewcommand*\captionformat{~~}
 
 \def\meprolinkcolor{%
 % we do not use paletteA if we are in a box. we use the box-color instead!
-\ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteA\fi%
+\ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteA\fi
 }
 \def\meprolinkfont{\relsize{-1}\sffamily}
 \def\mepro@fig@style@nonbold#1{%
@@ -215,10 +214,10 @@ topmargin,background,contents={%
 \SetFootnoteLinkStyle{\mepro@fig@style@nonbold{#1}}%
 \SetCiteColor{\meprolinkcolor}%
 }{% dirty patches
-\let\mepro@autoref\autoref%
-\renewcommand*{\autoref}[1]{{\mepro@fig@style{\mepro@autoref{#1}}}}%
-\let\mepro@nameref\nameref%
-\renewcommand*{\nameref}[1]{{\mepro@fig@style{\mepro@nameref{#1}}}}%
+\let\mepro@autoref\autoref
+\renewcommand*\autoref[1]{{\mepro@fig@style{\mepro@autoref{#1}}}}%
+\let\mepro@nameref\nameref
+\renewcommand*\nameref[1]{{\mepro@fig@style{\mepro@nameref{#1}}}}%
 }%
 }
 
@@ -228,13 +227,13 @@ topmargin,background,contents={%
 \RedeclareSectionCommand[%
   runin=false,tocindent=1.85em,%
   beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-  afterskip=.15\baselineskip%
+  afterskip=.15\baselineskip
 ]{section}
 
 \RedeclareSectionCommand[%
   runin=false,tocindent=4.15em,%
   beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-  afterskip=\z@,%
+  afterskip=\z@
 ]{subsection}
 
 \RedeclareSectionCommand[%
@@ -255,12 +254,11 @@ topmargin,background,contents={%
 \def\mepro@firstoftwo#1#2{#1}
 \def\mepro@secondoftwo#1#2{#2}
 
-\def\mepro@subsecmark#1{%
-\begingroup%
-\let\label\relax \let\index\relax \let\glossary\relax%
+\DeclareRobustCommand\mepro@subsecmark#1{%
+\begingroup
+\let\label\relax \let\index\relax \let\glossary\relax
 \expandafter\protected@xdef\csname mepro@subsec@\thesection @\endcsname{#1}%
 \endgroup\if@nobreak\ifvmode\nobreak\fi\fi}
-\robustify\mepro@subsecmark
 
 \def\mepro@getsubsecmark{\csname mepro@subsec@\thesection @\endcsname}
 \def\ifmepro@subsecmark{\ifcsname mepro@subsec@\thesection @\endcsname\expandafter\mepro@firstoftwo\else\expandafter\mepro@secondoftwo\fi}
@@ -288,7 +286,7 @@ topmargin,background,contents={%
 %% -----------------------------------------------------------------------------
 
 \def\mepro@participants{}
-\def\AddParticipant#1{\g@addto@macro\mepro@participants{\item #1}}
+\newcommand*\AddParticipant[2][]{\g@addto@macro\mepro@participants{\item \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}}
 \def\SetTime#1#2{\def\mepro@time@from{#1}\def\mepro@time@to{#2}}
 \SetTime{}{}
 
@@ -298,12 +296,12 @@ topmargin,background,contents={%
 \microtypesetup{protrusion=false}%
 \sbox0{\begin{minipage}[t]{0.45\linewidth}
   \ifx\mepro@participants\@empty\else
-  \sffamily {\sbfamily Anwesende:}\par
+  {\sbfamily Anwesende:}\par
   \mepro@disablehyper\begin{itemize}[nosep]
     \mepro@participants
   \end{itemize}
   \fi
-  \end{minipage}}\usebox0\hfill\begin{minipage}[t][\ht0+\dp0-.33\fboxsep]{0.45\linewidth}
+  \end{minipage}}\usebox0\hfill\begin{minipage}[t][\ht0+\dp0]{0.45\linewidth}
   \raggedleft\mepro@topic\vfill
   \textcolor{gray}{\lecture@r{date}\ifx\mepro@time@from\@empty \hbox{}\else,\quad\mepro@time@from\,--\,\mepro@time@to\\*\fi}%
   \end{minipage}\bigskip\par

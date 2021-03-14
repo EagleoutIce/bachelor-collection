@@ -254,7 +254,7 @@ topmargin,background,contents={%
 \def\mepro@firstoftwo#1#2{#1}
 \def\mepro@secondoftwo#1#2{#2}
 
-\DeclareRobustCommand\mepro@subsecmark#1{%
+\DeclareRobustCommand*\mepro@subsecmark[1]{%
 \begingroup
 \let\label\relax \let\index\relax \let\glossary\relax
 \expandafter\protected@xdef\csname mepro@subsec@\thesection @\endcsname{#1}%
@@ -286,11 +286,11 @@ topmargin,background,contents={%
 %% -----------------------------------------------------------------------------
 
 \def\mepro@participants{}
-\newcommand*\AddParticipant[2][]{\g@addto@macro\mepro@participants{\item \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}}
-\def\SetTime#1#2{\def\mepro@time@from{#1}\def\mepro@time@to{#2}}
-\SetTime{}{}
+\newcommand*\addParticipant[2][]{\g@addto@macro\mepro@participants{\item \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}}
+\def\setTime#1#2{\def\mepro@time@from{#1}\def\mepro@time@to{#2}}
+\setTime{}{}
 
-\long\def\SetTopic#1{\def\mepro@topic{#1}}
+\long\def\setTopic#1{\def\mepro@topic{#1}}
 
 \def\UpperSegment{\begingroup
 \microtypesetup{protrusion=false}%

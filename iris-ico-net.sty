@@ -102,6 +102,9 @@
 
 \newcounter{iinet@x}
 \newcounter{iinet@y}
+\newcounter{iinet@a}
+\newcounter{iinet@b}
+
 \def\iinet@calcdiffs{
     \edef\iinet@block@dif@x
         {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}
@@ -124,6 +127,7 @@
                         \arabic{iinet@x}\endcsname\iinet@element
         }
     }
+    \iinet@update@present@squares
 }
 
 % (x, y)
@@ -151,8 +155,41 @@
     #1\stepcounter{iinet@x}%
 }}
 
-\def\iinet@update@present@squares{%
 
+\def\iinet@m@max@of@y#1{\ifcsname iinet@max@#1@x\endcsname\@nameuse{iinet@max@#1@x}\else-1\fi}
+\def\iinet@get@consecutive@x@{\ifnum\value{iinet@a}>\@iinet@con@x\edef\@iinet@con@x{\arabic{iinet@a}}\fi\setcounter{iinet@a}{0}}
+\def\iinet@get@consecutive@x{%
+    % do not run if already known 0
+    \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\else
+    \setcounter{iinet@a}{0}% current
+    \def\@iinet@con@x{0}% maximum
+    \iinet@m@for@x{%
+        \iinet@if@m@cfree(iinet@x,iinet@y)%
+            {\stepcounter{iinet@a}}% free
+            {\iinet@get@consecutive@x@}%
+    }\iinet@get@consecutive@x@\fi
+}
+
+\def\iinet@get@consecutive@y@{\ifnum\value{iinet@a}>\@iinet@con@y\edef\@iinet@con@y{\arabic{iinet@a}}\fi\setcounter{iinet@a}{0}}
+\def\iinet@get@consecutive@y{%
+    \setcounter{iinet@a}{0}% current
+    \def\@iinet@con@y{0}% maximum
+    \iinet@m@for@y{%
+        \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0%
+            \iinet@get@consecutive@y@
+        \else
+            \stepcounter{iinet@a}%
+        \fi
+    }\iinet@get@consecutive@y@
+}
+
+\def\iinet@update@present@squares{%
+\iinet@m@for@y{%
+    \iinet@get@consecutive@x
+    \expandafter\edef\csname iinet@max@\arabic{iinet@y}@x\endcsname{\@iinet@con@x}%
+}
+\iinet@get@consecutive@y
+\expandafter\edef\csname iinet@max@y\endcsname{\@iinet@con@y}%
 }
 
 \def\iinet@debug@line{====================================}
@@ -166,7 +203,7 @@
                 {\g@addto@macro\iinet@linebuf{_}}% free
                 {\g@addto@macro\iinet@linebuf{O}}% occupied
         }
-        \typeout{\iinet@linebuf\space[\arabic{iinet@y}, \@nameuse{iinet@max@\arabic{iinet@y} @x}]}
+        \typeout{\iinet@linebuf\space[\arabic{iinet@y}, \iinet@m@max@of@y{\arabic{iinet@y}}]}
     }
     \typeout{\iinet@debug@line}
 }
@@ -176,9 +213,10 @@
 \def\iinet@block@randxy{
     \iinet@calcdiffs% 1)
     \iinet@setup@matrix% 2)
-    \iinet@m@block(4,3)
-    \iinet@m@block(5,3)
-    \iinet@m@block(6,3)
+    \foreach \i in {0,...,19}{\globaldefs=1\iinet@m@block(\i,1)}
+    \iinet@m@block(5,2)
+    \iinet@m@block(6,2)
+    \iinet@update@present@squares
     \iinet@debug@show@matrix% Debug :)
     \setblockrand{x}{0}{\iinet@width-\get{w}}
     \setblockrand{y}{0}{\iinet@height-\get{h}}

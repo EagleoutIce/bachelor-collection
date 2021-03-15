@@ -184,12 +184,14 @@
 }
 
 \def\iinet@update@present@squares{%
+% TODO: set error flag (if?) in case of insufficient dimensions
 \iinet@m@for@y{%
     \iinet@get@consecutive@x
-    \expandafter\edef\csname iinet@max@\arabic{iinet@y}@x\endcsname{\@iinet@con@x}%
+    \expandafter\pgfmathsetmacro\csname iinet@max@\arabic{iinet@y}@x\endcsname{min(\@iinet@con@x, \iinet@block@dif@x)}
 }
 \iinet@get@consecutive@y
 \expandafter\edef\csname iinet@max@y\endcsname{\@iinet@con@y}%
+\expandafter\pgfmathsetmacro\csname iinet@max@\arabic{iinet@y}@x\endcsname{min(\@iinet@con@x, \iinet@block@dif@x)}
 }
 
 \def\iinet@debug@line{====================================}

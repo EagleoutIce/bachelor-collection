@@ -1,9 +1,18 @@
 \errorcontextlines 9999999
 \documentclass{article}
 
-\usepackage{iris-ico-net}
+\usepackage{color-palettes}
+\UsePalette{Rainbow}
+\usepackage[cpalette,pathfade,debug]{iris-ico-net}
 
 \begin{document}
-\foreach \i in {1,...,25}{%
-\noindent\scalebox{2}{\IrisIcoNet[frame,grid]} }
+\begin{center}
+    \IrisIcoNet[square=150,max block count=100,max line count=40,frame]
+\end{center}
+
+\begin{center}
+\foreach \i in {1,...,5}{%
+\IrisIcoNet[frame,max block count=10,max line count=15]
+}
+\end{center}
 \end{document}

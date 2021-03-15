@@ -199,10 +199,10 @@ topmargin,background,contents={%
 %
 % First: Center top Type and title
 %
+\begin{minipage}[t]{\linewidth}
+  \null\splogo\hfill\scalebox{.9}{\uulmlogo}%
+\end{minipage}\par
 \begin{center}
-  \begin{minipage}[t]{\linewidth}
-    \null\splogo\hfill\scalebox{.9}{\uulmlogo}%
-  \end{minipage}\par
   \vskip6em
   {\usekomafont{subject}{\lecture@r{subject}\par}}
   \vskip2em

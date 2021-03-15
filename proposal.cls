@@ -172,6 +172,9 @@ topmargin,background,contents={%
 \ihead{\strut\nohyper{\lecture@rs{title}\iflecture@e{\leftmark}{}{~\faAngleRight~\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark}\strut}%
 }
 
+
+\defpairofpagestyles[scrheadings]{bprop@title}{}
+
 \AddLayersAtBeginOfPageStyle{scrheadings}{mepro.digital.head.ruler}
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{mepro.digital.head.ruler}
 
@@ -179,7 +182,30 @@ topmargin,background,contents={%
 
 %% Coverpage
 %% -----------------------------------------------------------------------------
-\selectcoverpage{sp-half}
+\setkomafont{subtitle}{\mdseries\sffamily}
+
+\lecturecp@coverpagestyle{bachelor-proposal}{%
+\def\lecture@coverpage@geometry{}%
+\renewcommand\maketitle{\begingroup
+\microtypesetup{protrusion=false}%
+\setparsizes {\z@ }{\z@ }{\z@ \@plus 1fil}%
+\thispagestyle{bprop@title}%
+%
+% First: Center top Type and title
+%
+\begin{center}
+  \null\vskip1em
+  {\usekomafont{subject}{\lecture@r{subject}\par}}
+  \vskip3em
+  \sbox0{\pbox{\linewidth}{\usekomafont{title}\Huge\lecture@r{title}}}\usebox0\par
+  \vskip.5em
+  \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
+\end{center}
+\vspace*{2.25em}\leavevmode\par
+\endgroup}
+}
+
+\selectcoverpage{bachelor-proposal}
 
 %% Figures, Tables and refs
 %% -----------------------------------------------------------------------------
@@ -204,7 +230,7 @@ topmargin,background,contents={%
 \captionsetup{format=plain,indention=1em,labelformat=mepro-caption,labelsep=none}
 
 \RequirePackage{lecture-links}
-\pagecolor{gray!1!white}
+%\pagecolor{gray!1!white}
 
 \AtBeginDocument{%
 \@ifpackageloaded{lecture-links}{%

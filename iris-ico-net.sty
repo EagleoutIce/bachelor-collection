@@ -26,14 +26,20 @@
 \iinet@newreg padding@x=1;
 \iinet@newreg padding@y=1;
 
+
+% TODO: i use inset as buffer for not working checks
+\iinet@newreg inset@x=2;
+\iinet@newreg inset@y=2;
+
+
 % TODO make this 42 again :D
 \iinet@newreg width=30;
 \iinet@newreg height=30;
 
-\iinet@newreg block@min@width=5;
-\iinet@newreg block@max@width=8;
-\iinet@newreg block@min@height=3;
-\iinet@newreg block@max@height=5;
+\iinet@newreg block@min@width=7;
+\iinet@newreg block@max@width=13;
+\iinet@newreg block@min@height=6;
+\iinet@newreg block@max@height=8;
 
 \newif\if@iinet@flag@a@
 \newif\if@iinet@flag@typeset@block@
@@ -52,6 +58,9 @@
     padding/.code={\def\iinet@padding@x{#1}\def\iinet@padding@y{#1}},
     padding x/.store in=\iinet@padding@x,
     padding y/.store in=\iinet@padding@y,
+    inset/.code={\def\iinet@inset@x{#1}\def\iinet@inset@y{#1}},
+    inset x/.store in=\iinet@inset@x,
+    inset y/.store in=\iinet@inset@y,
     block min width/.store in=\iinet@block@min@width,
     block max width/.store in=\iinet@block@max@width,
     block min height/.store in=\iinet@block@min@height,
@@ -61,6 +70,7 @@
     defaults/.style={%
         width=\iinet@default@width, height=\iinet@default@height,
         padding x=\iinet@default@padding@x, padding y=\iinet@default@padding@y,
+        inset x=\iinet@default@inset@x, inset y=\iinet@default@inset@y,
         block min width=\iinet@default@block@min@width,
         block max width=\iinet@default@block@max@width,
         block min height=\iinet@default@block@min@height,
@@ -70,7 +80,7 @@
 
 % location (upper-left) | color | width | height
 \def\iinet@draw@single@@block#1#2#3#4{%
-    \path[iinet@block=#2] (#1) rectangle ++(#3,#4);
+    \path[iinet@block=#2] (#1)++(\iinet@inset@x,\iinet@inset@y) rectangle ++(#3-\iinet@inset@x,#4-\iinet@inset@y);
 }
 
 \def\iinet@getblock#1{\csname iinet@block@\arabic{iinet@block@count}@#1\endcsname}
@@ -234,7 +244,7 @@
         \ifnum\value{iinet@a}=\iinet@rand@y\relax
             \edef\iinet@selected@y{##1}%
         \fi
-    \stepcounter{iinet@a}%
+        \stepcounter{iinet@a}%
     }
     \dolistloop{\iinet@m@ylist}%
 }
@@ -244,8 +254,8 @@
     % \iinet@m@max@of@y
     \setcounter{iinet@y}{#1}%
     \@iinet@flag@a@true
-    \edef\@iinet@tmp{\the\numexpr#1+#2+1\relax}% +1 as y not <=
-    \@whilenum\value{iinet@y}<\@iinet@tmp\do{%
+    \edef\@iinet@y{\the\numexpr#1+#2+1\relax}% +1 as y not <=
+    \@whilenum\value{iinet@y}<\@iinet@y\do{%
         \edef\@iinet@tmp{\iinet@m@max@of@y{\arabic{iinet@y}}}%
         \ifnum\@iinet@tmp<1\relax % 0 or invalid
             \@iinet@flag@a@false
@@ -284,7 +294,7 @@
 }
 
 \def\iinet@get@topline@x@{%
-    \ifnum\value{iinet@a}>\value{iinet@b}\relax
+    \ifnum\value{iinet@a}<\value{iinet@b}\else
         \listeadd\@iinet@topline@x{\@iinet@curx:\arabic{iinet@a}}%
         \stepcounter{iinet@c}%
         \edef\@iinet@curx{\arabic{iinet@x}}
@@ -304,7 +314,7 @@
     \iinet@m@for@x{%
         \iinet@if@m@cfree(iinet@x,iinet@y)%
             {\stepcounter{iinet@a}}% free
-            {\iinet@get@topline@x@}% TODO: if iinet@a is > required => add to list; ad last pick random from list, than try with x in lower lines
+            {\iinet@get@topline@x@}%
     }\iinet@get@topline@x@\fi
     % select random element and split '@'
     \setcounter{iinet@a}{0}% current
@@ -353,7 +363,7 @@
     \ifnum\@iinet@sub@xidx>\iinet@cur@xidx\relax% low
         \edef\iinet@cur@xidx{\@iinet@sub@xidx}
     \fi
-    \ifnum\numexpr\@iinet@sub@xidx+\@iinet@sub@xlen\relax<\numexpr\iinet@cur@xidx@old+\iinet@cur@xlen\relax% len
+    \ifnum\numexpr\@iinet@sub@xidx+\@iinet@sub@xlen\relax<\numexpr\iinet@cur@xidx+\iinet@cur@xlen\relax% len
         \pgfmathsetmacro\iinet@cur@xlen{int(\@iinet@sub@xidx+\@iinet@sub@xlen-\iinet@cur@xidx)}
     \fi
 }
@@ -370,6 +380,7 @@
         \setcounter{iinet@y}{\get{y}}%
         % find start in topline => \iinet@cur@xidx & \iinet@cur@xlen
         \iinet@block@randxy@pickxw@topline
+        \stepcounter{iinet@y}
         \if@iinet@flag@typeset@block@
         \@whilenum\value{iinet@y}<\numexpr\get{y}+\get{h}\relax\do{% TODO: maybe +1?
             % search for the largest x-slot in 'xidx..xidx+xlen'
@@ -406,7 +417,7 @@
 
 % TODO: if fails for current h, try with one h less
 \def\iinet@block@randxy{
-    \setblockrand{h}{\iinet@block@min@height}{min(\iinet@block@max@height,\@nameuse{iinet@max@y})}% 4)
+    \setblockrand{h}{\iinet@block@min@height}{min(\iinet@block@max@height,\iinet@max@y)}% 4)
     \iinet@block@randxy@picky% 5)
     \iinet@block@randxy@pickxw% 6)
 }

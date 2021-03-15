@@ -6,13 +6,31 @@
 \usepackage[cpalette,pathfade,debug]{iris-ico-net}
 
 \begin{document}
+\iffalse
 \begin{center}
-    \IrisIcoNet[square=150,max block count=100,max line count=40,frame]
+    \IrisIcoRandomNet[square=100,max block count=50,max line count=20,frame]
 \end{center}
 
 \begin{center}
 \foreach \i in {1,...,5}{%
-\IrisIcoNet[frame,max block count=10,max line count=15]
+\IrisIcoRandomNet[frame,max block count=10,max line count=15]
+}
+\end{center}
+\fi
+\paragraph{Custom}
+
+\colorlet{level1}{paletteA!70!white}
+\colorlet{level2}{paletteA!90!white}
+\colorlet{level3}{paletteA}
+\begin{center}
+\IrisIcoNet[frame,grid,width=42,height=30]{
+    \block[level1]( 0,0,6,4)
+    \block[level1]( 7,0,6,4)
+    \block[level1](14,0,6,4)
+
+    \block[level2]( 7,7,6,4)
+
+    \root (1) -- (3);
 }
 \end{center}
 \end{document}

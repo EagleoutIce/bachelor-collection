@@ -15,6 +15,9 @@
 \DeclareOption{pathfade}{\iinet@setup@pathfade@true}
 \DeclareOption{nopathfade}{\iinet@setup@pathfade@false}
 
+\newif\ifiinet@setup@frameblock@
+\DeclareOption{frameblock}{\iinet@setup@frameblock@true}
+\DeclareOption{noframeblock}{\iinet@setup@frameblock@false}
 
 \DeclareOption{debug}{\let\iinet@debug\typeout}
 \DeclareOption{nodebug}{\let\iinet@debug\@gobble}
@@ -66,7 +69,6 @@
 \iinet@newreg jitter@y=0;
 \iinet@newreg jitter@steps=3;
 
-% TODO make this 42 again :D
 \iinet@newreg width=30;
 \iinet@newreg height=30;
 
@@ -97,6 +99,12 @@
         \pgfusepath{fill};}
     }}}
 }
+
+\ifiinet@setup@frameblock@
+    \tikzset{iinet@node@block/.style={draw,thin,#1!80!black}}
+\else
+    \tikzset{iinet@node@block/.style={}}
+\fi
 
 \pgfkeys{%
     /iinet@keys/.is family, /iinet@keys,
@@ -135,13 +143,21 @@
     }%
 }
 
-% location (lower-left) | color | width | height
-\def\iinet@draw@single@@block#1#2#3#4{% TODO: union node with current path
+% location (lower-left) | color | width | height | special name
+\def\iinet@draw@single@@block#1#2#3#4#5{% TODO: union node with current path
     \path[iinet@block=#2] (#1)++(\iinet@inset@x,\iinet@inset@y) rectangle ++(#3-\iinet@inset@x,#4-\iinet@inset@y) node[%
         midway,outer sep=\z@,inner sep=\z@,
         minimum width=#3-\iinet@inset@x pt,
         minimum height=#4-\iinet@inset@y pt,% TODO: change shading
-        draw,thin,#2!80!black] (iinet-block-\arabic{iinet@block@count}) {};
+        iinet@node@block=#2%
+    ] (\arabic{iinet@block@count}) {} \ifx!#5!\else coordinate[midway,centered] (#5)\fi;
+}
+
+\def\iinet@fronte@draw@block{\@ifnextchar[{\iinet@@fronte@draw@block}{\iinet@loadBlockColor
+\iinet@@fronte@draw@block[\iinet@blockcolor]}}
+\def\iinet@@fronte@draw@block[#1]#2(#3,#4,#5,#6){%
+    % compensate inset!
+    \iinet@draw@single@@block{#3-\iinet@inset@x,#4-\iinet@inset@y}{#1}{#5+\iinet@inset@x}{#6+\iinet@inset@y}{#2}%
 }
 
 \def\iinet@getblock@#1#2{\csname iinet@block@#1@#2\endcsname}
@@ -511,7 +527,7 @@
   \iinet@block@randxy
   \if@iinet@flag@typeset@block@
     \iinet@debug{Block[\get{c}](\get{x},\get{y},\get{w},\get{h})}
-    \iinet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}
+    \iinet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}{}
     \iinet@single@block@block
   \else
     % free registers
@@ -542,21 +558,17 @@
 }
 
 \ifiinet@setup@pathfade@
-\def\iinet@@dl@#1{
-    \iinet@@dl@raw
-    % NOTE: Transform canvas does not work due to edge clipping on too low offset
-    \path[pathfade={.3pt}{\iinet@getblock@{\iinet@lines@start}{c}}{\iinet@getblock@{\iinet@lines@end}{c}}]
-        (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
-        ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
-}
+\newcommand*\iinet@dl@root[1][]{\path[pathfade={.3pt}{\iinet@getblock@{\iinet@lines@start}{c}}{\iinet@getblock@{\iinet@lines@end}{c}},#1]}%
 \else
+\newcommand*\iinet@dl@root[1][]{\path[iinet@line=\iinet@getblock@{\iinet@lines@start}{c},#1]}%
+\fi
+
 \def\iinet@@dl@#1{%
     \iinet@@dl@raw
-    \path[iinet@line=\iinet@getblock@{\iinet@lines@start}{c}]
-        (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
-        ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
+    \iinet@dl@root
+        (\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
+        ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]\iinet@lines@end);
 }
-\fi
 \def\iinet@root@lines@pick@ab{%
     % pick first block
     \pgfmathrandominteger{\iinet@lines@start}{1}{\arabic{iinet@block@count}}%
@@ -567,11 +579,11 @@
     % do not draw same twice:
     \ifcsname iinet@line@\iinet@lines@start @\iinet@lines@end\endcsname\else
     \ifcsname iinet@line@\iinet@lines@end @\iinet@lines@start\endcsname\else
-        \typeout{Line: '\iinet@lines@start' -> '\iinet@lines@end'}
+        \iinet@debug{Line: '\iinet@lines@start' -> '\iinet@lines@end'}
         \@namedef{iinet@line@\iinet@lines@start @\iinet@lines@end}{}
         % Draw the line: TODO: retrieve colors
-        \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
-        \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
+        \iinet@load@p@xy{\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
+        \iinet@load@p@xy{\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
         \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
         \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
         \ifdim\iinet@delta@x pt=\z@\relax \iinet@@dl@{--}\else
@@ -586,7 +598,7 @@
 }
 \def\iinet@root@lines{
     \pgfmathrandominteger{\iinet@lines@to@draw}{2}{min(\iinet@lines@max@count,\arabic{iinet@block@count}*2-1)}
-    \typeout{Got '\arabic{iinet@block@count}' blocks connect up to '\iinet@lines@to@draw' lines}
+    \iinet@debug{Got '\arabic{iinet@block@count}' blocks connect up to '\iinet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
     \setcounter{iinet@a}{0}
     \@whilenum\value{iinet@a}<\iinet@lines@to@draw\do{
@@ -596,30 +608,38 @@
     \end{pgfonlayer}
 }
 
-\newcommand*\IrisIcoNet[1][]{\begingroup%
-    \iinet@init{#1}%
-    \begin{tikzpicture}[x=1pt,y=1pt]
-        \let\get\iinet@getblock
-        \let\setblock\iinet@setblock
-        \let\setblockrand\iinet@setblockrand
-        \iinet@calcdiffs% 1)
-        \iinet@setup@matrix% 2)
-        \if@iinet@drawgrid\begin{pgfonlayer}{background}
-            \draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
-        \end{pgfonlayer}\fi
-        \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]
-            (-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
+\newcommand*\IrisIcoRandomNet[1][]{\IrisIcoNet[#1]{
+    % TODO: use @for?
+    \setcounter{iinet@block@a}{0}
+    \@whilenum\value{iinet@block@a}<\iinet@block@max@count\do{%
+        \iinet@draw@single@block
+        \stepcounter{iinet@block@a}%
+    }
+    \iinet@debug@show@matrix% Debug :)
+    \iinet@root@lines
+}}
 
-        % TODO: use @for?
-        \setcounter{iinet@block@a}{0}
-        \@whilenum\value{iinet@block@a}<\iinet@block@max@count\do{
-            \iinet@draw@single@block
-            \stepcounter{iinet@block@a}
-        }
-        \iinet@debug@show@matrix% Debug :)
-        \iinet@root@lines
-    \end{tikzpicture}%
+\newcommand\IrisIcoNet[2][]{\begingroup
+\iinet@init{#1}%
+\begin{tikzpicture}[x=1pt,y=1pt]
+    \let\get\iinet@getblock
+    \let\setblock\iinet@setblock
+    \let\setblockrand\iinet@setblockrand
+    \iinet@calcdiffs% 1)
+    \iinet@setup@matrix% 2)
+    \if@iinet@drawgrid\begin{pgfonlayer}{background}
+        \draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
+    \end{pgfonlayer}\fi
+    \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]
+        (-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
+    \let\debugmatrix\iinet@debug@show@matrix
+    \let\autoroot\iinet@root@lines
+    \let\block\iinet@fronte@draw@block
+    \let\root\iinet@dl@root
+    #2
+\end{tikzpicture}%
 \endgroup}
+
 
 
 \endinput

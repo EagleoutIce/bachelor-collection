@@ -71,7 +71,8 @@
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
-\RequirePackage[a4paper,total={0.85\paperwidth,0.85\paperheight},centering]{geometry}
+\newlength\bprop@len@margin \bprop@len@margin=2cm
+\RequirePackage[a4paper,margin=\bprop@len@margin,includefoot,vcentering]{geometry}
 \flushbottom
 
 %% Hyperlinks => Figures, Tables and refs
@@ -118,20 +119,20 @@
 %% Footnotes
 %% -----------------------------------------------------------------------------
 
-\LetLtxMacro\lecture@makefnmark\@makefnmark
-\AtBeginDocument{\LetLtxMacro\@makefnmark\lecture@makefnmark}
+\LetLtxMacro\bprop@makefnmark\@makefnmark
+\AtBeginDocument{\LetLtxMacro\@makefnmark\bprop@makefnmark}
 
 % footnote handling NOTE: we know there is a chapter!
 \deffootnote{2em}{1em}{%
-    \makebox[2em][r]{\nohyper{\hyperref[lecture@fn:\thesection:\csname lecture@footnoteref@\@mpfn\endcsname]{\thefootnotemark}}}~}
+    \makebox[2em][r]{\nohyper{\hyperref[bprop@fn:\thesection:\csname bprop@footnoteref@\@mpfn\endcsname]{\thefootnotemark}}}~}
 
 \renewcommand*\thefootnote{$\langle$\arabic{footnote}$\rangle$}
 \renewcommand*\thempfootnote{$\langle$\alph{mpfootnote}$\rangle$}
 
-\def\lecture@footnoteref@footnote{fn@\arabic{footnote}}
-\def\lecture@footnoteref@mpfootnote{fn@\alph{mpfootnote}}
+\def\bprop@footnoteref@footnote{fn@\arabic{footnote}}
+\def\bprop@footnoteref@mpfootnote{fn@\alph{mpfootnote}}
 
-\preto\@footnotemark{\phantomsection\label{lecture@fn:\thesection:\csname lecture@footnoteref@\@mpfn\endcsname}\disablehyper}
+\preto\@footnotemark{\phantomsection\label{bprop@fn:\thesection:\csname bprop@footnoteref@\@mpfn\endcsname}\disablehyper}
 
 %% (non) Rectangular paragraphs & hyphenation
 %% -----------------------------------------------------------------------------
@@ -162,15 +163,23 @@ topmargin,background,contents={%
 }%
 ]{mepro.digital.head.ruler}
 
-\colorlet{lecture@headfoot}{gray}
-\setkomafont{pageheadfoot}{\sffamily\footnotesize\color{lecture@headfoot}}
+\colorlet{bprop@headfoot}{gray}
+\setkomafont{pageheadfoot}{\sffamily\footnotesize\color{bprop@headfoot}}
 
 \def\bprop@getsubsecmark{\csname bprop@subsec@\thesection @\endcsname}
 \def\ifbprop@subsecmark{\ifcsname bprop@subsec@\thesection @\endcsname\expandafter\bprop@firstoftwo\else\expandafter\bprop@secondoftwo\fi}
 
+
+\def\bprop@copyright@notice@upper{\iflecture@er{authority}{}{\lecture@r{authority},\quad}\iflecture@er{supervisor}{}{Supervisor\ifnum\value{bprop@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}}
+\def\bprop@copyright@notice@lower{\iflecture@er{copyright}{}{\lecture@r{copyright}}}
+
+%
 \renewpairofpagestyles{scrheadings}{%
-\ohead{\strut\nohyper{{\sbfamily\thepage}\thinspace}}%
-\ihead{\strut\nohyper{\lecture@rs{title}\iflecture@e{\leftmark}{}{~\faAngleRight~\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark}\strut}%
+\ofoot{\strut\nohyper{{\sbfamily\thepage}\thinspace}}%
+\ihead{\begingroup\normalsize\normalfont\linespread{1.25}\begin{tikzpicture}[remember picture,overlay]
+  \node[below left,yshift=-.25cm,xshift=-\bprop@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bprop@disablehyper\bprop@copyright@notice@upper\\\disablehyper\bprop@copyright@notice@lower};
+\end{tikzpicture}\endgroup}%
+\ifoot{\nohyper{\lecture@rs{title}\iflecture@e{\leftmark}{}{~\faAngleRight~\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark}}
 }
 
 
@@ -206,7 +215,10 @@ topmargin,background,contents={%
   \vskip6em
   {\usekomafont{subject}{\lecture@r{subject}\par}}
   \vskip2em
-  \sbox0{\pbox{\linewidth}{\usekomafont{title}\Huge\lecture@r{title}}}\usebox0\par
+  \sbox0{\pbox{\linewidth}{\usekomafont{title}\Huge\lecture@r{title}}}%
+  \textcolor{lightgray}{\rule{\linewidth}{.85pt}}\bigskip\par
+  \usebox0\smallskip\par
+  \textcolor{lightgray}{\rule{\linewidth}{.85pt}}\smallskip\par
   \vskip.5em
   \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
 \end{center}
@@ -218,9 +230,8 @@ topmargin,background,contents={%
   {\usekomafont{author}\typesetAuthors\par}
   {\usekomafont{dedication}\lecture@r{date}\par}
   {\usekomafont{dedication}\lecture@r{institute}\par}
-\end{minipage}
-\par
-\endgroup}
+\end{minipage}\vspace{-3em}\par
+\endgroup\clearpage}
 }
 
 \selectcoverpage{bachelor-proposal}
@@ -330,6 +341,13 @@ topmargin,background,contents={%
 %% -----------------------------------------------------------------------------
 
 \def\bprop@supervisors{}
-\newcommand*\addSupervisor[2][]{\g@addto@macro\bprop@supervisors{\item \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}}
+\newcounter{bprop@supervisor@count}
+\newcommand*\addSupervisor[2][]{\stepcounter{bprop@supervisor@count}%
+\ifx\bprop@supervisors\@empty
+\def\bprop@supervisors{\ifx!#1!#2\else\href{mailto:#1}{#2}\fi}%
+\else\g@addto@macro\bprop@supervisors{, \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}\fi}
+\supervisor{\bprop@supervisors}
+
+\AtEndPreamble{\def\lecture@personal@defaultsuffix{}}
 
 \endinput

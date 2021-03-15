@@ -27,7 +27,7 @@
 \iinet@newreg padding@y=2;
 
 % TODO make this 42 again :D
-\iinet@newreg width=25;
+\iinet@newreg width=22;
 \iinet@newreg height=10;
 
 \iinet@newreg block@min@width=5;
@@ -36,8 +36,10 @@
 \iinet@newreg block@max@height=5;
 
 \newif\if@iinet@drawframe
+\newif\if@iinet@drawgrid
 \tikzset{%
     iinet@frame/.style={draw,rounded corners=2pt},
+    iinet@grid/.style={gray,ultra thin,step=1},
     iinet@block/.style={fill=#1,draw=#1,rounded corners=.25pt}%
 }
 
@@ -52,6 +54,7 @@
     block min height/.store in=\iinet@block@min@height,
     block max height/.store in=\iinet@block@max@height,
     frame/.is if=@iinet@drawframe,
+    grid/.is if=@iinet@drawgrid,
     defaults/.style={%
         width=\iinet@default@width, height=\iinet@default@height,
         padding x=\iinet@default@padding@x, padding y=\iinet@default@padding@y,
@@ -77,6 +80,7 @@
 
 
 %%% How (TODO: rasterize: TODO: maximum number? TODO: padding [save #pt bigger blocks?])
+% NOTE: changed usage... not min; inefficient approach at first ^^
 % 1) calculate differences between min and max for both dimens: block@dif@{x,y}
 % 2) hold a list for all y with [height-block@min@height] elements:
 %       list for all x with [width-block@min@width] elements
@@ -111,9 +115,9 @@
     \edef\iinet@block@dif@y
         {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}
     \edef\iinet@matrix@x
-        {\the\numexpr\iinet@width-\iinet@block@min@width\relax}
+        {\the\numexpr\iinet@width\relax}
     \edef\iinet@matrix@y
-        {\the\numexpr\iinet@height-\iinet@block@min@height\relax}
+        {\the\numexpr\iinet@height\relax}
 }
 
 \def\iinet@element{}
@@ -184,14 +188,13 @@
 }
 
 \def\iinet@update@present@squares{%
-% TODO: set error flag (if?) in case of insufficient dimensions
-\iinet@m@for@y{%
-    \iinet@get@consecutive@x
-    \expandafter\pgfmathsetmacro\csname iinet@max@\arabic{iinet@y}@x\endcsname{min(\@iinet@con@x, \iinet@block@dif@x)}
-}
-\iinet@get@consecutive@y
-\expandafter\edef\csname iinet@max@y\endcsname{\@iinet@con@y}%
-\expandafter\pgfmathsetmacro\csname iinet@max@\arabic{iinet@y}@x\endcsname{min(\@iinet@con@x, \iinet@block@dif@x)}
+    % TODO: set error flag (if?) in case of insufficient dimensions
+    \iinet@m@for@y{%
+        \iinet@get@consecutive@x
+        \expandafter\edef\csname iinet@max@\arabic{iinet@y}@x\endcsname{\@iinet@con@x}%
+    }
+    \iinet@get@consecutive@y
+    \expandafter\edef\csname iinet@max@y\endcsname{\@iinet@con@y}%
 }
 
 \def\iinet@debug@line{====================================}
@@ -247,6 +250,7 @@
         \let\get\iinet@getblock
         \let\setblock\iinet@setblock
         \let\setblockrand\iinet@setblockrand
+        \if@iinet@drawgrid\draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);\fi
         \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]
             (-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
 

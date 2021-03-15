@@ -6,7 +6,6 @@
 \usepackage[cpalette,pathfade,debug]{iris-ico-net}
 
 \begin{document}
-\iffalse
 \begin{center}
     \IrisIcoRandomNet[square=100,max block count=50,max line count=20,frame]
 \end{center}
@@ -16,21 +15,57 @@
 \IrisIcoRandomNet[frame,max block count=10,max line count=15]
 }
 \end{center}
-\fi
 \paragraph{Custom}
 
 \colorlet{level1}{paletteA!70!white}
 \colorlet{level2}{paletteA!90!white}
 \colorlet{level3}{paletteA}
+
+\colorlet{levelb1}{paletteC!70!white}
+\colorlet{levelb2}{paletteC!90!white}
+\colorlet{levelb3}{paletteC}
+
+\colorlet{levelc1}{paletteB!70!white}
+\colorlet{levelc2}{paletteB!90!white}
+\colorlet{levelc3}{paletteB}
+
+\colorlet{leveld1}{paletteD!50!white}
+\colorlet{leveld2}{paletteD!90!white}
+\colorlet{leveld3}{paletteD}
 \begin{center}
+\resizebox{.85\linewidth}{!}{
 \IrisIcoNet[frame,grid,width=42,height=30]{
-    \block[level1]( 0,0,6,4)
-    \block[level1]( 7,0,6,4)
-    \block[level1](14,0,6,4)
+    \block[level1]( 0,0,6,4)[1]
+    \block[level1]( 7,0,6,4)[2]
+    \block[level1](14,0,6,4)[3]
 
-    \block[level2]( 7,7,6,4)
+    \block[level2]( 7,7,6,4)[4]
 
-    \root (1) -- (3);
-}
+    \block[levelb1](28,7,6,4)[5]
+    \block[levelb1](35,7,6,4)[6]
+    \block[levelb2](31.5,14,6,4)[7]
+
+    \block[levelc2]({(31.5-7)/2+7-1.5},14-1,9,6)[8]
+
+    \block[lightgray](28,0,12+1,4)[9]
+
+    \block[leveld1](0,30,6,-4)[10]
+    \block[leveld1](0,25,6,-4)[11]
+
+    \begin{rootlayer}
+        \draw[iinet@pathfade={level1}{level2}] (1) |- (4);
+        \draw[iinet@pathfade={level1}{level2}] (2) -- (4);
+        \draw[iinet@pathfade={level1}{level2}] (3) |- (4);
+
+        \draw[iinet@pathfade={levelb1}{levelb2}] (5.north) -- ++(0,1.5) -| (7.240);
+        \draw[iinet@pathfade={levelb1}{levelb2}] (6.north) -- ++(0,1.5) -| (7.300);
+
+        \draw[iinet@pathfade={level2}{levelc2}] (4) |- (8);
+        \draw[iinet@pathfade={levelb2}{levelc2}] (7) -- (8);
+        \draw[iinet@pathfade={levelc2}{white}] (8) -- ++(0,16);
+
+        \draw[iinet@pathfade={leveld1}{leveld1}] (10.east) -- ++(1,0) |- (11.east);
+    \end{rootlayer}
+}}
 \end{center}
 \end{document}

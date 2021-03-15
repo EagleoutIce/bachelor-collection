@@ -85,19 +85,22 @@
 \newif\if@iinet@drawframe
 \newif\if@iinet@drawgrid
 \tikzset{%
-    iinet@frame/.style={draw,thin,gray,rounded corners=2pt},
-    iinet@grid/.style={gray,ultra thin,step=1},
+    iinet@outer@roundings/.style={rounded corners=2pt},
+    iinet@frame/.style={draw,thin,gray,iinet@outer@roundings},
+    iinet@grid/.style={lightgray,line width=.1pt,step=1pt},
     iinet@block/.style={fill=#1,draw=#1,rounded corners=.25pt},%
     iinet@line/.style={thick,draw,rounded corners=.125pt,#1},%
-    pathfade/.style n args={3}{
+    iinet@@pathfade/.style n args={3}{
         postaction={decorate,decoration={markings,
         mark=between positions 0 and \pgfdecoratedpathlength step #1 with {
         \pgfmathsetmacro\iinet@gradient{multiply(divide(\pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength),100)};
         \pgfsetfillcolor{#3!\iinet@gradient!#2};
-        \pgfsetcornersarced{\pgfpoint{#1/2}{#1/2}}%
+        \pgfsetcornersarced{\pgfpoint{#1/1.75}{#1/1.75}}%
         \pgfpathrectangle{\pgfpointadd{\pgfpointorigin}{\pgfpoint{-#1}{-#1}}}{\pgfpoint{2*#1}{2*#1}};
         \pgfusepath{fill};}
-    }}}
+    }},
+    },
+    iinet@pathfade/.style 2 args={iinet@@pathfade={.4pt}{#1}{#2}},
 }
 
 \ifiinet@setup@frameblock@
@@ -150,14 +153,17 @@
         minimum width=#3-\iinet@inset@x pt,
         minimum height=#4-\iinet@inset@y pt,% TODO: change shading
         iinet@node@block=#2%
-    ] (\arabic{iinet@block@count}) {} \ifx!#5!\else coordinate[midway,centered] (#5)\fi;
+    ] (#5) {}  coordinate[midway,centered] (iinet-block-\arabic{iinet@block@count});
 }
 
 \def\iinet@fronte@draw@block{\@ifnextchar[{\iinet@@fronte@draw@block}{\iinet@loadBlockColor
 \iinet@@fronte@draw@block[\iinet@blockcolor]}}
-\def\iinet@@fronte@draw@block[#1]#2(#3,#4,#5,#6){%
+\def\iinet@@fronte@draw@block[#1](#2,#3,#4,#5){\@ifnextchar[{\iinet@@@fronte@draw@block[#1](#2,#3,#4,#5)}{\iinet@@@fronte@draw@block[#1](#2,#3,#4,#5)[]}}%
+\def\iinet@@@fronte@draw@block[#1](#2,#3,#4,#5)[#6]{%
+    % assure 1 counter
+    \stepcounter{iinet@block@count}%
     % compensate inset!
-    \iinet@draw@single@@block{#3-\iinet@inset@x,#4-\iinet@inset@y}{#1}{#5+\iinet@inset@x}{#6+\iinet@inset@y}{#2}%
+    \iinet@draw@single@@block{{#2-\iinet@inset@x},{#3-\iinet@inset@y}}{#1}{#4+\iinet@inset@x}{#5+\iinet@inset@y}{#6}%
 }
 
 \def\iinet@getblock@#1#2{\csname iinet@block@#1@#2\endcsname}
@@ -518,7 +524,7 @@
 }
 
 % 4)+
-\def\iinet@draw@single@block{
+\def\iinet@draw@single@block{%
   \@iinet@flag@typeset@block@true
   \stepcounter{iinet@block@count}
   % \set and allocate dimens
@@ -526,8 +532,8 @@
   \setblock{c}{\iinet@blockcolor}
   \iinet@block@randxy
   \if@iinet@flag@typeset@block@
-    \iinet@debug{Block[\get{c}](\get{x},\get{y},\get{w},\get{h})}
-    \iinet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}{}
+    \iinet@debug{Block[\get{c}](\get{x},\get{y},\get{w},\get{h})}%
+    \iinet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}{}%
     \iinet@single@block@block
   \else
     % free registers
@@ -558,7 +564,7 @@
 }
 
 \ifiinet@setup@pathfade@
-\newcommand*\iinet@dl@root[1][]{\path[pathfade={.3pt}{\iinet@getblock@{\iinet@lines@start}{c}}{\iinet@getblock@{\iinet@lines@end}{c}},#1]}%
+\newcommand*\iinet@dl@root[1][]{\path[iinet@pathfade={\iinet@getblock@{\iinet@lines@start}{c}}{\iinet@getblock@{\iinet@lines@end}{c}},#1]}%
 \else
 \newcommand*\iinet@dl@root[1][]{\path[iinet@line=\iinet@getblock@{\iinet@lines@start}{c},#1]}%
 \fi
@@ -566,8 +572,8 @@
 \def\iinet@@dl@#1{%
     \iinet@@dl@raw
     \iinet@dl@root
-        (\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
-        ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]\iinet@lines@end);
+        (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
+        ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
 }
 \def\iinet@root@lines@pick@ab{%
     % pick first block
@@ -582,8 +588,8 @@
         \iinet@debug{Line: '\iinet@lines@start' -> '\iinet@lines@end'}
         \@namedef{iinet@line@\iinet@lines@start @\iinet@lines@end}{}
         % Draw the line: TODO: retrieve colors
-        \iinet@load@p@xy{\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
-        \iinet@load@p@xy{\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
+        \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
+        \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
         \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
         \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
         \ifdim\iinet@delta@x pt=\z@\relax \iinet@@dl@{--}\else
@@ -619,6 +625,8 @@
     \iinet@root@lines
 }}
 
+\newenvironment{iris@rootlayer}{\begin{pgfonlayer}{background}}{\end{pgfonlayer}}
+
 \newcommand\IrisIcoNet[2][]{\begingroup
 \iinet@init{#1}%
 \begin{tikzpicture}[x=1pt,y=1pt]
@@ -627,15 +635,19 @@
     \let\setblockrand\iinet@setblockrand
     \iinet@calcdiffs% 1)
     \iinet@setup@matrix% 2)
+    \def\iinet@outer@path{(-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y)}
+    \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]\iinet@outer@path;
+    \path[clip,iinet@outer@roundings] \iinet@outer@path;
     \if@iinet@drawgrid\begin{pgfonlayer}{background}
+        \path[clip,iinet@outer@roundings] \iinet@outer@path;
         \draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
     \end{pgfonlayer}\fi
-    \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]
-        (-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
     \let\debugmatrix\iinet@debug@show@matrix
     \let\autoroot\iinet@root@lines
     \let\block\iinet@fronte@draw@block
     \let\root\iinet@dl@root
+    \let\rootlayer\iris@rootlayer
+    \let\endrootlayer\endiris@rootlayer
     #2
 \end{tikzpicture}%
 \endgroup}

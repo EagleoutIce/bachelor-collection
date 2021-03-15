@@ -1,11 +1,12 @@
-\ProvidesPackage{uulm-logo}[2021/03/15 v1.0 Logo of the university of ulm]
-
+\ProvidesPackage{uulm-logos}[2021/03/15 v1.0 Logo of the university of ulm]
 % PGF commands, generated using http://sourceforge.net/projects/eps2pgf/
-\definecolor{ulo@col@uulm@logo}{RGB}{130,161,180} % RGB(130,161,180)
+\definecolor{ulo@col@uulm@logo}        {RGB}{130,164,182} % RGB(130,164,182)
+\definecolor{ulo@col@uulm@sp@red}      {RGB}{133,0,0}     % RGB(133,0,0)
+\definecolor{ulo@col@uulm@sp@lightgray}{RGB}{170,170,170} % RGB(170,170,170)
+\definecolor{ulo@col@uulm@sp@darkgray} {RGB}{51,51,51}    % RGB(51,51,51)
 
 \newcommand*\ulo@uulm@logo@left[1]{\begin{pgfpicture}
-\pgftransformscale{.5}
-\begin{pgfscope}
+\pgftransformscale{.45}\begin{pgfscope}
 \pgfsetstrokecolor{#1}\pgfsetfillcolor{#1}
 \pgfpathmoveto{\pgfqpoint{3.307cm}{2.354cm}}
 \pgfpathcurveto{\pgfqpoint{3.292cm}{2.354cm}}{\pgfqpoint{3.279cm}{2.35cm}}{\pgfqpoint{3.268cm}{2.343cm}}
@@ -1042,12 +1043,12 @@
 \end{pgfpicture}}
 
 \newcommand*\ulo@uulm@logo@right[1]{\begin{pgfpicture}
-\pgftransformscale{.5}
-\pgfpathmoveto{\pgfqpoint{0cm}{4cm}}
+\pgftransformscale{.45}
+\pgfpathmoveto{\pgfqpoint{4cm}{4cm}}
 \pgfpathlineto{\pgfqpoint{20cm}{4cm}}
 \pgfpathlineto{\pgfqpoint{20cm}{0cm}}
-\pgfpathlineto{\pgfqpoint{0cm}{0cm}}
-\pgfpathlineto{\pgfqpoint{0cm}{4cm}}
+\pgfpathlineto{\pgfqpoint{4cm}{0cm}}
+\pgfpathlineto{\pgfqpoint{4cm}{4cm}}
 \pgfpathclose
 \pgfusepath{clip}
 \begin{pgfscope}
@@ -1466,13 +1467,15 @@
 \pgfpathcurveto{\pgfqpoint{10.184cm}{2.758cm}}{\pgfqpoint{10.208cm}{2.755cm}}{\pgfqpoint{10.231cm}{2.755cm}}
 \pgfpathcurveto{\pgfqpoint{10.302cm}{2.755cm}}{\pgfqpoint{10.338cm}{2.825cm}}{\pgfqpoint{10.362cm}{2.895cm}}
 \pgfpathlineto{\pgfqpoint{10.566cm}{3.481cm}}
-\pgfusepath{fill}\end{pgfscope}
+\pgfusepath{fill}\end{pgfscope}%
 \end{pgfpicture}}
-\newcommand*\ulo@uulm@logo[1]{\ulo@uulm@logo@left{#1}x~x\ulo@uulm@logo@right{#1}}
+\newcommand*\ulo@uulm@logo[1]{\ulo@uulm@logo@left{#1}~~~\ulo@uulm@logo@right{#1}}
+
 
 \newsavebox\ulo@sb@uulm@logo \sbox\ulo@sb@uulm@logo{\ulo@uulm@logo{ulo@col@uulm@logo}}
-\newsavebox\ulo@sb@uulm@logo@bw \sbox\ulo@sb@uulm@logo@bw{\ulo@uulm@logo{black}}
+\newsavebox\ulo@sb@sp@logo \sbox\ulo@sb@sp@logo{}
 
-\newcommand*\uulmlogo{\@ifstar{\usebox{\ulo@sb@uulm@logo@bw}}{\usebox{\ulo@sb@uulm@logo}}}
 
+\newcommand*\uulmlogo{\usebox{\ulo@sb@uulm@logo}}
+\newcommand*\splogo{\usebox{\ulo@sb@sp@logo}}
 \endinput

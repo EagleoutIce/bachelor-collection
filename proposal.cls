@@ -37,7 +37,7 @@
 \RequirePackage[english,main=ngerman]{babel}
 \RequirePackage{etoolbox,calc,booktabs,scrhack,caption,tikz,tcolorbox}
 
-\RequirePackage{uulm-logo}
+\RequirePackage{uulm-logos}
 
 
 %% Fonts
@@ -188,6 +188,7 @@ topmargin,background,contents={%
 \setkomafont{dedication}{\mdseries\sffamily}
 
 \@lecture@definereg{university}
+\@lecture@definereg{institute}
 
 \lecturecp@coverpagestyle{bachelor-proposal}{%
 \def\lecture@coverpage@geometry{}%
@@ -200,22 +201,24 @@ topmargin,background,contents={%
 %
 \begin{center}
   \begin{minipage}[t]{\linewidth}
-    \raggedleft\scalebox{.75}{\uulmlogo}\relax
-  \end{minipage}
-  \null\vskip1em
+    \null\splogo\hfill\scalebox{.9}{\uulmlogo}%
+  \end{minipage}\par
+  \vskip6em
   {\usekomafont{subject}{\lecture@r{subject}\par}}
-  \vskip3em
+  \vskip2em
   \sbox0{\pbox{\linewidth}{\usekomafont{title}\Huge\lecture@r{title}}}\usebox0\par
   \vskip.5em
   \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
 \end{center}
 \vfill\lecture@r{titleimage}
 \vfill\null
-\begin{tcolorbox}[blanker,right=3mm,top=1.5mm,bottom=1.5mm,borderline east={1mm}{1mm}{paletteA,line cap=round},halign=flush right]
-  \disablehyper%
+\raggedleft
+\begin{minipage}{.45\linewidth}
+  \raggedleft\disablehyper%
   {\usekomafont{author}\typesetAuthors\par}
   {\usekomafont{dedication}\lecture@r{date}\par}
-\end{tcolorbox}
+  {\usekomafont{dedication}\lecture@r{institute}\par}
+\end{minipage}
 \par
 \endgroup}
 }

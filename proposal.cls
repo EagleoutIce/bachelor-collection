@@ -35,8 +35,9 @@
 \RequirePackage{lecture-coverpage}
 
 \RequirePackage[english,main=ngerman]{babel}
+\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,tikz,tcolorbox}
 
-\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,tikz}
+\RequirePackage{uulm-logo}
 
 
 %% Fonts
@@ -183,6 +184,10 @@ topmargin,background,contents={%
 %% Coverpage
 %% -----------------------------------------------------------------------------
 \setkomafont{subtitle}{\mdseries\sffamily}
+\setkomafont{author}{\bfseries\sffamily}
+\setkomafont{dedication}{\mdseries\sffamily}
+
+\@lecture@definereg{university}
 
 \lecturecp@coverpagestyle{bachelor-proposal}{%
 \def\lecture@coverpage@geometry{}%
@@ -194,6 +199,9 @@ topmargin,background,contents={%
 % First: Center top Type and title
 %
 \begin{center}
+  \begin{minipage}[t]{\linewidth}
+    \raggedleft\scalebox{.75}{\uulmlogo}\relax
+  \end{minipage}
   \null\vskip1em
   {\usekomafont{subject}{\lecture@r{subject}\par}}
   \vskip3em
@@ -201,7 +209,14 @@ topmargin,background,contents={%
   \vskip.5em
   \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
 \end{center}
-\vspace*{2.25em}\leavevmode\par
+\vfill\lecture@r{titleimage}
+\vfill\null
+\begin{tcolorbox}[blanker,right=3mm,top=1.5mm,bottom=1.5mm,borderline east={1mm}{1mm}{paletteA,line cap=round},halign=flush right]
+  \disablehyper%
+  {\usekomafont{author}\typesetAuthors\par}
+  {\usekomafont{dedication}\lecture@r{date}\par}
+\end{tcolorbox}
+\par
 \endgroup}
 }
 
@@ -313,20 +328,5 @@ topmargin,background,contents={%
 
 \def\bprop@supervisors{}
 \newcommand*\addSupervisor[2][]{\g@addto@macro\bprop@supervisors{\item \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}}
-
-\def\UpperSegment{\begingroup
-\microtypesetup{protrusion=false}%
-\sbox0{\begin{minipage}[t]{0.45\linewidth}
-  \ifx\bprop@supervisors\@empty\else
-  {\sbfamily Anwesende:}\par
-  \bprop@disablehyper\begin{itemize}[nosep]
-    \bprop@supervisors
-  \end{itemize}
-  \fi
-  \end{minipage}}\usebox0\hfill\begin{minipage}[t][\ht0+\dp0]{0.45\linewidth}
-  \raggedleft\bprop@topic\vfill
-  \textcolor{gray}{\lecture@r{date}\ifx\bprop@time@from\@empty \hbox{}\else,\quad\bprop@time@from\,--\,\bprop@time@to\\*\fi}%
-  \end{minipage}\bigskip\par
-\endgroup}
 
 \endinput

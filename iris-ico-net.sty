@@ -85,22 +85,23 @@
 \newif\if@iinet@drawframe
 \newif\if@iinet@drawgrid
 \tikzset{%
-    iinet@outer@roundings/.style={rounded corners=2pt},
-    iinet@frame/.style={draw,thin,gray,iinet@outer@roundings},
-    iinet@grid/.style={lightgray,line width=.1pt,step=1pt},
+    iinet@outer@roundings/.style={rounded corners=.75pt},
+    iinet@frame/.style={draw,line width=.25pt,gray,iinet@outer@roundings},
+    iinet@grid/.style={lightgray,line width=.05pt,step=1pt},
     iinet@block/.style={fill=#1,draw=#1,rounded corners=.25pt},%
     iinet@line/.style={thick,draw,rounded corners=.125pt,#1},%
     iinet@@pathfade/.style n args={3}{
         postaction={decorate,decoration={markings,
-        mark=between positions 0 and \pgfdecoratedpathlength step #1 with {
+        mark=between positions 0 and \pgfdecoratedpathlength step #1/3.75 with {
         \pgfmathsetmacro\iinet@gradient{multiply(divide(\pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength),100)};
         \pgfsetfillcolor{#3!\iinet@gradient!#2};
-        \pgfsetcornersarced{\pgfpoint{#1/1.75}{#1/1.75}}%
-        \pgfpathrectangle{\pgfpointadd{\pgfpointorigin}{\pgfpoint{-#1}{-#1}}}{\pgfpoint{2*#1}{2*#1}};
+        %\pgfsetcornersarced{\pgfpoint{#1/1.75}{#1/1.75}}%
+        %\pgfpathrectangle{\pgfpointadd{\pgfpointorigin}{\pgfpoint{-#1}{-#1}}}{\pgfpoint{2*#1}{2*#1}};
+        \pgfpathcircle{\pgfpointorigin}{#1};
         \pgfusepath{fill};}
     }},
     },
-    iinet@pathfade/.style 2 args={iinet@@pathfade={.4pt}{#1}{#2}},
+    iinet@pathfade/.style 2 args={iinet@@pathfade={.45pt}{#1}{#2}},
 }
 
 \ifiinet@setup@frameblock@
@@ -581,7 +582,7 @@
     % target: remove one and add mod total to avoid same
     % increment lower to avoid 0 -> 0
     \pgfmathsetmacro\iinet@lines@end{int(mod(\iinet@lines@start+random(1,\arabic{iinet@block@count}-1),\arabic{iinet@block@count}))}
-    \ifnum\iinet@lines@end>0
+    \ifnum\iinet@lines@end>0\relax
     % do not draw same twice:
     \ifcsname iinet@line@\iinet@lines@start @\iinet@lines@end\endcsname\else
     \ifcsname iinet@line@\iinet@lines@end @\iinet@lines@start\endcsname\else

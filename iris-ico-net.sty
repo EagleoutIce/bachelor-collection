@@ -23,8 +23,8 @@
 \expandafter\csname iinet@default@#1\endcsname=#2}
 \def\iinet@newreg#1=#2;{\expandafter\def\csname iinet@default@#1\endcsname{#2}}
 
-\iinet@newreg padding@x=2;
-\iinet@newreg padding@y=2;
+\iinet@newreg padding@x=1;
+\iinet@newreg padding@y=1;
 
 % TODO make this 42 again :D
 \iinet@newreg width=22;
@@ -34,6 +34,9 @@
 \iinet@newreg block@max@width=8;
 \iinet@newreg block@min@height=3;
 \iinet@newreg block@max@height=5;
+
+\newif\if@iinet@flag@a@
+\newif\if@iinet@flag@typeset@block@
 
 \newif\if@iinet@drawframe
 \newif\if@iinet@drawgrid
@@ -94,15 +97,16 @@
 %
 % update present squares()
 %
-% ------------------------
-% rand@h = rand(block@y@min, max@y)
-% pick random y in list.
+% ------------------------ on block:
+% 4) rand@h = rand(block@y@min, max@y)
+% 5) pick random y in list.
 %   if any in [y..y+rand@h] not in ylist: [[mod-cycle until it fits]] // has to for y
 %   (side:) calculate max@x width possible in [y..y+rand@h] // has to for x
 % rand@w = rand(block@x@min, max@x)
 % pick random x fitting that width
 %
 % place block (x, y, rand@w, rand@h)
+% kill fields1
 
 \newcounter{iinet@x}
 \newcounter{iinet@y}
@@ -147,6 +151,7 @@
 \def\iinet@m@block(#1,#2){%
     \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter%
     \undef\iinet@m@get(#1,#2)}
+\def\iinet@m@cblock(#1,#2){\iinet@m@block(\arabic{#1},\arabic{#2})}
 
 \long\def\iinet@m@for@y#1{%
 \setcounter{iinet@y}{0}%
@@ -177,12 +182,15 @@
 \def\iinet@get@consecutive@y@{\ifnum\value{iinet@a}>\@iinet@con@y\edef\@iinet@con@y{\arabic{iinet@a}}\fi\setcounter{iinet@a}{0}}
 \def\iinet@get@consecutive@y{%
     \setcounter{iinet@a}{0}% current
+    \setcounter{iinet@b}{0}% total added
     \def\@iinet@con@y{0}% maximum
+    \def\iinet@m@ylist{}%
     \iinet@m@for@y{%
         \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0%
             \iinet@get@consecutive@y@
         \else
-            \stepcounter{iinet@a}%
+            \stepcounter{iinet@a}\stepcounter{iinet@b}%
+            \listeadd\iinet@m@ylist{\arabic{iinet@y}}%
         \fi
     }\iinet@get@consecutive@y@
 }
@@ -195,12 +203,13 @@
     }
     \iinet@get@consecutive@y
     \expandafter\edef\csname iinet@max@y\endcsname{\@iinet@con@y}%
+    \edef\iinet@m@ylist@total{\arabic{iinet@b}}%
 }
 
 \def\iinet@debug@line{====================================}
 \def\iinet@debug@show@matrix{%
     \typeout{\iinet@debug@line}%
-    \typeout{[Constructed \iinet@matrix@x x\iinet@matrix@y; \@nameuse{iinet@max@y}]}
+    \typeout{[Constructed \iinet@matrix@x x\iinet@matrix@y; \@nameuse{iinet@max@y} :: (\iinet@m@ylist@total) \iinet@m@ylist]}
     \iinet@m@for@y{% for each y
         \def\iinet@linebuf{}% clear
         \iinet@m@for@x{% for each x
@@ -214,29 +223,100 @@
 }
 
 
-% get{w} and get{h} for current dimens
+\def\iinet@block@randxy@picky@first{%
+    \pgfmathrandominteger{\iinet@rand@y}{0}{\iinet@m@ylist@total-\get{h}}
+    \setcounter{iinet@a}{0}% current
+    \def\iinet@selected@y{-1}%
+    \def\do##1{%
+        \ifnum\value{iinet@a}=\iinet@rand@y%
+            \edef\iinet@selected@y{##1}%
+        \fi
+    \stepcounter{iinet@a}%
+    }
+    \dolistloop{\iinet@m@ylist}%
+}
+
+% start | height
+\def\iinet@block@randxy@picky@testfit#1#2{%
+    % \iinet@m@max@of@y
+    \setcounter{iinet@y}{#1}%
+    \@iinet@flag@a@true
+    \edef\@iinet@tmp{\the\numexpr#1+#2+1\relax}% +1 as y not <=
+    \@whilenum\value{iinet@y}<\@iinet@tmp\do{%
+        \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\relax
+            \@iinet@flag@a@false
+        \fi
+        \stepcounter{iinet@y}
+    }
+}
+
+\def\iinet@block@randxy@picky{%
+    % ylist: \iinet@m@ylist (\iinet@m@ylist@total)
+    % cycle up to: as the list is sorted ascending,
+    % there have to be at least 'h' remaining
+    \iinet@block@randxy@picky@first
+    \setcounter{iinet@a}{\iinet@selected@y}%
+    \ifnum\iinet@selected@y<0
+        \PackageWarning{iris-ico-net}{first y pick selected '\iinet@selected@y' which is registered as a warning. Block will be omitted}
+        \@iinet@flag@typeset@block@false
+    \fi
+    \iinet@block@randxy@picky@testfit{\arabic{iinet@a}}{\get{h}}
+    \if@iinet@flag@a@\else
+        % if this is set iinet@a does not suffice
+        % so we cycle until it fits or iinet@a=\iinet@selected@y
+        \typeout{Original y-selection (\iinet@selected@y) failed, reshift}
+        \setcounter{iinet@b}{0}
+        \@whilenum\value{iinet@b}<\iinet@m@ylist@total\do{%
+            \pgfmathparse{int(mod(\arabic{iinet@a}+1,\iinet@m@ylist@total))}% mod shift 1
+            \setcounter{iinet@a}{\pgfmathresult}
+            \iinet@block@randxy@picky@testfit{\arabic{iinet@a}}{\get{h}}% free
+            \if@iinet@flag@a@ % can be placed on this height
+                \setcounter{iinet@b}{\iinet@m@ylist@total}% 'break'
+            \fi
+            \stepcounter{iinet@b}
+        }
+    \fi
+    \setblock{y}{\arabic{iinet@a}}%
+}
+% TODO: if fails for current h, try with one h less
 \def\iinet@block@randxy{
-    \iinet@calcdiffs% 1)
-    \iinet@setup@matrix% 2)
-    \foreach \i in {0,...,19}{\globaldefs=1\iinet@m@block(\i,1)}
-    \iinet@m@block(5,2)
-    \iinet@m@block(6,2)
-    \iinet@update@present@squares
-    \iinet@debug@show@matrix% Debug :)
+    \setblockrand{h}{\iinet@block@min@height}{min(\iinet@block@max@height,\@nameuse{iinet@max@y})}% 4)
+    \iinet@block@randxy@picky% 5)
+    \setblockrand{w}{\iinet@block@min@width}{\iinet@block@max@width}
     \setblockrand{x}{0}{\iinet@width-\get{w}}
-    \setblockrand{y}{0}{\iinet@height-\get{h}}
 }
 
 
+\def\iinet@single@block@block{
+  % block y
+  \setcounter{iinet@y}{0}
+  \@whilenum\value{iinet@y}<\get{h}\do{%
+    \setcounter{iinet@x}{0}%
+    \@whilenum\value{iinet@x}<\get{w}\do{%
+        \iinet@m@block(%
+            \the\numexpr\arabic{iinet@x}+\get{x}\relax,%
+            \the\numexpr\arabic{iinet@y}+\get{y}\relax)%
+        \stepcounter{iinet@x}% Block!
+    }
+    \stepcounter{iinet@y}%
+  }
+  \iinet@update@present@squares
+}
+
+% 4)+
 \def\iinet@draw@single@block{
+  \@iinet@flag@typeset@block@true
   \stepcounter{iinet@block@count}
   % \set and allocate dimens
-  \setblock{c}{iinet@block}
-  \setblockrand{w}{\iinet@block@min@width}{\iinet@block@max@width}
-  \setblockrand{h}{\iinet@block@min@height}{\iinet@block@max@height}
+  % TODO color
+  \pgfmathrandominteger{\gradient}{10}{99}
+  \setblock{c}{iinet@block!\gradient}
   \iinet@block@randxy
-  \typeout{Block[\get{c}](\get{x},\get{y},\get{w},\get{h})}
-  \iinet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}
+  \if@iinet@flag@typeset@block@
+    \typeout{Block[\get{c}](\get{x},\get{y},\get{w},\get{h})}
+    \iinet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}
+    \iinet@single@block@block
+  \fi
 }
 
 \def\iinet@init#1{%
@@ -250,11 +330,22 @@
         \let\get\iinet@getblock
         \let\setblock\iinet@setblock
         \let\setblockrand\iinet@setblockrand
+        \iinet@calcdiffs% 1)
+        \iinet@setup@matrix% 2)
         \if@iinet@drawgrid\draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);\fi
         \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]
             (-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
 
         \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@draw@single@block
+        \iinet@debug@show@matrix% Debug :)
     \end{tikzpicture}%
 }
 

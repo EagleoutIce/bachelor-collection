@@ -27,8 +27,8 @@
 \iinet@newreg padding@y=1;
 
 % TODO make this 42 again :D
-\iinet@newreg width=22;
-\iinet@newreg height=10;
+\iinet@newreg width=30;
+\iinet@newreg height=30;
 
 \iinet@newreg block@min@width=5;
 \iinet@newreg block@max@width=8;
@@ -102,7 +102,7 @@
 % 5) pick random y in list.
 %   if any in [y..y+rand@h] not in ylist: [[mod-cycle until it fits]] // has to for y
 %   (side:) calculate max@x width possible in [y..y+rand@h] // has to for x
-% rand@w = rand(block@x@min, max@x)
+% 6) rand@w = rand(block@x@min, max@x)
 % pick random x fitting that width
 %
 % place block (x, y, rand@w, rand@h)
@@ -240,11 +240,20 @@
 \def\iinet@block@randxy@picky@testfit#1#2{%
     % \iinet@m@max@of@y
     \setcounter{iinet@y}{#1}%
+    \setcounter{iinet@x}{\iinet@width}% maximum x-width possible in theoretical rectangle
+    % it is the minimum of presented
     \@iinet@flag@a@true
     \edef\@iinet@tmp{\the\numexpr#1+#2+1\relax}% +1 as y not <=
     \@whilenum\value{iinet@y}<\@iinet@tmp\do{%
-        \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\relax
+        \edef\@iinet@tmp{\iinet@m@max@of@y{\arabic{iinet@y}}}%
+        \ifnum\@iinet@tmp<1\relax % 0 or invalid
             \@iinet@flag@a@false
+        \else
+            \if@iinet@flag@a@% if present and still valid save max [as min] 'x'
+                \ifnum\@iinet@tmp<\value{iinet@x}% update
+                    \setcounter{iinet@x}{\@iinet@tmp}%
+                \fi
+            \fi
         \fi
         \stepcounter{iinet@y}
     }
@@ -278,12 +287,25 @@
     \fi
     \setblock{y}{\arabic{iinet@a}}%
 }
+\def\iinet@block@randxy@pickxw@findxslot{%
+    \setblockrand{x}{0}{\iinet@width-\get{w}}
+}
+
+
+\def\iinet@block@randxy@pickxw{%
+    \ifnum\value{iinet@x}<\iinet@block@min@width\relax
+        \@iinet@flag@typeset@block@false % too small to draw
+    \else
+        \setblockrand{w}{\iinet@block@min@width}{min(\iinet@block@max@width,\arabic{iinet@x})}%
+        \iinet@block@randxy@pickxw@findxslot
+    \fi
+}
+
 % TODO: if fails for current h, try with one h less
 \def\iinet@block@randxy{
     \setblockrand{h}{\iinet@block@min@height}{min(\iinet@block@max@height,\@nameuse{iinet@max@y})}% 4)
     \iinet@block@randxy@picky% 5)
-    \setblockrand{w}{\iinet@block@min@width}{\iinet@block@max@width}
-    \setblockrand{x}{0}{\iinet@width-\get{w}}
+    \iinet@block@randxy@pickxw% 6)
 }
 
 

@@ -204,7 +204,6 @@ topmargin,background,contents={%
 \renewcommand\maketitle{\begingroup
 \microtypesetup{protrusion=false}%
 \setparsizes {\z@ }{\z@ }{\z@ \@plus 1fil}%
-\begin{titlepage}
 \thispagestyle{bprop@title}%
 %
 % First: Center top Type and title
@@ -232,7 +231,7 @@ topmargin,background,contents={%
   {\usekomafont{dedication}\lecture@r{date}\par}
   {\usekomafont{dedication}\lecture@r{institute}\par}
 \end{minipage}\vspace{-.66\bprop@len@margin}\par
-\end{titlepage}\endgroup\clearpage}
+\endgroup\clearpage}
 }
 
 \selectcoverpage{bachelor-proposal}

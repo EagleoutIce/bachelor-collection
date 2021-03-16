@@ -9,7 +9,7 @@
 
 % First we setup the document options
 \LoadClass[%
-  numbers=noenddot,ngerman,%
+  numbers=noenddot,english,%
   fontsize=11pt,oneside,%
   footnotes=nomultiple,a4paper%
 ]{scrartcl}
@@ -34,7 +34,7 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{lecture-coverpage}
 
-\RequirePackage[english,main=ngerman]{babel}
+\RequirePackage[ngerman,main=english]{babel}
 \RequirePackage{etoolbox,calc,booktabs,scrhack,caption,tikz,tcolorbox}
 
 \RequirePackage{uulm-logos}

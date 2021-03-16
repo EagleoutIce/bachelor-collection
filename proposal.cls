@@ -204,6 +204,7 @@ topmargin,background,contents={%
 \renewcommand\maketitle{\begingroup
 \microtypesetup{protrusion=false}%
 \setparsizes {\z@ }{\z@ }{\z@ \@plus 1fil}%
+\begin{titlepage}
 \thispagestyle{bprop@title}%
 %
 % First: Center top Type and title
@@ -216,9 +217,9 @@ topmargin,background,contents={%
   {\usekomafont{subject}{\lecture@r{subject}\par}}
   \vskip2em
   \sbox0{\pbox{\linewidth}{\usekomafont{title}\Huge\lecture@r{title}}}%
-  \textcolor{lightgray}{\rule{\linewidth}{.85pt}}\bigskip\par
+  \textcolor{lightgray}{\rule{\linewidth}{.866pt}}\bigskip\par
   \usebox0\smallskip\par
-  \textcolor{lightgray}{\rule{\linewidth}{.85pt}}\smallskip\par
+  \textcolor{lightgray}{\rule{\linewidth}{.866pt}}\smallskip\par
   \vskip.5em
   \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
 \end{center}
@@ -230,8 +231,8 @@ topmargin,background,contents={%
   {\usekomafont{author}\typesetAuthors\par}
   {\usekomafont{dedication}\lecture@r{date}\par}
   {\usekomafont{dedication}\lecture@r{institute}\par}
-\end{minipage}\vspace{-3em}\par
-\endgroup\clearpage}
+\end{minipage}\vspace{-.66\bprop@len@margin}\par
+\end{titlepage}\endgroup\clearpage}
 }
 
 \selectcoverpage{bachelor-proposal}

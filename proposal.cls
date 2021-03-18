@@ -281,16 +281,16 @@ topmargin,background,contents={%
 
 \newdimen\bprop@len@a
 \colorlet{bprop@backgray}{gray!30!white}
-\colorlet{bprop@backcol}{paletteA!42!bprop@backgray}
+\colorlet{bprop@backcol}{paletteA!20!bprop@backgray}
 \def\bprop@tx@section{section}
 
 % the bar
-\def\bprop@sectionbar#1#2#3#4{%
+\def\bprop@sectionbar#1#2#3#4#5{%
   \smash{%
     \csname #1lap\endcsname{%
       \def\pdfbookmark[##1]##2##3{}%
       \hskip1ex
-      \colorbox{bprop@backgray}{%
+      \colorbox{#5}{%
         \parbox\bprop@len@a{\phantom{#4}}%
       }%
       \hskip1ex
@@ -303,23 +303,18 @@ topmargin,background,contents={%
 % the numline
 \def\bprop@secnumline#1#2{%
   \sbox0{#1}%
-  % \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
-  \llap{%
-    \color{bprop@backcol}%
-    \rule[+3pt]{\bprop@len@a}{#2}%
-    \space\hskip\dimexpr\wd0+\bprop@len@over@shift\relax
-  }\hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
+  \hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
   \usebox0%
 }
 
 \def\bprop@sectionencap#1#2#3#4{%
   \remainingleft\bprop@len@a
-  \bprop@sectionbar{l}{#1}{#2}{#4}%
+  \bprop@sectionbar{l}{#1}{#2}{#4}{bprop@backcol}%
   \@hangfrom{%
     \bprop@secnumline{#1}{#3}%
   }{#2}%
   \remainingright\bprop@len@a
-  \bprop@sectionbar{r}{#1}{#2}{#4}%
+  \bprop@sectionbar{r}{#1}{#2}{#4}{bprop@backgray}%
 }
 
 \renewcommand*\sectionlinesformat[4]{%

@@ -278,8 +278,6 @@ topmargin,background,contents={%
 %% Sections
 %% -----------------------------------------------------------------------------
 \RequirePackage{lecture-remaining-space,needspace}
-\RequirePackage[auto]{contour}
-\contourlength{1pt}
 
 \newdimen\bprop@len@a
 \colorlet{bprop@backgray}{gray!30!white}
@@ -304,14 +302,14 @@ topmargin,background,contents={%
 
 % the numline
 \def\bprop@secnumline#1#2{%
-  \sbox0{\huge\contour{white}{#1}}%
+  \sbox0{\huge#1}%
   \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
   \llap{%
     \color{bprop@backcol}%
     \rule[-#2-1pt]{\bprop@len@a+\wd0+\bprop@len@over@shift}{#2}%
     \space
   }\hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
-  \raisebox{-.25\ht0}{\usebox0}%
+  \usebox0%
 }
 
 \def\bprop@sectionencap#1#2#3#4{%

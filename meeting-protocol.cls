@@ -70,7 +70,7 @@
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
-\RequirePackage[a4paper,total={0.85\paperwidth,0.85\paperheight},centering]{geometry}
+\RequirePackage[a4paper,total={.85\paperwidth,.85\paperheight},centering]{geometry}
 \flushbottom
 
 %% Hyperlinks => Figures, Tables and refs
@@ -116,7 +116,6 @@
 
 %% Footnotes
 %% -----------------------------------------------------------------------------
-
 \LetLtxMacro\lecture@makefnmark\@makefnmark
 \AtBeginDocument{\LetLtxMacro\@makefnmark\lecture@makefnmark}
 
@@ -157,7 +156,7 @@
 
 \DeclareNewLayer[%
 topmargin,background,contents={%
-\color{black!95!white}\rule[\baselineskip]{\layerwidth}{0.2em}%
+\color{black!95!white}\rule[\baselineskip]{\layerwidth}{.2em}%
 }%
 ]{mepro.digital.head.ruler}
 
@@ -184,8 +183,8 @@ topmargin,background,contents={%
 %% Figures, Tables and refs
 %% -----------------------------------------------------------------------------
 
-\addto\captionsngerman{\def\figurename{Abbildung}\def\figureautorefname{\figurename}\def\tablename{Tabelle}\def\tableautorefname{\tablename}}
-\addto\captionsenglish{\def\figurename{Figure}\def\figureautorefname{\figurename}\def\tablename{Table}\def\tableautorefname{\tablename}}
+\appto\captionsngerman{\def\figurename{Abbildung}\def\figureautorefname{\figurename}\def\tablename{Tabelle}\def\tableautorefname{\tablename}}
+\appto\captionsenglish{\def\figurename{Figure}\def\figureautorefname{\figurename}\def\tablename{Table}\def\tableautorefname{\tablename}}
 
 \renewcommand*\captionformat{~~}
 
@@ -237,15 +236,13 @@ topmargin,background,contents={%
 ]{subsection}
 
 \RedeclareSectionCommand[%
-  runin=on,tocindent=7.15em,%
-  beforeskip=1\baselineskip,%
-  afterskip=1ex%
+  runin=on,tocindent=7.15em,afterskip=1ex,%
+  beforeskip=1\baselineskip
 ]{subsubsection}
 
 % \setkomafont{paragraph}{\mdseries\sffamily}
 \RedeclareSectionCommand[%
-  runin=false,%
-  beforeskip=.25\baselineskip plus .25\baselineskip,%
+  runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
   afterskip=-\parskip, font=\mdseries\itshape\rmfamily
 ]{paragraph}
 
@@ -254,8 +251,7 @@ topmargin,background,contents={%
 \def\mepro@firstoftwo#1#2{#1}
 \def\mepro@secondoftwo#1#2{#2}
 
-\DeclareRobustCommand*\mepro@subsecmark[1]{%
-\begingroup
+\DeclareRobustCommand*\mepro@subsecmark[1]{\begingroup
 \let\label\relax \let\index\relax \let\glossary\relax
 \expandafter\protected@xdef\csname mepro@subsec@\thesection @\endcsname{#1}%
 \endgroup\if@nobreak\ifvmode\nobreak\fi\fi}
@@ -294,16 +290,16 @@ topmargin,background,contents={%
 
 \def\UpperSegment{\begingroup
 \microtypesetup{protrusion=false}%
-\sbox0{\begin{minipage}[t]{0.45\linewidth}
+\sbox0{\begin{minipage}[t]{.45\linewidth}
   \ifx\mepro@participants\@empty\else
   {\sbfamily Anwesende:}\par
   \mepro@disablehyper\begin{itemize}[nosep]
     \mepro@participants
   \end{itemize}
   \fi
-  \end{minipage}}\usebox0\hfill\begin{minipage}[t][\ht0+\dp0]{0.45\linewidth}
+  \end{minipage}}\usebox0\hfill\begin{minipage}[t][\ht0+\dp0]{.45\linewidth}
   \raggedleft\mepro@topic\vfill
-  \textcolor{gray}{\lecture@r{date}\ifx\mepro@time@from\@empty \hbox{}\else,\quad\mepro@time@from\,--\,\mepro@time@to\\*\fi}%
+  \textcolor{gray}{\lecture@r{date}\ifx\mepro@time@from\@empty \hbox{}\else,\quad\mepro@time@from\thinspace--\thinspace\mepro@time@to\\*\fi}%
   \end{minipage}\bigskip\par
 \endgroup}
 

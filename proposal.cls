@@ -79,11 +79,11 @@
 %% -----------------------------------------------------------------------------
 \RequirePackage[%
     unicode=true,pdfencoding=auto,psdextra,pdftex, %
-    backref, pagebackref=false, %
+    backref, pagebackref=false,%
     bookmarks=true, bookmarksopen=false, pdfdisplaydoctitle, %
-    pdfborder={0 0 0}, breaklinks=true, %
+    pdfborder={0 0 0}, breaklinks=true,%
     colorlinks, hyperindex, %
-    bookmarkstype=X@bprop@X% erase
+    bookmarkstype=X@b@X% erase
 ]{hyperref}
 
 \RequirePackage{bookmark}
@@ -175,11 +175,11 @@ topmargin,background,contents={%
 
 %
 \renewpairofpagestyles{scrheadings}{%
-\ofoot{\strut\nohyper{{\sbfamily\thepage}\thinspace}}%
+\ofoot{\strut\nohyper{\sbfamily\thepage}}%
 \ihead{\begingroup\normalsize\normalfont\linespread{1.25}\begin{tikzpicture}[remember picture,overlay]
   \node[below left,yshift=-.25cm,xshift=-\bprop@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bprop@disablehyper\bprop@copyright@notice@upper\\\disablehyper\bprop@copyright@notice@lower};
 \end{tikzpicture}\endgroup}%
-\ifoot{\nohyper{\lecture@rs{title}\iflecture@e{\leftmark}{}{~\faAngleRight~\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark}}
+\ifoot{\parbox[t]{.85\linewidth}{\nohyper{\lecture@rs{title}\iflecture@e{\leftmark}{}{\iflecture@er{title}{}{~\faAngleRight~}\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark}}}
 }
 
 
@@ -226,7 +226,7 @@ topmargin,background,contents={%
 \vfill\null
 \raggedleft
 \begin{minipage}{.45\linewidth}
-  \raggedleft\disablehyper%
+  \raggedleft\disablehyper
   {\usekomafont{author}\typesetAuthors\par}
   {\usekomafont{dedication}\lecture@r{date}\par}
   {\usekomafont{dedication}\lecture@r{institute}\par}
@@ -259,7 +259,6 @@ topmargin,background,contents={%
 \captionsetup{format=plain,indention=1em,labelformat=mepro-caption,labelsep=none}
 
 \RequirePackage{lecture-links}
-%\pagecolor{gray!1!white}
 
 \AtBeginDocument{%
 \@ifpackageloaded{lecture-links}{%
@@ -278,11 +277,61 @@ topmargin,background,contents={%
 
 %% Sections
 %% -----------------------------------------------------------------------------
+\RequirePackage{lecture-remaining-space}
+\newdimen\bprop@len@a
+\colorlet{bprop@backgray}{gray!30!white}
+\colorlet{bprop@backcol}{paletteA!15!bprop@backgray}
+\def\bprop@tx@section{section}
+\def\bprop@tx@subsection{subsection}
+
+% the bar
+\def\bprop@sectionbar#1#2#3#4{%
+  \smash{%
+    \csname #1lap\endcsname{%
+      \def\pdfbookmark[##1]##2##3{}%
+      ~%
+      \colorbox{bprop@backgray}{%
+        \parbox{\bprop@len@a}{\phantom{#4}}%
+      }%
+      ~%
+    }%
+  }%
+}% #2#3
+
+% the numline
+\def\bprop@secnumline#1#2{%
+  \sbox0{#1}%
+  \hspace*{\wd0}%
+  \llap{%
+    \color{bprop@backcol}%
+    \rule[-#2/2]{\bprop@len@a+\wd0}{#2}%
+    ~%
+  }\hspace*{-\wd0}\usebox0%
+}
+
+\def\bprop@sectionencap#1#2#3#4{%
+  \remainingleft{\bprop@len@a}%
+  \bprop@sectionbar{l}{#1}{#2}{#4}%
+  \@hangfrom{%
+    \bprop@secnumline{#1}{#3}%
+  }{#2}%
+  \remainingright{\bprop@len@a}%
+  \bprop@sectionbar{r}{#1}{#2}{#4}%
+}
+
+\renewcommand*\sectionlinesformat[4]{%
+  \protected@edef\@tmpa{#1}%
+  \ifx\@tmpa\bprop@tx@section
+    \bprop@sectionencap{#3}{#4}{1ex}{Ag}%
+  \else\ifx\@tmpa\bprop@tx@subsection
+    \bprop@sectionencap{#3}{#4}{.5ex}{a}%
+  \else\@hangfrom{#3}{#4}\fi\fi
+}
 
 \RedeclareSectionCommand[%
   runin=false,tocindent=1.85em,%
   beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-  afterskip=.15\baselineskip
+  afterskip=.55\baselineskip
 ]{section}
 
 \RedeclareSectionCommand[%
@@ -292,9 +341,8 @@ topmargin,background,contents={%
 ]{subsection}
 
 \RedeclareSectionCommand[%
-  runin=on,tocindent=7.15em,%
-  beforeskip=1\baselineskip,%
-  afterskip=1ex%
+  runin=on,tocindent=7.15em,afterskip=1ex,%
+  beforeskip=1\baselineskip
 ]{subsubsection}
 
 % \setkomafont{paragraph}{\mdseries\sffamily}
@@ -321,14 +369,13 @@ topmargin,background,contents={%
 \let\bprop@section\section
 \def\section{\@ifstar{\bprop@star@section}{\@dblarg\bprop@nostar@section}}
 \def\bprop@star@section#1{\bprop@section*{#1}}
-\def\bprop@nostar@section[#1]#2{\bprop@section[#1]{%
-  {\pdfbookmark[1]{\thesection)\space#1}{bprop@sec@@id@\thesection}}#2}}
+\def\bprop@nostar@section[#1]#2{\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bprop@sec@@id@\thesection}\nobreak\bprop@section[#1]{#2}}
 
 \let\bprop@subsection\subsection
 \def\subsection{\@ifstar{\bprop@star@subsection}{\@dblarg\bprop@nostar@subsection}}
 \def\bprop@star@subsection#1{\bprop@subsection*{#1}\bprop@subsecmark{#1}}
-\def\bprop@nostar@subsection[#1]#2{\bprop@subsection[#1]{%
-  {\pdfbookmark[2]{\thesubsection)\space#1}{bprop@subsec@@id@\thesubsection}\bprop@subsecmark{#1}}#2}}
+\def\bprop@nostar@subsection[#1]#2{\pdfbookmark[2]{\arabic{section}.\the\numexpr\value{subsection}+1\relax)\space#1}{bprop@subsec@@id@\thesubsection}\nobreak\bprop@subsection[#1]{%
+  {\bprop@subsecmark{#1}}#2}}
 
 \newcounter{bprop@paragraph}[subsection]
 \let\bprop@paragraph\paragraph

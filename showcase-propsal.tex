@@ -1,7 +1,9 @@
 \documentclass{proposal}
 
 \usepackage{blindtext}
+\usepackage{pgffor}
 
 \begin{document}
     \Blinddocument
+    \foreach \i in {A,...,Z} {\section{Abschnitt \i}}
 \end{document}

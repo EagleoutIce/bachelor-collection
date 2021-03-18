@@ -277,55 +277,58 @@ topmargin,background,contents={%
 
 %% Sections
 %% -----------------------------------------------------------------------------
-\RequirePackage{lecture-remaining-space}
+\RequirePackage{lecture-remaining-space,needspace}
+\RequirePackage[auto]{contour}
+\contourlength{1pt}
+
 \newdimen\bprop@len@a
 \colorlet{bprop@backgray}{gray!30!white}
-\colorlet{bprop@backcol}{paletteA!15!bprop@backgray}
+\colorlet{bprop@backcol}{paletteA!42!bprop@backgray}
 \def\bprop@tx@section{section}
-\def\bprop@tx@subsection{subsection}
 
 % the bar
 \def\bprop@sectionbar#1#2#3#4{%
   \smash{%
     \csname #1lap\endcsname{%
       \def\pdfbookmark[##1]##2##3{}%
-      ~%
+      \hskip1ex
       \colorbox{bprop@backgray}{%
-        \parbox{\bprop@len@a}{\phantom{#4}}%
+        \parbox\bprop@len@a{\phantom{#4}}%
       }%
-      ~%
+      \hskip1ex
     }%
   }%
 }% #2#3
 
+\newlength\bprop@len@over@shift \bprop@len@over@shift=.1em
+
 % the numline
 \def\bprop@secnumline#1#2{%
-  \sbox0{#1}%
-  \hspace*{\wd0}%
+  \sbox0{\huge\contour{white}{#1}}%
+  \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
   \llap{%
     \color{bprop@backcol}%
-    \rule[-#2/2]{\bprop@len@a+\wd0}{#2}%
-    ~%
-  }\hspace*{-\wd0}\usebox0%
+    \rule[-#2-1pt]{\bprop@len@a+\wd0+\bprop@len@over@shift}{#2}%
+    \space
+  }\hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
+  \raisebox{-.25\ht0}{\usebox0}%
 }
 
 \def\bprop@sectionencap#1#2#3#4{%
-  \remainingleft{\bprop@len@a}%
+  \remainingleft\bprop@len@a
   \bprop@sectionbar{l}{#1}{#2}{#4}%
   \@hangfrom{%
     \bprop@secnumline{#1}{#3}%
   }{#2}%
-  \remainingright{\bprop@len@a}%
+  \remainingright\bprop@len@a
   \bprop@sectionbar{r}{#1}{#2}{#4}%
 }
 
 \renewcommand*\sectionlinesformat[4]{%
   \protected@edef\@tmpa{#1}%
   \ifx\@tmpa\bprop@tx@section
-    \bprop@sectionencap{#3}{#4}{1ex}{Ag}%
-  \else\ifx\@tmpa\bprop@tx@subsection
-    \bprop@sectionencap{#3}{#4}{.5ex}{a}%
-  \else\@hangfrom{#3}{#4}\fi\fi
+    \bprop@sectionencap{#3}{#4}{1.66pt}{Ay}%
+  \else\@hangfrom{#3}{#4}\fi
 }
 
 \RedeclareSectionCommand[%
@@ -369,7 +372,7 @@ topmargin,background,contents={%
 \let\bprop@section\section
 \def\section{\@ifstar{\bprop@star@section}{\@dblarg\bprop@nostar@section}}
 \def\bprop@star@section#1{\bprop@section*{#1}}
-\def\bprop@nostar@section[#1]#2{\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bprop@sec@@id@\thesection}\nobreak\bprop@section[#1]{#2}}
+\def\bprop@nostar@section[#1]#2{\needspace{3\baselineskip}\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bprop@sec@@id@\thesection}\nobreak\bprop@section[#1]{#2}}
 
 \let\bprop@subsection\subsection
 \def\subsection{\@ifstar{\bprop@star@subsection}{\@dblarg\bprop@nostar@subsection}}

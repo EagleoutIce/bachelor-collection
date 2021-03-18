@@ -298,16 +298,16 @@ topmargin,background,contents={%
   }%
 }% #2#3
 
-\newlength\bprop@len@over@shift \bprop@len@over@shift=.1em
+\newlength\bprop@len@over@shift \bprop@len@over@shift=.33em
 
 % the numline
 \def\bprop@secnumline#1#2{%
-  \sbox0{\huge#1}%
-  \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
+  \sbox0{#1}%
+  % \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
   \llap{%
     \color{bprop@backcol}%
-    \rule[-#2-1pt]{\bprop@len@a+\wd0+\bprop@len@over@shift}{#2}%
-    \space
+    \rule[-2.5pt]{\bprop@len@a}{#2}%
+    \space\hskip\dimexpr\wd0+\bprop@len@over@shift\relax
   }\hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
   \usebox0%
 }
@@ -325,7 +325,7 @@ topmargin,background,contents={%
 \renewcommand*\sectionlinesformat[4]{%
   \protected@edef\@tmpa{#1}%
   \ifx\@tmpa\bprop@tx@section
-    \bprop@sectionencap{#3}{#4}{1.66pt}{Ay}%
+    \bprop@sectionencap{#3}{#4}{1em}{Ay}%
   \else\@hangfrom{#3}{#4}\fi
 }
 

@@ -236,43 +236,53 @@ topmargin,background,contents={%
 \RequirePackage{lecture-remaining-space,needspace}
 \newdimen\bprop@len@a
 \colorlet{bprop@backgray}{gray!30!white}
-\colorlet{bprop@backcol}{paletteA!20!bprop@backgray}
+\colorlet{bprop@backcol}{paletteA!30!bprop@backgray}
 \def\bprop@tx@section{section}
 
 % the bar
-\def\bprop@sectionbar#1#2#3#4#5{%
-\smash{%
-\csname #1lap\endcsname{%
-  \def\pdfbookmark[##1]##2##3{}%
-  \hskip1ex%
-  \colorbox{#5}{%
-    \parbox\bprop@len@a{\phantom{#4}}%
+\def\bprop@sectionbar#1#2#3#4{%
+  \smash{%
+    \csname #1lap\endcsname{%
+      \def\pdfbookmark[##1]##2##3{}%
+      \hskip1ex
+      \colorbox{bprop@backgray}{%
+        \parbox\bprop@len@a{\phantom{#4}}%
+      }%
+      \hskip1ex
+    }%
   }%
-  \hskip1ex%
-}}}% #2#3
-
-\newlength\bprop@len@over@shift \bprop@len@over@shift=.33em
+}% #2#3
+\newlength\bprop@len@over@shift \bprop@len@over@shift=.1em
+\newlength\bprop@len@bar@h \bprop@len@bar@h=2.5pt
 
 % the numline
 \def\bprop@secnumline#1#2{%
-  \sbox0{#1}%
-  \hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
+  \sbox0{\LARGE#1}%
+  \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
+  \llap{%
+    \color{bprop@backcol}%
+    \rule[-#2-1pt]{\bprop@len@a+\wd0+\bprop@len@over@shift}{#2}%
+    \space
+  }\hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
   \usebox0%
 }
 
 \def\bprop@sectionencap#1#2#3#4{%
-\remainingleft\bprop@len@a
-\bprop@sectionbar{l}{#1}{#2}{#4}{bprop@backcol}%
-\@hangfrom{%
-  \bprop@secnumline{#1}{#3}%
-}{#2}%
-\remainingright\bprop@len@a
-\bprop@sectionbar{r}{#1}{#2}{#4}{bprop@backgray}}
+  \remainingleft\bprop@len@a
+  \bprop@sectionbar{l}{#1}{#2}{#4}%
+  \@hangfrom{%
+    \bprop@secnumline{#1}{#3}%
+  }{#2}%
+  \remainingright\bprop@len@a
+  \bprop@sectionbar{r}{#1}{#2}{#4}%
+}
+
 \renewcommand*\sectionlinesformat[4]{%
-\protected@edef\@tmpa{#1}%
-\ifx\@tmpa\bprop@tx@section
-  \bprop@sectionencap{#3}{#4}{.5ex}{Ay}%
-\else\@hangfrom{#3}{#4}\fi}
+  \protected@edef\@tmpa{#1}%
+  \ifx\@tmpa\bprop@tx@section
+    \bprop@sectionencap{#3}{#4}{\bprop@len@bar@h}{Ay}%
+  \else\@hangfrom{#3}{#4}\fi
+}
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%

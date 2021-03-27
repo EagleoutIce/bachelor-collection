@@ -74,8 +74,23 @@
 
 % run a breadth first search between #1 and #2 in the given matrix
 % \iinet@if@m@cfree(x,y){<free>}{<blocked>}
-\def\iinet@route@lines@bfs#1#2{
-% a)
+\CreateQueue{bfs@routing}
+\def\iinet@route@lines@bfs#1#2{%
+% a) find possible start-points for bfs
+\ResetQueue{bfs@routing}%
+\setcounter{iinet@y}{\numexpr\iinet@getblock@{#1}{y}-1\relax}%
+\setcounter{iinet@x}{\numexpr\iinet@getblock@{#1}{x}-1\relax}%
+\setcounter{iinet@a}{\numexpr\value{iinet@x}+\iinet@getblock@{#1}{w}+2\relax}%
+\setcounter{iinet@b}{\numexpr\value{iinet@y}+\iinet@getblock@{#1}{h}+2\relax}%
+% check and add horizontal
+\@whilenum\value{iinet@x}<\value{iinet@a}\do{
+    \iinet@if@m@cfree(iinet@x,iinet@y){\eEnqueue{bfs@routing}{\arabic{iinet@x}/\arabic{iinet@y}}}{}
+    \iinet@if@m@cfree(iinet@x,iinet@b){\eEnqueue{bfs@routing}{\arabic{iinet@x}/\arabic{iinet@b}}}{}
+    \stepcounter{iinet@x}
+}
+% \typeout{Block: \iinet@getblock@{#1}{x}/\iinet@getblock@{#1}{y} (\iinet@getblock@{#1}{w}, \iinet@getblock@{#1}{h})}
+% \typeout{Got: \GetQueue{bfs@routing}}
+
 }
 
 \endinput

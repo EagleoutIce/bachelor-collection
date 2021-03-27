@@ -99,8 +99,6 @@
     \edef\iinet@m@ylist@total{\arabic{iinet@b}}%
 }
 
-
-
 \def\iinet@block@randxy@picky@first{%
     \pgfmathrandominteger{\iinet@rand@y}{0}{\iinet@m@ylist@total-\get{h}-1}
     \setcounter{iinet@a}{0}% current
@@ -267,7 +265,7 @@
     \ifnum\iinet@effective@w<\iinet@block@min@width\relax
         \@iinet@flag@typeset@block@false
     \else
-        \pgfmathparse{min(\iinet@effective@w,\get{w},\iinet@effective@b)}%
+        \pgfmathparse{int(min(\iinet@effective@w,\get{w},\iinet@effective@b))}%
         \setblock{w}{\pgfmathresult}%
         \setblockrand{x}{\iinet@effective@x}{\iinet@effective@x+\iinet@effective@w-\get{w}}%
     \fi

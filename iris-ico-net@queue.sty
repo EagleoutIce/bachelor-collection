@@ -3,15 +3,20 @@
 \ProvidesPackage{iris-ico-net@queue}[2021/03/14 v1.0 iris icon network generator package]
 % queue data structure
 \RequirePackage{etoolbox}
-
+% TODO: guard against undeffed
+\def\ResetQueue#1{\expandafter\def\csname iinet@ds@queue@#1\endcsname{}\setcounter{iinet@ds@queue@#1}{0}}
 \def\CreateQueue#1{\expandafter\def\csname iinet@ds@queue@#1\endcsname{}\newcounter{iinet@ds@queue@#1}}
-
 \def\GetQueue#1{\csname iinet@ds@queue@#1\endcsname}
 
+\def\eEnqueue#1#2{%
+\expandafter\ifx\csname iinet@ds@queue@#1\endcsname\@empty
+\expandafter\protected@edef\csname iinet@ds@queue@#1\endcsname{{#2}}\else
+\protected@cseappto{iinet@ds@queue@#1}{,{#2}}\fi
+}
 \def\Enqueue#1#2{\stepcounter{iinet@ds@queue@#1}%
-    \expandafter\ifx\csname iinet@ds@queue@#1\endcsname\@empty
-    \expandafter\def\csname iinet@ds@queue@#1\endcsname{{#2}}\else
-    \csappto{iinet@ds@queue@#1}{,{#2}}\fi
+\expandafter\ifx\csname iinet@ds@queue@#1\endcsname\@empty
+\expandafter\def\csname iinet@ds@queue@#1\endcsname{{#2}}\else
+\csappto{iinet@ds@queue@#1}{,{#2}}\fi
 }
 
 \def\iinet@dq#1#2,#3\@nil{\def\dequeued{#2}\expandafter\protected@edef\csname iinet@ds@queue@#1\endcsname{#3}}

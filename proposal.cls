@@ -146,7 +146,10 @@ topmargin,background,contents={%
 \ihead{\begingroup\normalsize\normalfont\linespread{1.25}\begin{tikzpicture}[remember picture,overlay]
   \node[below left,yshift=-.25cm,xshift=-\bprop@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bprop@disablehyper\bprop@copyright@notice@upper\\\disablehyper\bprop@copyright@notice@lower};
 \end{tikzpicture}\endgroup}%
-\ifoot{\parbox[t]{.85\linewidth}{\nohyper{\lecture@rs{title}\iflecture@e{\leftmark}{}{\iflecture@er{title}{}{~\faAngleRight~}\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark}}}
+\ifoot{%
+  \parbox[t]{.85\linewidth}{\nohyper{%
+    \iflecture@e{\leftmark}{\lecture@rs{title}}{\iflecture@er{title}{\lecture@rs{title}}{\textcolor{gray!70!white}{\lecture@rs{title}}~\faAngleRight~}\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark
+  }}}
 }
 \defpairofpagestyles[scrheadings]{bprop@title}{}
 \AddLayersAtBeginOfPageStyle{scrheadings}{mepro.digital.head.ruler}
@@ -163,13 +166,13 @@ topmargin,background,contents={%
 
 \lecturecp@coverpagestyle{bachelor-proposal}{%
 \def\lecture@coverpage@geometry{}%
-\renewcommand\maketitle{\begingroup
-\microtypesetup{protrusion=false}%
+\renewcommand*\maketitle{\begingroup
 \setparsizes{\z@}{\z@}{\z@ \@plus 1fil}%
-\thispagestyle{bprop@title}%
+\thispagestyle{bprop@title}\null%
 % First: Center top Type and title
+\vspace*{-.33\bprop@len@margin}%
 \begin{minipage}[t]{\linewidth}
-  \null\splogo\hfill\scalebox{.9}{\uulmlogo}%
+  \scalebox{.9}{\splogo}\hfill\scalebox{.9}{\uulmlogo}
 \end{minipage}\par
 \begin{center}
   \vskip6em
@@ -235,54 +238,45 @@ topmargin,background,contents={%
 %% Sections
 \RequirePackage{lecture-remaining-space,needspace}
 \newdimen\bprop@len@a
-\colorlet{bprop@backgray}{gray!30!white}
-\colorlet{bprop@backcol}{paletteA!30!bprop@backgray}
+\colorlet{bprop@backgray}{gray!30!white} % 238, 236, 232
+\colorlet{bprop@backcol}{paletteA!20!bprop@backgray}
+\colorlet{bprop@numcol}{black}
 \def\bprop@tx@section{section}
 
 % the bar
-\def\bprop@sectionbar#1#2#3#4{%
-  \smash{%
-    \csname #1lap\endcsname{%
-      \def\pdfbookmark[##1]##2##3{}%
-      \hskip1ex
-      \colorbox{bprop@backgray}{%
-        \parbox\bprop@len@a{\phantom{#4}}%
-      }%
-      \hskip1ex
-    }%
-  }%
-}% #2#3
-\newlength\bprop@len@over@shift \bprop@len@over@shift=.1em
-\newlength\bprop@len@bar@h \bprop@len@bar@h=2.5pt
+\def\bprop@sectionbar#1#2#3#4#5{%
+\smash{%
+\csname #1lap\endcsname{%
+  \def\pdfbookmark[##1]##2##3{}%
+  \hskip.66ex\relax
+  \colorbox{#5}{%
+    \parbox\bprop@len@a{\phantom{#4}}%
+  }\hskip.66ex\relax
+}}}% #2#3
+
+\newlength\bprop@len@over@shift \bprop@len@over@shift=.33em
 
 % the numline
 \def\bprop@secnumline#1#2{%
-  \sbox0{\LARGE#1}%
-  \hskip\dimexpr\wd0+\bprop@len@over@shift\relax
-  \llap{%
-    \color{bprop@backcol}%
-    \rule[-#2-1pt]{\bprop@len@a+\wd0+\bprop@len@over@shift}{#2}%
-    \space
-  }\hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
-  \usebox0%
+  \sbox0{\color{bprop@numcol}#1}%
+  \hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
+  \usebox0\hskip\bprop@len@over@shift\relax
 }
 
 \def\bprop@sectionencap#1#2#3#4{%
-  \remainingleft\bprop@len@a
-  \bprop@sectionbar{l}{#1}{#2}{#4}%
-  \@hangfrom{%
-    \bprop@secnumline{#1}{#3}%
-  }{#2}%
-  \remainingright\bprop@len@a
-  \bprop@sectionbar{r}{#1}{#2}{#4}%
-}
+\remainingleft\bprop@len@a
+\bprop@sectionbar{l}{#1}{#2}{#4}{bprop@backcol}%
+\@hangfrom{%
+  \bprop@secnumline{#1}{#3}%
+}{#2}%
+\remainingright\bprop@len@a
+\bprop@sectionbar{r}{#1}{#2}{#4}{bprop@backgray}}
 
 \renewcommand*\sectionlinesformat[4]{%
-  \protected@edef\@tmpa{#1}%
-  \ifx\@tmpa\bprop@tx@section
-    \bprop@sectionencap{#3}{#4}{\bprop@len@bar@h}{Ay}%
-  \else\@hangfrom{#3}{#4}\fi
-}
+\protected@edef\@tmpa{#1}%
+\ifx\@tmpa\bprop@tx@section
+  \bprop@sectionencap{#3}{#4}{.5ex}{Ay}%
+\else\@hangfrom{#3}{#4}\fi}
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
@@ -329,10 +323,13 @@ afterskip=-\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
 %% Upper Segment
 \def\bprop@supervisors{}
 \newcounter{bprop@supervisor@count}
-\newcommand*\addSupervisor[2][]{\stepcounter{bprop@supervisor@count}%
+\newcommand*\addSupervisor[2][]{\@ifnextchar({\bprop@supervisors@add[#1]#2}{\bprop@supervisors@add[#1]#2(#2)}}
+% TODO: reuse #2 :D
+\def\bprop@supervisors@add[#1]#2(#3){
+  \stepcounter{bprop@supervisor@count}%
 \ifx\bprop@supervisors\@empty
-\def\bprop@supervisors{\ifx!#1!#2\else\href{mailto:#1}{#2}\fi}%
-\else\g@addto@macro\bprop@supervisors{, \ifx!#1!#2\else\href{mailto:#1}{#2}\fi}\fi}
+\def\bprop@supervisors{\ifx!#1!#3\else\href{mailto:#1}{#3}\fi}%
+\else\g@addto@macro\bprop@supervisors{, \ifx!#1!#3\else\href{mailto:#1}{#3}\fi}\fi}
 \supervisor{\bprop@supervisors}
 \AtEndPreamble{\def\lecture@personal@defaultsuffix{}}
 \endinput

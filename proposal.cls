@@ -288,7 +288,6 @@ topmargin,background,contents={%
   }%
 }}
 
-
 \def\bprop@sectionencap#1#2#3#4{%
 \remainingleft\bprop@len@a
 \bprop@sectionbar{l}{#3}{#4}{\bpropo@sectionbar@left}%
@@ -301,7 +300,7 @@ topmargin,background,contents={%
 
 \def\bprop@subsectionencap#1#2{%
 \@hangfrom{%
-  \sbox0{\color{bprop@numcol}#1}%
+  \sbox0{\color{bprop@numcol}\sbfamily#1}%
   \bprop@secnumblock
 }{#2}}
 

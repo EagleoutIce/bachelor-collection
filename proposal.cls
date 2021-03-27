@@ -240,8 +240,7 @@ topmargin,background,contents={%
 %% Sections
 \RequirePackage{lecture-remaining-space,needspace}
 \newdimen\bprop@len@a
-\colorlet{bprop@sub@backgray}{gray!30!white}
-\colorlet{bprop@backgray}{paletteA!30!bprop@sub@backgray} % 238, 236, 232
+\colorlet{bprop@backgray}{gray!30!white}
 \colorlet{bprop@numcol}{black}
 \def\bprop@tx@section{section}
 \def\bprop@tx@subsection{subsection}
@@ -259,27 +258,35 @@ topmargin,background,contents={%
 \newlength\bprop@len@over@shift \bprop@len@over@shift=.33em
 
 % the numline
-\def\bprop@secnumline#1{%
-  \sbox0{\color{bprop@numcol}\contour{white}{#1}}%
+\def\bprop@secnumline{%
   \hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
   \usebox0\hskip\bprop@len@over@shift\relax
 }
+
 
 \def\bprop@sectionencap#1#2#3#4{%
 \remainingleft\bprop@len@a
 \bprop@sectionbar{l}{#3}{#4}%
 \@hangfrom{%
-  \bprop@secnumline{#1}%
+  \sbox0{\color{bprop@numcol}\contour{white}{#1}}%
+  \bprop@secnumline
 }{#2}%
 \remainingright\bprop@len@a
 \bprop@sectionbar{r}{#3}{#4}}
 
+\def\bprop@subsectionencap#1#2{%
+\@hangfrom{%
+  \sbox0{\color{bprop@numcol}#1}%
+  \bprop@secnumline
+}{#2}}
+
+
 \renewcommand*\sectionlinesformat[4]{%
 \protected@edef\@tmpa{#1}%
 \ifx\@tmpa\bprop@tx@section
-  \bprop@sectionencap{#3}{#4}{bprop@sub@backgray}{3pt}% rem sub 2make blue
+  \bprop@sectionencap{#3}{#4}{bprop@backgray}{3pt}%
 \else\ifx\@tmpa\bprop@tx@subsection
-  \bprop@sectionencap{#3}{#4}{bprop@sub@backgray}{2.25pt}%
+  \bprop@subsectionencap{#3}{#4}
 \else\@hangfrom{#3}{#4}\fi\fi}
 
 \RedeclareSectionCommand[%

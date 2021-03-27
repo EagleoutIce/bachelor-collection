@@ -41,7 +41,7 @@
         \stepcounter{iinet@block@a}%
     }
     \iinet@debug@show@matrix% Debug :)
-    \iinet@root@lines
+    \iinet@route@lines
 }}
 
 \newenvironment{iris@rootlayer}{\begin{pgfonlayer}{background}}{\end{pgfonlayer}}
@@ -62,7 +62,7 @@
         \draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
     \end{pgfonlayer}\fi
     \let\debugmatrix\iinet@debug@show@matrix
-    \let\autoroot\iinet@root@lines
+    \let\autoroot\iinet@route@lines
     \let\block\iinet@fronte@draw@block
     \let\root\iinet@dl@root
     \let\rootlayer\iris@rootlayer

@@ -1,0 +1,30 @@
+%% iris icon network generator package
+%% Florian Sihler, 2021-03-14
+\ProvidesPackage{iris-ico-net@queue}[2021/03/14 v1.0 iris icon network generator package]
+% queue data structure
+\RequirePackage{etoolbox}
+
+\def\CreateQueue#1{\expandafter\def\csname iinet@ds@queue@#1\endcsname{}\newcounter{iinet@ds@queue@#1}}
+
+\def\GetQueue#1{\csname iinet@ds@queue@#1\endcsname}
+
+\def\Enqueue#1#2{\stepcounter{iinet@ds@queue@#1}%
+    \expandafter\ifx\csname iinet@ds@queue@#1\endcsname\@empty
+    \expandafter\def\csname iinet@ds@queue@#1\endcsname{{#2}}\else
+    \csappto{iinet@ds@queue@#1}{,{#2}}\fi
+}
+
+\def\iinet@dq#1#2,#3\@nil{\def\dequeued{#2}\expandafter\protected@edef\csname iinet@ds@queue@#1\endcsname{#3}}
+
+\def\Dequeue#1{%
+\ifnum\value{iinet@ds@queue@#1}<2\relax
+% pop last
+\protected@edef\dequeued{\csname iinet@ds@queue@#1\endcsname}%
+\setcounter{iinet@ds@queue@#1}{0}%
+\expandafter\def\csname iinet@ds@queue@#1\endcsname{}%
+\else\addtocounter{iinet@ds@queue@#1}{-1}%
+\protected@edef\@tmp{\noexpand\iinet@dq{\unexpanded{#1}}\csname iinet@ds@queue@#1\endcsname\noexpand\@nil}%
+\@tmp\fi
+}
+
+\endinput

@@ -3,13 +3,12 @@
 \ProvidesPackage{iris-ico-net@matrix}[2021/03/14 v1.0 iris icon network generator package]
 \def\iinet@calcdiffs{
 \edef\iinet@block@dif@x
-    {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}
+    {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}%
 \edef\iinet@block@dif@y
-    {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}
-\edef\iinet@matrix@x{\iinet@width}
-\edef\iinet@matrix@y{\iinet@height}
+    {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}%
+\edef\iinet@matrix@x{\iinet@width}%
+\edef\iinet@matrix@y{\iinet@height}%
 }
-
 \def\iinet@element{}
 
 %%% The Lists (why not rndlist? Manipulating them can be quite tedious)
@@ -23,11 +22,8 @@
 \iinet@update@present@squares
 }
 
-% (x, y)
-\def\iinet@m@get(#1,#2){\@nameuse{iinet@m@#2@#1}}
-% (x, y) but with counters
-\def\iinet@m@cget(#1,#2){\iinet@m@get(\arabic{#1},\arabic{#2})}
-
+\def\iinet@m@get(#1,#2){\@nameuse{iinet@m@#2@#1}}% (x, y)
+\def\iinet@m@cget(#1,#2){\iinet@m@get(\arabic{#1},\arabic{#2})}% (x, y) but with counters
 
 \long\def\iinet@if@m@free(#1,#2)#3#4{\ifcsname iinet@m@#2@#1\endcsname#3\else#4\fi}
 \def\iinet@if@m@cfree(#1,#2){\iinet@if@m@free(\arabic{#1},\arabic{#2})}

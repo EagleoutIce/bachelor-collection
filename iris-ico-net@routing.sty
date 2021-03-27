@@ -2,6 +2,8 @@
 %% Florian Sihler, 2021-03-14
 \ProvidesPackage{iris-ico-net@routing}[2021/03/14 v1.0 iris icon network generator package]
 
+\RequirePackage{iris-ico-net@queue}
+
 % TODO: Store on create to avoid consistent recalc
 \def\iinet@load@p@xy#1>#2,#3;{%
   \pgfextractx#2{\pgfpointanchor{#1}{center}}%
@@ -26,12 +28,8 @@
     ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
 }
 
-% run a breadth first search between #1 and #2 in the given matrix
-\def\iinet@root@lines@bfs#1#2{
 
-}
-
-\def\iinet@root@lines@pick@ab{%
+\def\iinet@route@lines@pick@ab{%
 % pick first block
 \pgfmathrandominteger{\iinet@lines@start}{1}{\value{iinet@block@count}}%
 % target: remove one and add mod total to avoid same
@@ -48,7 +46,7 @@
     % Draw the line: TODO: retrieve colors
     \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
     \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
-    \iinet@root@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
+    \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
     \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
     \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
     \ifdim\iinet@delta@x pt=\z@\relax \iinet@@dl@{--}\else
@@ -61,16 +59,23 @@
     \fi
 \fi\fi
 }
-\def\iinet@root@lines{
+\def\iinet@route@lines{
     \pgfmathrandominteger{\iinet@lines@to@draw}{2}{min(\iinet@lines@max@count,\arabic{iinet@block@count}*2-1)}
     \iinet@debug{Got '\arabic{iinet@block@count}' blocks connect up to '\iinet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
     \setcounter{iinet@a}{0}
     \@whilenum\value{iinet@a}<\iinet@lines@to@draw\do{
-        \iinet@root@lines@pick@ab
+        \iinet@route@lines@pick@ab
         \stepcounter{iinet@a}
     }
     \end{pgfonlayer}
+}
+
+
+% run a breadth first search between #1 and #2 in the given matrix
+% \iinet@if@m@cfree(x,y){<free>}{<blocked>}
+\def\iinet@route@lines@bfs#1#2{
+% a)
 }
 
 \endinput

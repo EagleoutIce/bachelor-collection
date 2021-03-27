@@ -52,8 +52,8 @@
 \iinet@newreg inset@x=2;
 \iinet@newreg inset@y=2;
 
-\iinet@newreg jitter@x=.5;
-\iinet@newreg jitter@y=.5;
+\iinet@newreg jitter@x=0;
+\iinet@newreg jitter@y=0;
 \iinet@newreg jitter@steps=3;
 
 \iinet@newreg width=25;
@@ -73,10 +73,12 @@
 
 \newif\if@iinet@drawframe
 \newif\if@iinet@drawgrid
+\colorlet{iinet@framegray}{gray!60!lightgray}
+\colorlet{iinet@gridgray}{lightgray}
 \tikzset{%
     iinet@outer@roundings/.style={rounded corners=.75pt*\iinet@scale},
-    iinet@frame/.style={draw,line width=.25pt,gray!60!lightgray,iinet@outer@roundings},
-    iinet@grid/.style={lightgray,line width=.05pt,step=1pt},
+    iinet@frame/.style={draw,line width=.25pt,iinet@framegray,iinet@outer@roundings},
+    iinet@grid/.style={iinet@gridgray,line width=.05pt,step=\iinet@grid@step},
     iinet@block/.style={fill=#1,draw=#1,rounded corners=.25pt*\iinet@scale},%
     iinet@line/.style={line width=.8pt*\iinet@scale,draw,rounded corners=.125pt*\iinet@scale,#1},%
     iinet@@pathfade/.style n args={3}{
@@ -123,6 +125,7 @@ max block count/.store in=\iinet@block@max@count,
 max line count/.store in=\iinet@lines@max@count,
 frame/.is if=@iinet@drawframe,
 grid/.is if=@iinet@drawgrid,
+grid step/.store in=\iinet@grid@step,
 scale/.store in=\iinet@scale,
 defaults/.style={%
     width=\iinet@default@width, height=\iinet@default@height,
@@ -138,6 +141,7 @@ defaults/.style={%
     min block count=\iinet@default@block@min@count,
     deadcycles block count=\iinet@default@block@deadcycles@count,
     max line count=\iinet@default@lines@max@count,%
+    grid step=1pt,%
     scale=\iinet@default@scale
 }%
 }

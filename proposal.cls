@@ -318,7 +318,7 @@ topmargin,background,contents={%
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-afterskip=.55\baselineskip]{section}
+afterskip=.45\baselineskip]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%

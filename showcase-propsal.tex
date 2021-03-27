@@ -1,7 +1,14 @@
 \documentclass{proposal}
 
-\usepackage{blindtext}
+\usepackage{blindtext,lipsum}
 \usepackage{pgffor}
+
+\usepackage[cpalette,gradient]{iris-ico-net} % pathfade
+
+\setsectionelement{right}{\leavevmode\smallskip\\\IrisIcoRandomNet[frame,grid,width=30,height=20,max block count=6,grid step=2.5pt,max line count=4,scale=1.25]}
+
+\colorlet{iinet@framegray}{gray!60!bprop@backgray}
+\colorlet{iinet@gridgray}{bprop@backgray}
 
 \institute{Institute of Software Engineering and Programming Languages}
 \authority{Ulm University, 2021}
@@ -11,5 +18,5 @@
 
 \begin{document}
     \Blinddocument
-    \foreach \i in {A,...,Z} {\section{Abschnitt \i}}
+    \foreach \i in {A,...,Z} {\section{Abschnitt \i}\lipsum[2]}
 \end{document}

@@ -54,8 +54,8 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
-\newlength\bprop@len@margin \bprop@len@margin=2cm
-\RequirePackage[a4paper,margin=\bprop@len@margin,includefoot,vcentering]{geometry}
+\newlength\bprop@len@margin \bprop@len@margin=2.25cm
+\RequirePackage[a4paper,margin=\bprop@len@margin,bottom=\bprop@len@margin-.75cm,includefoot,vcentering]{geometry}
 \flushbottom
 
 %% Hyperlinks => Figures, Tables and refs
@@ -88,6 +88,10 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 \newlist{orlist}{enumerate*}{1}
 \setlist[orlist]{itemjoin={{, }},itemjoin*={{or }},label=($\alph*$),mode=boxed}
 \setlist[description]{labelwidth=*,font=\normalfont\itshape,topsep=\z@ plus 2pt,partopsep=\z@ plus 2pt}
+\setlist[enumerate,1]{label=\arabic*.}
+\setlist[enumerate,2]{label=\roman*.}
+\setlist[enumerate,3]{label=\alph*.}
+\setlist[enumerate,4]{label=\Alph*.}
 
 %% Color-Palettes
 \RequirePackage[enumitem,rect,lithieboxes,hyperref]{color-palettes}
@@ -245,49 +249,72 @@ topmargin,background,contents={%
 \def\bprop@tx@section{section}
 \def\bprop@tx@subsection{subsection}
 
-
+\def\bprop@sectionbar@skp{.66ex}
 % the bar
-\def\bprop@sectionbar#1#2#3{%
+\def\bprop@sectionbar#1#2#3#4{%
 \smash{%
 \csname #1lap\endcsname{%
-  \hskip.66ex\relax
-  \textcolor{#2}{\rule{\bprop@len@a}{#3}}%
-  \hskip.66ex\relax
+  \hskip\bprop@sectionbar@skp\relax
+  \textcolor{#2}{\rule{\bprop@len@a-\bprop@sectionbar@skp}{#3}}#4%
+  \hskip\bprop@sectionbar@skp\relax
 }}}% #2#3
 
 \newlength\bprop@len@over@shift \bprop@len@over@shift=.33em
 
 % the numline
-\def\bprop@secnumline{%
+\def\bprop@secnumblock{%
   \hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
   \usebox0\hskip\bprop@len@over@shift\relax
 }
 
 
+\def\bpropo@sectionbar@left{}
+\def\bpropo@sectionbar@right{}
+
+% left/right and content
+\def\setsectionelement{%
+  \@ifstar\bprop@setsectionelement\bprop@setsectionelement@center
+}
+\def\bprop@setsectionelement#1#2{\def\@tmpa{bpropo@sectionbar@#1}%
+\expandafter\ifcsname\@tmpa\endcsname
+  \expandafter\def\csname\@tmpa\endcsname{#2}%
+\else\ClassError{proposal}{There is no sectionelement '#1'.}{Choose 'left' or 'right'.}\fi
+}
+
+\def\bprop@setsectionelement@center#1#2{%
+\bprop@setsectionelement{#1}{%
+  \llap{%
+    \parbox[t][\z@]{\bprop@len@margin}{\centering#2}%
+  }%
+}}
+
+
 \def\bprop@sectionencap#1#2#3#4{%
 \remainingleft\bprop@len@a
-\bprop@sectionbar{l}{#3}{#4}%
+\bprop@sectionbar{l}{#3}{#4}{\bpropo@sectionbar@left}%
 \@hangfrom{%
   \sbox0{\color{bprop@numcol}\contour{white}{#1}}%
-  \bprop@secnumline
+  \bprop@secnumblock
 }{#2}%
 \remainingright\bprop@len@a
-\bprop@sectionbar{r}{#3}{#4}}
+\bprop@sectionbar{r}{#3}{#4}{\bpropo@sectionbar@right}}
 
 \def\bprop@subsectionencap#1#2{%
 \@hangfrom{%
   \sbox0{\color{bprop@numcol}#1}%
-  \bprop@secnumline
+  \bprop@secnumblock
 }{#2}}
 
 
 \renewcommand*\sectionlinesformat[4]{%
-\protected@edef\@tmpa{#1}%
+\hspace*{#2}\protected@edef\@tmpa{#1}%
 \ifx\@tmpa\bprop@tx@section
   \bprop@sectionencap{#3}{#4}{bprop@backgray}{3pt}%
 \else\ifx\@tmpa\bprop@tx@subsection
   \bprop@subsectionencap{#3}{#4}
 \else\@hangfrom{#3}{#4}\fi\fi}
+\renewcommand*\sectioncatchphraseformat[4]{%
+\hskip#2\bprop@subsectionencap{#3}{#4}}
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%

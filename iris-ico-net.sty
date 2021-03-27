@@ -215,28 +215,26 @@
 \newcounter{iinet@block@a}
 
 \def\iinet@calcdiffs{
-    \edef\iinet@block@dif@x
-        {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}
-    \edef\iinet@block@dif@y
-        {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}
-    \edef\iinet@matrix@x
-        {\the\numexpr\iinet@width\relax}
-    \edef\iinet@matrix@y
-        {\the\numexpr\iinet@height\relax}
+\edef\iinet@block@dif@x
+    {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}
+\edef\iinet@block@dif@y
+    {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}
+\edef\iinet@matrix@x{\iinet@width}
+\edef\iinet@matrix@y{\iinet@height}
 }
 
 \def\iinet@element{}
 
 %%% The Lists (why not rndlist? Manipulating them can be quite tedious)
 \def\iinet@setup@matrix{
-    \iinet@m@for@y{% for each y
-        \expandafter\let\csname iinet@m@\arabic{iinet@y}\endcsname\iinet@element
-        \iinet@m@for@x{% for each x
-            \expandafter\let\csname iinet@m@\arabic{iinet@y}@%
-                        \arabic{iinet@x}\endcsname\iinet@element
-        }
+\iinet@m@for@y{% for each y
+    \expandafter\let\csname iinet@m@\arabic{iinet@y}\endcsname\iinet@element
+    \iinet@m@for@x{% for each x
+        \expandafter\let\csname iinet@m@\arabic{iinet@y}@%
+                    \arabic{iinet@x}\endcsname\iinet@element
     }
-    \iinet@update@present@squares
+}
+\iinet@update@present@squares
 }
 
 % (x, y)
@@ -270,32 +268,32 @@
 \def\iinet@get@consecutive@x@{\ifnum\value{iinet@a}>\@iinet@con@x\relax\edef\@iinet@con@x{\arabic{iinet@a}}\fi\setcounter{iinet@a}{0}}
 
 \def\iinet@get@consecutive@x#1{%
-    % do not run if already known 0
-    \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\relax\else
-    \setcounter{iinet@a}{0}% current
-    \def\@iinet@con@x{0}% maximum
-    \setcounter{iinet@x}{#1}% start x
-    \iinet@m@for@x{%
-        \iinet@if@m@cfree(iinet@x,iinet@y)%
-            {\stepcounter{iinet@a}}% free
-            {\iinet@get@consecutive@x@}%
-    }\iinet@get@consecutive@x@\fi
+% do not run if already known 0
+\ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\relax\else
+\setcounter{iinet@a}{0}% current
+\def\@iinet@con@x{0}% maximum
+\setcounter{iinet@x}{#1}% start x
+\iinet@m@for@x{%
+    \iinet@if@m@cfree(iinet@x,iinet@y)%
+        {\stepcounter{iinet@a}}% free
+        {\iinet@get@consecutive@x@}%
+}\iinet@get@consecutive@x@\fi
 }
 
 \def\iinet@get@consecutive@y@{\ifnum\value{iinet@a}>\@iinet@con@y\relax\edef\@iinet@con@y{\arabic{iinet@a}}\fi\setcounter{iinet@a}{0}}
 \def\iinet@get@consecutive@y{%
-    \setcounter{iinet@a}{0}% current
-    \setcounter{iinet@b}{0}% total added
-    \def\@iinet@con@y{0}% maximum
-    \def\iinet@m@ylist{}%
-    \iinet@m@for@y{%
-        \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\relax
-            \iinet@get@consecutive@y@
-        \else
-            \stepcounter{iinet@a}\stepcounter{iinet@b}%
-            \listeadd\iinet@m@ylist{\arabic{iinet@y}}%
-        \fi
-    }\iinet@get@consecutive@y@
+\setcounter{iinet@a}{0}% current
+\setcounter{iinet@b}{0}% total added
+\def\@iinet@con@y{0}% maximum
+\def\iinet@m@ylist{}%
+\iinet@m@for@y{%
+    \ifnum\iinet@m@max@of@y{\arabic{iinet@y}}=0\relax
+        \iinet@get@consecutive@y@
+    \else
+        \stepcounter{iinet@a}\stepcounter{iinet@b}%
+        \listeadd\iinet@m@ylist{\arabic{iinet@y}}%
+    \fi
+}\iinet@get@consecutive@y@
 }
 
 \def\iinet@update@present@squares{%
@@ -311,18 +309,18 @@
 
 \def\iinet@debug@line{====================================}
 \def\iinet@debug@show@matrix{%
-    \iinet@debug{\iinet@debug@line}%
-    \iinet@debug{[Constructed \iinet@matrix@x x\iinet@matrix@y; \@nameuse{iinet@max@y} :: (\iinet@m@ylist@total) \iinet@m@ylist]}
-    \iinet@m@for@y{% for each y
-        \def\iinet@linebuf{}% clear
-        \iinet@m@for@x{% for each x
-            \iinet@if@m@cfree(iinet@x,iinet@y)%
-                {\g@addto@macro\iinet@linebuf{_}}% free
-                {\g@addto@macro\iinet@linebuf{O}}% occupied
-        }
-        \iinet@debug{\iinet@linebuf\space[\arabic{iinet@y}, \iinet@m@max@of@y{\arabic{iinet@y}}]}
+\iinet@debug{\iinet@debug@line}%
+\iinet@debug{[Constructed \iinet@matrix@x x\iinet@matrix@y; \@nameuse{iinet@max@y} :: (\iinet@m@ylist@total) \iinet@m@ylist]}
+\iinet@m@for@y{% for each y
+    \def\iinet@linebuf{}% clear
+    \iinet@m@for@x{% for each x
+        \iinet@if@m@cfree(iinet@x,iinet@y)%
+            {\g@addto@macro\iinet@linebuf{_}}% free
+            {\g@addto@macro\iinet@linebuf{O}}% occupied
     }
-    \iinet@debug{\iinet@debug@line}
+    \iinet@debug{\iinet@linebuf\space[\arabic{iinet@y}, \iinet@m@max@of@y{\arabic{iinet@y}}]}
+}
+\iinet@debug{\iinet@debug@line}
 }
 
 
@@ -355,32 +353,32 @@
 }
 
 \def\iinet@block@randxy@picky{%
-    % ylist: \iinet@m@ylist (\iinet@m@ylist@total)
-    % cycle up to: as the list is sorted ascending,
-    % there have to be at least 'h' remaining
-    \iinet@block@randxy@picky@first
-    \setcounter{iinet@a}{\iinet@selected@y}%
-    \ifnum\iinet@selected@y<0\relax
-        \PackageWarning{iris-ico-net}{first y pick selected '\iinet@selected@y' which is registered as a warning. Block will be omitted}
-        \@iinet@flag@typeset@block@false
-    \fi
-    \iinet@block@randxy@picky@testfit{\arabic{iinet@a}}{\get{h}}
-    \if@iinet@flag@a@\else
-        % if this is set iinet@a does not suffice
-        % so we cycle until it fits or iinet@a=\iinet@selected@y
-        \iinet@debug{Original y-selection (\iinet@selected@y) failed, reshift}
-        \setcounter{iinet@b}{0}
-        \@whilenum\value{iinet@b}<\iinet@m@ylist@total\do{%
-            \pgfmathparse{int(mod(\arabic{iinet@a}+1,\iinet@m@ylist@total))}% mod shift 1
-            \setcounter{iinet@a}{\pgfmathresult}
-            \iinet@block@randxy@picky@testfit{\arabic{iinet@a}}{\get{h}}% free
-            \if@iinet@flag@a@ % can be placed on this height
-                \setcounter{iinet@b}{\iinet@m@ylist@total}% 'break'
-            \fi
-            \stepcounter{iinet@b}%
-        }
-    \fi
-    \setblock{y}{\arabic{iinet@a}}%
+% ylist: \iinet@m@ylist (\iinet@m@ylist@total)
+% cycle up to: as the list is sorted ascending,
+% there have to be at least 'h' remaining
+\iinet@block@randxy@picky@first
+\setcounter{iinet@a}{\iinet@selected@y}%
+\ifnum\iinet@selected@y<0\relax
+    \PackageWarning{iris-ico-net}{first y pick selected '\iinet@selected@y' which is registered as a warning. Block will be omitted}
+    \@iinet@flag@typeset@block@false
+\fi
+\iinet@block@randxy@picky@testfit{\arabic{iinet@a}}{\get{h}}
+\if@iinet@flag@a@\else
+    % if this is set iinet@a does not suffice
+    % so we cycle until it fits or iinet@a=\iinet@selected@y
+    \iinet@debug{Original y-selection (\iinet@selected@y) failed, reshift}
+    \setcounter{iinet@b}{0}
+    \@whilenum\value{iinet@b}<\iinet@m@ylist@total\do{%
+        \pgfmathparse{int(mod(\arabic{iinet@a}+1,\iinet@m@ylist@total))}% mod shift 1
+        \setcounter{iinet@a}{\pgfmathresult}
+        \iinet@block@randxy@picky@testfit{\arabic{iinet@a}}{\get{h}}% free
+        \if@iinet@flag@a@ % can be placed on this height
+            \setcounter{iinet@b}{\iinet@m@ylist@total}% 'break'
+        \fi
+        \stepcounter{iinet@b}%
+    }
+\fi
+\setblock{y}{\arabic{iinet@a}}%
 }
 
 \def\iinet@get@topline@x@{%
@@ -422,7 +420,6 @@
     \else
         \expandafter\iinet@split@listelem\iinet@selected@x;
     \fi
-    % \iinet@debug{Possible for top: \@iinet@topline@x\space=> \iinet@cur@xidx\space and \iinet@cur@xlen}
 }
 
 \def\iinet@get@xrange@x@{%
@@ -459,49 +456,45 @@
 
 
 \def\iinet@block@randxy@pickxw{%
-    % find largest rectangle on y
-    % trying from block@min@width up to max@[y]@x
-    \setblockrand{w}{\iinet@block@min@width}{min(\iinet@block@max@width,\iinet@m@max@of@y{\get{y}})}%
-    \setcounter{iinet@b}{\iinet@block@min@width}%
-    \def\iinet@effective@w{0}%
-    \def\iinet@effective@x{0}%
-    \@whilenum\value{iinet@b}<\numexpr\get{w}+1\relax\do{%
-        \setcounter{iinet@y}{\get{y}}%
-        % find start in topline => \iinet@cur@xidx & \iinet@cur@xlen
-        \iinet@block@randxy@pickxw@topline
+% find largest rectangle on y
+% trying from block@min@width up to max@[y]@x
+\setblockrand{w}{\iinet@block@min@width}{min(\iinet@block@max@width,\iinet@m@max@of@y{\get{y}})}%
+\setcounter{iinet@b}{\iinet@block@min@width}%
+\def\iinet@effective@w{0}%
+\def\iinet@effective@x{0}%
+\@whilenum\value{iinet@b}<\numexpr\get{w}+1\relax\do{%
+    \setcounter{iinet@y}{\get{y}}%
+    % find start in topline => \iinet@cur@xidx & \iinet@cur@xlen
+    \iinet@block@randxy@pickxw@topline
+    \stepcounter{iinet@y}%
+    \if@iinet@flag@typeset@block@
+    \@whilenum\value{iinet@y}<\numexpr\get{y}+\get{h}\relax\do{% TODO: maybe +1?
+        % search for the largest x-slot in 'xidx..xidx+xlen'
+        % if found, it will narrow it down
+        \iinet@block@randxy@pickxw@xrange
         \stepcounter{iinet@y}%
-        \if@iinet@flag@typeset@block@
-        \@whilenum\value{iinet@y}<\numexpr\get{y}+\get{h}\relax\do{% TODO: maybe +1?
-            % search for the largest x-slot in 'xidx..xidx+xlen'
-            % if found, it will narrow it down
-            \iinet@block@randxy@pickxw@xrange
-            \stepcounter{iinet@y}%
-        }%
-        \iinet@debug{In run for \arabic{iinet@b}: [\iinet@cur@xidx..+\iinet@cur@xlen]}%
-        \ifnum\iinet@cur@xlen<\iinet@effective@w\else
-            \ifnum\arabic{iinet@b}<\iinet@cur@xlen
-            \ifnum\iinet@cur@xidx<0\else
-            \edef\iinet@effective@w{\iinet@cur@xlen}%
-            \edef\iinet@effective@x{\iinet@cur@xidx}%
-            \edef\iinet@effective@b{\arabic{iinet@b}}%
-            \iinet@debug{  Updated: [\iinet@effective@x..+\iinet@effective@w]}%
-        \fi\fi\fi
-        \fi
-        \stepcounter{iinet@b}%
     }%
-    %\ifnum\value{iinet@x}<\iinet@block@min@width\relax
-    %    \@iinet@flag@typeset@block@false % too small to draw
-    %\else
-    \if@iinet@flag@typeset@block@%
-        \ifnum\iinet@effective@w<\iinet@block@min@width\relax%
-            \@iinet@flag@typeset@block@false%
-        \else%
-            \pgfmathparse{min(\iinet@effective@w,\get{w},\iinet@effective@b)}%
-            \setblock{w}{\pgfmathresult}%
-            \setblockrand{x}{\iinet@effective@x}{\iinet@effective@x+\iinet@effective@w-\get{w}}%
-        \fi%
-    \fi%
-    %\fi
+    \iinet@debug{In run for \arabic{iinet@b}: [\iinet@cur@xidx..+\iinet@cur@xlen]}%
+    \ifnum\iinet@cur@xlen<\iinet@effective@w\else
+        \ifnum\arabic{iinet@b}<\iinet@cur@xlen
+        \ifnum\iinet@cur@xidx<0\else
+        \edef\iinet@effective@w{\iinet@cur@xlen}%
+        \edef\iinet@effective@x{\iinet@cur@xidx}%
+        \edef\iinet@effective@b{\arabic{iinet@b}}%
+        \iinet@debug{  Updated: [\iinet@effective@x..+\iinet@effective@w]}%
+    \fi\fi\fi
+    \fi
+    \stepcounter{iinet@b}%
+}%
+\if@iinet@flag@typeset@block@
+    \ifnum\iinet@effective@w<\iinet@block@min@width\relax
+        \@iinet@flag@typeset@block@false
+    \else
+        \pgfmathparse{min(\iinet@effective@w,\get{w},\iinet@effective@b)}%
+        \setblock{w}{\pgfmathresult}%
+        \setblockrand{x}{\iinet@effective@x}{\iinet@effective@x+\iinet@effective@w-\get{w}}%
+    \fi
+\fi
 }
 
 % TODO: if fails for current h, try with one h less
@@ -552,10 +545,8 @@
 }
 
 
-\newdimen\iinet@start@x
-\newdimen\iinet@end@x
-\newdimen\iinet@start@y
-\newdimen\iinet@end@y
+\newdimen\iinet@start@x \newdimen\iinet@end@x
+\newdimen\iinet@start@y \newdimen\iinet@end@y
 
 % TODO: Store on create to avoid consistent recalc
 \def\iinet@load@p@xy#1>#2,#3;{%
@@ -564,8 +555,8 @@
 }
 
 \def\iinet@@dl@raw{
-    \pgfmathsetmacro\@iinet@jx{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@x}%
-    \pgfmathsetmacro\@iinet@jy{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@y}%
+\pgfmathsetmacro\@iinet@jx{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@x}%
+\pgfmathsetmacro\@iinet@jy{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@y}%
 }
 
 \ifiinet@setup@pathfade@
@@ -575,18 +566,20 @@
 \fi
 
 \def\iinet@@dl@#1{%
-    \iinet@@dl@raw
-    \iinet@dl@root
-        (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
-        ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
+\iinet@@dl@raw
+\iinet@dl@root
+    (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
+    ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
 }
 \def\iinet@root@lines@pick@ab{%
     % pick first block
-    \pgfmathrandominteger{\iinet@lines@start}{1}{\arabic{iinet@block@count}}%
+    \pgfmathrandominteger{\iinet@lines@start}{1}{\value{iinet@block@count}}%
     % target: remove one and add mod total to avoid same
-    % increment lower to avoid 0 -> 0
-    \pgfmathsetmacro\iinet@lines@end{int(mod(\iinet@lines@start+random(1,\arabic{iinet@block@count}-1),\arabic{iinet@block@count}))}
-    \ifnum\iinet@lines@end>0\relax
+    \pgfmathsetmacro\iinet@lines@end{int(mod(\iinet@lines@start+random(1,\value{iinet@block@count}-1),\value{iinet@block@count}))}
+    \ifnum\iinet@lines@end=0\relax
+        \ifnum\iinet@lines@start=1 \def\iinet@lines@end{2}\else
+        \def\iinet@lines@end{1}\fi
+    \fi
     % do not draw same twice:
     \ifcsname iinet@line@\iinet@lines@start @\iinet@lines@end\endcsname\else
     \ifcsname iinet@line@\iinet@lines@end @\iinet@lines@start\endcsname\else
@@ -605,7 +598,7 @@
                 \fi
             \fi
         \fi
-    \fi\fi\fi
+    \fi\fi
 }
 \def\iinet@root@lines{
     \pgfmathrandominteger{\iinet@lines@to@draw}{2}{min(\iinet@lines@max@count,\arabic{iinet@block@count}*2-1)}

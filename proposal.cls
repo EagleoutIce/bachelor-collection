@@ -148,7 +148,7 @@ topmargin,background,contents={%
 \end{tikzpicture}\endgroup}%
 \ifoot{%
   \parbox[t]{.85\linewidth}{\nohyper{%
-    \iflecture@e{\leftmark}{\lecture@rs{title}}{\iflecture@er{title}{\lecture@rs{title}}{\textcolor{gray!70!white}{\lecture@rs{title}}~\faAngleRight~}\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark
+  \lecture@rs{title}\iflecture@e{\leftmark}{}{\iflecture@er{title}{}{~\faAngleRight~}\leftmark\ifbprop@subsecmark{~\faAngleRight}{}~}\bprop@getsubsecmark
   }}}
 }
 \defpairofpagestyles[scrheadings]{bprop@title}{}

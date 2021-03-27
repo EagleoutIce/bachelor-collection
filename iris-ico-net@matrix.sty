@@ -1,0 +1,50 @@
+%% iris icon network generator package
+%% Florian Sihler, 2021-03-14
+\ProvidesPackage{iris-ico-net@matrix}[2021/03/14 v1.0 iris icon network generator package]
+\def\iinet@calcdiffs{
+\edef\iinet@block@dif@x
+    {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}
+\edef\iinet@block@dif@y
+    {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}
+\edef\iinet@matrix@x{\iinet@width}
+\edef\iinet@matrix@y{\iinet@height}
+}
+
+\def\iinet@element{}
+
+%%% The Lists (why not rndlist? Manipulating them can be quite tedious)
+\def\iinet@setup@matrix{
+\iinet@m@for@y{% for each y
+    \expandafter\let\csname iinet@m@\arabic{iinet@y}\endcsname\iinet@element
+    \iinet@m@for@x{% for each x
+        \expandafter\let\csname iinet@m@\arabic{iinet@y}@\arabic{iinet@x}\endcsname\iinet@element
+    }%
+}%
+\iinet@update@present@squares
+}
+
+% (x, y)
+\def\iinet@m@get(#1,#2){\@nameuse{iinet@m@#2@#1}}
+% (x, y) but with counters
+\def\iinet@m@cget(#1,#2){\iinet@m@get(\arabic{#1},\arabic{#2})}
+
+
+\long\def\iinet@if@m@free(#1,#2)#3#4{\ifcsname iinet@m@#2@#1\endcsname#3\else#4\fi}
+\def\iinet@if@m@cfree(#1,#2){\iinet@if@m@free(\arabic{#1},\arabic{#2})}
+
+\def\iinet@m@block(#1,#2){%
+    \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter%
+    \undef\iinet@m@get(#1,#2)}
+\def\iinet@m@cblock(#1,#2){\iinet@m@block(\arabic{#1},\arabic{#2})}
+
+\long\def\iinet@m@for@y#1{%
+\setcounter{iinet@y}{0}%
+\@whilenum\value{iinet@y}<\iinet@matrix@y\do{%
+    \setcounter{iinet@x}{0}#1\stepcounter{iinet@y}%
+}}
+
+\long\def\iinet@m@for@x#1{%
+\@whilenum\value{iinet@x}<\iinet@matrix@x\do{% for each x
+    #1\stepcounter{iinet@x}%
+}}
+\endinput

@@ -1,0 +1,130 @@
+%% iris icon network generator package
+%% Florian Sihler, 2021-03-14
+\ProvidesPackage{iris-ico-net@register}[2021/03/14 v1.0 iris icon network generator package]
+\ifiinet@setup@cpalette@
+    \ifiinet@setup@gradient@
+        \def\iinet@loadBlockColor{\pgfmathrandominteger{\gradient}{15}{70}\edef\iinet@blockcolor{paletteA!\gradient!white}}
+    \else
+    \pgfmathdeclarerandomlist{iinet@colorlist}{{paletteA}{paletteB}{paletteC}{paletteD}}
+    \def\iinet@loadBlockColor{\pgfmathrandomitem{\iinet@blockcolor}{iinet@colorlist}}
+    \fi
+\else
+    \colorlet{iinet@block}{purple}
+    \ifiinet@setup@gradient@
+        \def\iinet@loadBlockColor{\pgfmathrandominteger{\gradient}{15}{70}\edef\iinet@blockcolor{iinet@block!\gradient!white}}
+    \else
+        \def\iinet@loadBlockColor{\edef\iinet@blockcolor{iinet@block}}
+    \fi
+\fi
+% TODO: extend with kprim selection etc
+
+\newcounter{iinet@block@count}
+\newcounter{iinet@x}\newcounter{iinet@y}
+\newcounter{iinet@a}\newcounter{iinet@b}\newcounter{iinet@c}
+\newcounter{iinet@block@a}
+
+\newdimen\iinet@start@x \newdimen\iinet@end@x
+\newdimen\iinet@start@y \newdimen\iinet@end@y
+
+% The goal is to create small icons of given sizes
+% which all present a random but simple iris icon
+% pt will serve as the basic unit
+\def\iinet@newlength#1=#2;{% legacy :C
+\expandafter\newlength\csname iinet@#1\endcsname
+\expandafter\newlength\csname iinet@default@#1\endcsname
+\expandafter\csname iinet@default@#1\endcsname=#2}
+\def\iinet@newreg#1=#2;{\expandafter\def\csname iinet@default@#1\endcsname{#2}}
+
+\iinet@newreg padding@x=2;
+\iinet@newreg padding@y=2;
+
+\iinet@newreg scale=1;
+
+% TODO: i use inset as buffer for not working checks
+\iinet@newreg inset@x=2;
+\iinet@newreg inset@y=2;
+
+\iinet@newreg jitter@x=0;
+\iinet@newreg jitter@y=0;
+\iinet@newreg jitter@steps=3;
+
+\iinet@newreg width=30;
+\iinet@newreg height=30;
+
+\iinet@newreg block@min@width=8;
+\iinet@newreg block@max@width=13;
+\iinet@newreg block@min@height=6;
+\iinet@newreg block@max@height=8;
+\iinet@newreg block@max@count=15;
+\iinet@newreg lines@max@count=12;
+
+\newif\if@iinet@flag@a@
+\newif\if@iinet@flag@typeset@block@
+
+\newif\if@iinet@drawframe
+\newif\if@iinet@drawgrid
+\tikzset{%
+    iinet@outer@roundings/.style={rounded corners=.75pt*\iinet@scale},
+    iinet@frame/.style={draw,line width=.25pt,gray!60!lightgray,iinet@outer@roundings},
+    iinet@grid/.style={lightgray,line width=.05pt,step=1pt},
+    iinet@block/.style={fill=#1,draw=#1,rounded corners=.25pt*\iinet@scale},%
+    iinet@line/.style={thick,draw,rounded corners=.125pt*\iinet@scale,#1},%
+    iinet@@pathfade/.style n args={3}{
+        postaction={decorate,decoration={markings,
+        mark=between positions 0 and \pgfdecoratedpathlength step #1/3.75*\iinet@scale with {
+        \pgfmathsetmacro\iinet@gradient{multiply(divide(\pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength),100)};
+        \pgfsetfillcolor{#3!\iinet@gradient!#2};
+        %\pgfsetcornersarced{\pgfpoint{#1/1.75}{#1/1.75}}%
+        %\pgfpathrectangle{\pgfpointadd{\pgfpointorigin}{\pgfpoint{-#1}{-#1}}}{\pgfpoint{2*#1}{2*#1}};
+        \pgfpathcircle{\pgfpointorigin}{#1*\iinet@scale};
+        \pgfusepath{fill};}
+    }},
+    },
+    iinet@pathfade/.style 2 args={iinet@@pathfade={.45pt}{#1}{#2}},
+}
+
+\ifiinet@setup@frameblock@
+    \tikzset{iinet@node@block/.style={draw,thin,#1!80!black}}
+\else
+    \tikzset{iinet@node@block/.style={}}
+\fi
+
+\pgfkeys{%
+/iinet@keys/.is family, /iinet@keys,
+square/.code={\edef\iinet@width{#1}\def\iinet@height{#1}},
+width/.store in=\iinet@width, height/.store in=\iinet@height,
+padding/.code={\def\iinet@padding@x{#1}\def\iinet@padding@y{#1}},
+padding x/.store in=\iinet@padding@x,
+padding y/.store in=\iinet@padding@y,
+inset/.code={\def\iinet@inset@x{#1}\def\iinet@inset@y{#1}},
+inset x/.store in=\iinet@inset@x,
+inset y/.store in=\iinet@inset@y,
+jitter/.code={\def\iinet@jitter@x{#1}\def\iinet@jitter@y{#1}},
+jitter x/.store in=\iinet@jitter@x,
+jitter y/.store in=\iinet@jitter@y,
+jitter steps/.store in=\iinet@jitter@steps,
+min block width/.store in=\iinet@block@min@width,
+max block width/.store in=\iinet@block@max@width,
+min block height/.store in=\iinet@block@min@height,
+max block height/.store in=\iinet@block@max@height,
+max block count/.store in=\iinet@block@max@count,
+max line count/.store in=\iinet@lines@max@count,
+frame/.is if=@iinet@drawframe,
+grid/.is if=@iinet@drawgrid,
+scale/.store in=\iinet@scale,
+defaults/.style={%
+    width=\iinet@default@width, height=\iinet@default@height,
+    padding x=\iinet@default@padding@x, padding y=\iinet@default@padding@y,
+    inset x=\iinet@default@inset@x, inset y=\iinet@default@inset@y,
+    jitter x=\iinet@default@jitter@x, jitter y=\iinet@default@jitter@y,
+    jitter steps=\iinet@default@jitter@steps,
+    min block width=\iinet@default@block@min@width,
+    max block width=\iinet@default@block@max@width,
+    min block height=\iinet@default@block@min@height,
+    max block height=\iinet@default@block@max@height,
+    max block count=\iinet@default@block@max@count,
+    max line count=\iinet@default@lines@max@count,%
+    scale=\iinet@default@scale
+}%
+}
+\endinput

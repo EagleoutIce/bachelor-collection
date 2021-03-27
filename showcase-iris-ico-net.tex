@@ -3,7 +3,7 @@
 
 \usepackage{color-palettes}
 \UsePalette{Rainbow}
-\usepackage[cpalette,pathfade,debug]{iris-ico-net}
+\usepackage[cpalette,debug]{iris-ico-net}% pathfade
 
 \begin{document}
 % \begin{center}
@@ -11,10 +11,12 @@
 % \end{center}
 
 \begin{center}
-\foreach \i in {1,...,5}{%
-\IrisIcoRandomNet[frame,max block count=10,max line count=15]
+\foreach \i in {1,...,10}{%
+\IrisIcoRandomNet[frame,grid,max block count=10,max line count=15,scale=3]
 }
 \end{center}
+
+\iffalse
 \paragraph{Custom}
 
 \colorlet{level1}{paletteA!70!white}
@@ -68,4 +70,5 @@
     \end{rootlayer}
 }}
 \end{center}
+\fi
 \end{document}

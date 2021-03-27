@@ -1,0 +1,76 @@
+%% iris icon network generator package
+%% Florian Sihler, 2021-03-14
+\ProvidesPackage{iris-ico-net@routing}[2021/03/14 v1.0 iris icon network generator package]
+
+% TODO: Store on create to avoid consistent recalc
+\def\iinet@load@p@xy#1>#2,#3;{%
+  \pgfextractx#2{\pgfpointanchor{#1}{center}}%
+  \pgfextracty#3{\pgfpointanchor{#1}{center}}%
+}
+
+\def\iinet@@dl@raw{
+\pgfmathsetmacro\@iinet@jx{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@x}%
+\pgfmathsetmacro\@iinet@jy{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@y}%
+}
+
+\ifiinet@setup@pathfade@
+\newcommand*\iinet@dl@root[1][]{\path[iinet@pathfade={\iinet@getblock@{\iinet@lines@start}{c}}{\iinet@getblock@{\iinet@lines@end}{c}},#1]}%
+\else
+\newcommand*\iinet@dl@root[1][]{\path[iinet@line=\iinet@getblock@{\iinet@lines@start}{c},#1]}%
+\fi
+
+\def\iinet@@dl@#1{%
+\iinet@@dl@raw
+\iinet@dl@root
+    (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
+    ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
+}
+
+% run a breadth first search between #1 and #2 in the given matrix
+\def\iinet@root@lines@bfs#1#2{
+
+}
+
+\def\iinet@root@lines@pick@ab{%
+% pick first block
+\pgfmathrandominteger{\iinet@lines@start}{1}{\value{iinet@block@count}}%
+% target: remove one and add mod total to avoid same
+\pgfmathsetmacro\iinet@lines@end{int(mod(\iinet@lines@start+random(1,\value{iinet@block@count}-1),\value{iinet@block@count}))}
+\ifnum\iinet@lines@end=0\relax
+    \ifnum\iinet@lines@start=1 \def\iinet@lines@end{2}\else
+    \def\iinet@lines@end{1}\fi
+\fi
+% do not draw same twice:
+\ifcsname iinet@line@\iinet@lines@start @\iinet@lines@end\endcsname\else
+\ifcsname iinet@line@\iinet@lines@end @\iinet@lines@start\endcsname\else
+    \iinet@debug{Line: '\iinet@lines@start' -> '\iinet@lines@end'}
+    \@namedef{iinet@line@\iinet@lines@start @\iinet@lines@end}{}
+    % Draw the line: TODO: retrieve colors
+    \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
+    \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
+    \iinet@root@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
+    \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
+    \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
+    \ifdim\iinet@delta@x pt=\z@\relax \iinet@@dl@{--}\else
+        \ifdim\iinet@delta@y pt=\z@\relax \iinet@@dl@{--}\else
+            \ifdim\iinet@delta@y pt>\iinet@delta@x pt\relax
+                \iinet@@dl@{|-}\else
+                \iinet@@dl@{-|}
+            \fi
+        \fi
+    \fi
+\fi\fi
+}
+\def\iinet@root@lines{
+    \pgfmathrandominteger{\iinet@lines@to@draw}{2}{min(\iinet@lines@max@count,\arabic{iinet@block@count}*2-1)}
+    \iinet@debug{Got '\arabic{iinet@block@count}' blocks connect up to '\iinet@lines@to@draw' lines}
+    \begin{pgfonlayer}{background}
+    \setcounter{iinet@a}{0}
+    \@whilenum\value{iinet@a}<\iinet@lines@to@draw\do{
+        \iinet@root@lines@pick@ab
+        \stepcounter{iinet@a}
+    }
+    \end{pgfonlayer}
+}
+
+\endinput

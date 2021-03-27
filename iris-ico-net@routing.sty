@@ -24,8 +24,8 @@
 \def\iinet@@dl@#1{%
 \iinet@@dl@raw
 \iinet@dl@root
-    (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
-    ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
+    (iinet-block-\iinet@lines@start.center)++(\@iinet@jx,\@iinet@jy) #1
+    ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end.center);
 }
 
 
@@ -46,7 +46,7 @@
     % Draw the line: TODO: retrieve colors
     \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
     \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
-    \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
+    %BFS CALL: \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
     \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
     \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
     \ifdim\iinet@delta@x pt=\z@\relax \iinet@@dl@{--}\else
@@ -66,7 +66,7 @@
     \setcounter{iinet@a}{0}
     \@whilenum\value{iinet@a}<\iinet@lines@to@draw\do{
         \iinet@route@lines@pick@ab
-        \stepcounter{iinet@a}
+        \advance\c@iinet@a\@ne
     }
     \end{pgfonlayer}
 }
@@ -86,7 +86,7 @@
 \@whilenum\value{iinet@x}<\value{iinet@a}\do{
     \iinet@if@m@cfree(iinet@x,iinet@y){\eEnqueue{bfs@routing}{\arabic{iinet@x}/\arabic{iinet@y}}}{}
     \iinet@if@m@cfree(iinet@x,iinet@b){\eEnqueue{bfs@routing}{\arabic{iinet@x}/\arabic{iinet@b}}}{}
-    \stepcounter{iinet@x}
+    \advance\c@iinet@x\@ne
 }
 % \typeout{Block: \iinet@getblock@{#1}{x}/\iinet@getblock@{#1}{y} (\iinet@getblock@{#1}{w}, \iinet@getblock@{#1}{h})}
 % \typeout{Got: \GetQueue{bfs@routing}}

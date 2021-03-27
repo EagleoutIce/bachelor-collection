@@ -33,13 +33,28 @@
     \setcounter{iinet@block@count}{0}%
 }
 
+\newif\if@iinet@deadcycles@reached@
 \newcommand*\IrisIcoRandomNet[1][]{\IrisIcoNet[#1]{
     % TODO: use @for?
     \setcounter{iinet@block@a}{0}
     \@whilenum\value{iinet@block@a}<\iinet@block@max@count\do{%
         \iinet@draw@single@block
-        \stepcounter{iinet@block@a}%
+        \advance\c@iinet@block@a\@ne
     }
+    \@iinet@deadcycles@reached@false
+    % now ensure minimum is met
+    \setcounter{iinet@block@a}{0}
+    \@whilenum\value{iinet@block@count}<\iinet@block@min@count\do{%
+        \iinet@draw@single@block
+        \advance\c@iinet@block@a\@ne
+        \ifnum\value{iinet@block@a}>\iinet@block@deadcycles@count\relax
+            \PackageWarning{iris-ico-net}{Deadcycles reached.}
+            \edef\iinet@tmpbc{\arabic{iinet@block@count}}%
+            \setcounter{iinet@block@count}{\iinet@block@min@count}%
+            \@iinet@deadcycles@reached@true
+        \fi
+    }
+    \if@iinet@deadcycles@reached@\setcounter{iinet@block@count}{\iinet@tmpbc}\fi
     \iinet@debug@show@matrix% Debug :)
     \iinet@route@lines
 }}

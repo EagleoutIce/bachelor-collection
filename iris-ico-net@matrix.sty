@@ -36,11 +36,11 @@
 \long\def\iinet@m@for@y#1{%
 \setcounter{iinet@y}{0}%
 \@whilenum\value{iinet@y}<\iinet@matrix@y\do{%
-    \setcounter{iinet@x}{0}#1\stepcounter{iinet@y}%
+    \setcounter{iinet@x}{0}#1\advance\c@iinet@y\@ne
 }}
 
 \long\def\iinet@m@for@x#1{%
 \@whilenum\value{iinet@x}<\iinet@matrix@x\do{% for each x
-    #1\stepcounter{iinet@x}%
+    #1\advance\c@iinet@x\@ne
 }}
 \endinput

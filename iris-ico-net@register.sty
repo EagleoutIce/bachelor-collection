@@ -3,7 +3,11 @@
 \ProvidesPackage{iris-ico-net@register}[2021/03/14 v1.0 iris icon network generator package]
 \ifiinet@setup@cpalette@
     \ifiinet@setup@gradient@
-        \def\iinet@loadBlockColor{\pgfmathrandominteger{\gradient}{15}{70}\edef\iinet@blockcolor{paletteA!\gradient!white}}
+        \def\iinet@gradient@min{30}%
+        \def\iinet@gradient@max{85}%
+        \def\iinet@gradient@step{22}%
+        \edef\iinet@gradient@cur{\the\numexpr\iinet@gradient@max+\iinet@gradient@step\relax}%
+        \def\iinet@loadBlockColor{\pgfmathsetmacro\iinet@gradient@cur{int(\iinet@gradient@cur-\iinet@gradient@step)}\ifnum\iinet@gradient@cur<\iinet@gradient@min\edef\iinet@gradient@cur{\the\numexpr\iinet@gradient@max+\iinet@gradient@step\relax}\fi\edef\iinet@blockcolor{paletteA!\iinet@gradient@cur!white}}
     \else
     \pgfmathdeclarerandomlist{iinet@colorlist}{{paletteA}{paletteB}{paletteC}{paletteD}}
     \def\iinet@loadBlockColor{\pgfmathrandomitem{\iinet@blockcolor}{iinet@colorlist}}
@@ -11,7 +15,11 @@
 \else
     \colorlet{iinet@block}{purple}
     \ifiinet@setup@gradient@
-        \def\iinet@loadBlockColor{\pgfmathrandominteger{\gradient}{15}{70}\edef\iinet@blockcolor{iinet@block!\gradient!white}}
+    \def\iinet@gradient@min{30}%
+    \def\iinet@gradient@max{85}%
+    \def\iinet@gradient@step{22}%
+    \edef\iinet@gradient@cur{\the\numexpr\iinet@gradient@max+\iinet@gradient@step\relax}%
+    \def\iinet@loadBlockColor{\pgfmathsetmacro\iinet@gradient@cur{int(\iinet@gradient@cur-\iinet@gradient@step)}\ifnum\iinet@gradient@cur<\iinet@gradient@min\edef\iinet@gradient@cur{\the\numexpr\iinet@gradient@max+\iinet@gradient@step\relax}\fi\edef\iinet@blockcolor{iinet@block!\iinet@gradient@cur!white}}
     \else
         \def\iinet@loadBlockColor{\edef\iinet@blockcolor{iinet@block}}
     \fi
@@ -44,18 +52,20 @@
 \iinet@newreg inset@x=2;
 \iinet@newreg inset@y=2;
 
-\iinet@newreg jitter@x=0;
-\iinet@newreg jitter@y=0;
+\iinet@newreg jitter@x=.5;
+\iinet@newreg jitter@y=.5;
 \iinet@newreg jitter@steps=3;
 
-\iinet@newreg width=30;
-\iinet@newreg height=30;
+\iinet@newreg width=25;
+\iinet@newreg height=25;
 
 \iinet@newreg block@min@width=8;
 \iinet@newreg block@max@width=13;
 \iinet@newreg block@min@height=6;
 \iinet@newreg block@max@height=8;
+\iinet@newreg block@min@count=3;
 \iinet@newreg block@max@count=15;
+\iinet@newreg block@deadcycles@count=60;
 \iinet@newreg lines@max@count=12;
 
 \newif\if@iinet@flag@a@
@@ -68,7 +78,7 @@
     iinet@frame/.style={draw,line width=.25pt,gray!60!lightgray,iinet@outer@roundings},
     iinet@grid/.style={lightgray,line width=.05pt,step=1pt},
     iinet@block/.style={fill=#1,draw=#1,rounded corners=.25pt*\iinet@scale},%
-    iinet@line/.style={thick,draw,rounded corners=.125pt*\iinet@scale,#1},%
+    iinet@line/.style={line width=.8pt*\iinet@scale,draw,rounded corners=.125pt*\iinet@scale,#1},%
     iinet@@pathfade/.style n args={3}{
         postaction={decorate,decoration={markings,
         mark=between positions 0 and \pgfdecoratedpathlength step #1/3.75*\iinet@scale with {
@@ -107,6 +117,8 @@ min block width/.store in=\iinet@block@min@width,
 max block width/.store in=\iinet@block@max@width,
 min block height/.store in=\iinet@block@min@height,
 max block height/.store in=\iinet@block@max@height,
+min block count/.store in=\iinet@block@min@count,
+deadcycles block count/.store in=\iinet@block@deadcycles@count,
 max block count/.store in=\iinet@block@max@count,
 max line count/.store in=\iinet@lines@max@count,
 frame/.is if=@iinet@drawframe,
@@ -123,6 +135,8 @@ defaults/.style={%
     min block height=\iinet@default@block@min@height,
     max block height=\iinet@default@block@max@height,
     max block count=\iinet@default@block@max@count,
+    min block count=\iinet@default@block@min@count,
+    deadcycles block count=\iinet@default@block@deadcycles@count,
     max line count=\iinet@default@lines@max@count,%
     scale=\iinet@default@scale
 }%

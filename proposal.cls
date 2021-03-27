@@ -363,7 +363,7 @@ afterskip=-\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
 \newcommand*\addSupervisor[2][]{\@ifnextchar({\bprop@supervisors@add[#1]#2}{\bprop@supervisors@add[#1]#2(#2)}}
 % TODO: reuse #2 :D
 \def\bprop@supervisors@add[#1]#2(#3){
-  \stepcounter{bprop@supervisor@count}%
+  \advance\c@bprop@supervisor@count\@ne
 \ifx\bprop@supervisors\@empty
 \def\bprop@supervisors{\ifx!#1!#3\else\href{mailto:#1}{#3}\fi}%
 \else\g@addto@macro\bprop@supervisors{, \ifx!#1!#3\else\href{mailto:#1}{#3}\fi}\fi}

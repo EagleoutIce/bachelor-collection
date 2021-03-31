@@ -3,12 +3,12 @@
 
 \usepackage{color-palettes}
 \UsePalette{GreenWater}
-\usepackage[cpalette,gradient,debug]{iris-ico-net}% pathfade
+\usepackage[cpalette,debug]{iris-ico-net}% pathfade
 
 \begin{document}
-% \begin{center}
-%     \IrisIcoRandomNet[square=100,max block count=50,max line count=20,frame]
-% \end{center}
+\begin{center}
+    \IrisIcoRandomNet[square=100,grid,max block count=100,max line count=150,frame,scale=3]
+\end{center}
 
 \begin{center}
 
@@ -17,7 +17,6 @@
 }
 \end{center}
 
-\iffalse
 \paragraph{Custom}
 
 \colorlet{level1}{paletteA!70!white}
@@ -71,5 +70,4 @@
     \end{rootlayer}
 }}
 \end{center}
-\fi
 \end{document}

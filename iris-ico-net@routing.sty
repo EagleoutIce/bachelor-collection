@@ -1,8 +1,7 @@
 %% iris icon network generator package
 %% Florian Sihler, 2021-03-14
 \ProvidesPackage{iris-ico-net@routing}[2021/03/14 v1.0 iris icon network generator package]
-
-\RequirePackage{iris-ico-net@queue}
+\RequirePackage{latex-bfs}
 
 % TODO: Store on create to avoid consistent recalc
 \def\iinet@load@p@xy#1>#2,#3;{%
@@ -28,7 +27,6 @@
     ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
 }
 
-
 \def\iinet@route@lines@pick@ab{%
 % pick first block
 \pgfmathrandominteger{\iinet@lines@start}{1}{\value{iinet@block@count}}%
@@ -43,9 +41,11 @@
 \ifcsname iinet@line@\iinet@lines@end @\iinet@lines@start\endcsname\else
     \iinet@debug{Line: '\iinet@lines@start' -> '\iinet@lines@end'}
     \@namedef{iinet@line@\iinet@lines@start @\iinet@lines@end}{}
-    % Draw the line: TODO: retrieve colors
+    % Draw the line:
     \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
     \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
+    \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}%
+    \ifx\iinet@bfs@routing@result\@empty
     %BFS CALL: \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
     \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
     \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
@@ -57,16 +57,19 @@
             \fi
         \fi
     \fi
+    \else
+    \iinet@@dl@{ foreach \x/\y in \iinet@bfs@routing@result {-- (\x, \y)} --}%
+    \fi
 \fi\fi
 }
 \def\iinet@route@lines{
-    \pgfmathrandominteger{\iinet@lines@to@draw}{2}{min(\iinet@lines@max@count,\arabic{iinet@block@count}*2-1)}
+    \pgfmathrandominteger{\iinet@lines@to@draw}{\iinet@lines@min@count}{min(\iinet@lines@max@count,\c@iinet@block@count*2-1)}
     \iinet@debug{Got '\arabic{iinet@block@count}' blocks connect up to '\iinet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
-    \setcounter{iinet@a}{0}
-    \@whilenum\value{iinet@a}<\iinet@lines@to@draw\do{
+    \setcounter{iinet@c}{0}
+    \@whilenum\value{iinet@c}<\iinet@lines@to@draw\do{
         \iinet@route@lines@pick@ab
-        \advance\c@iinet@a\@ne
+        \advance\c@iinet@c\@ne
     }
     \end{pgfonlayer}
 }
@@ -74,23 +77,34 @@
 
 % run a breadth first search between #1 and #2 in the given matrix
 % \iinet@if@m@cfree(x,y){<free>}{<blocked>}
-\CreateQueue{bfs@routing}
-\def\iinet@route@lines@bfs#1#2{%
-% a) find possible start-points for bfs
-\ResetQueue{bfs@routing}%
-\setcounter{iinet@y}{\numexpr\iinet@getblock@{#1}{y}-1\relax}%
-\setcounter{iinet@x}{\numexpr\iinet@getblock@{#1}{x}-1\relax}%
-\setcounter{iinet@a}{\numexpr\value{iinet@x}+\iinet@getblock@{#1}{w}+2\relax}%
-\setcounter{iinet@b}{\numexpr\value{iinet@y}+\iinet@getblock@{#1}{h}+2\relax}%
-% check and add horizontal
-\@whilenum\value{iinet@x}<\value{iinet@a}\do{
-    \iinet@if@m@cfree(iinet@x,iinet@y){\eEnqueue{bfs@routing}{\arabic{iinet@x}/\arabic{iinet@y}}}{}
-    \iinet@if@m@cfree(iinet@x,iinet@b){\eEnqueue{bfs@routing}{\arabic{iinet@x}/\arabic{iinet@b}}}{}
-    \advance\c@iinet@x\@ne
-}
-% \typeout{Block: \iinet@getblock@{#1}{x}/\iinet@getblock@{#1}{y} (\iinet@getblock@{#1}{w}, \iinet@getblock@{#1}{h})}
-% \typeout{Got: \GetQueue{bfs@routing}}
+\CreateQueue{iinet@bfs@routing@start}
+\CreateQueue{iinet@bfs@routing@end}
+\CreateQueue{iinet@bfs@routing@result}
 
+\def\iinet@CheckBlock(#1/#2)#3#4{\iinet@if@m@free(\the\numexpr#1-1\relax,\the\numexpr#2-1\relax){#4}{#3}}
+% queue :#2 => block #1
+\def\iinet@route@lines@setblock@center#1#2{%
+\expandafter\pgfmathsetmacro\csname #2@x\endcsname{int(\iinet@getblock@{#1}{x}+\iinet@getblock@{#1}{w}/2)}
+\expandafter\pgfmathsetmacro\csname #2@y\endcsname{int(\iinet@getblock@{#1}{y}+\iinet@getblock@{#1}{h}/2)}
+}
+
+\def\iinet@route@lines@bfs#1#2{%
+\iinet@route@lines@setblock@center{#1}{center@start}%
+\iinet@route@lines@setblock@center{#2}{center@end}%
+% kill the selected blocks in the block mask
+\iinet@single@block@specialblock{#1}{unblock}%
+\iinet@single@block@specialblock{#2}{unblock}%
+\iinet@update@present@squares
+% clear the result queue
+\ResetQueue{iinet@bfs@routing@result}%
+% TODO: same for end block with endl
+\GetShortestPath(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\iinet@width x\iinet@height]{iinet@CheckBlock}{iinet@bfs@routing@result}
+\iinet@debug{Result: \GetQueue{iinet@bfs@routing@result}}
+\edef\iinet@bfs@routing@result{\GetQueue{iinet@bfs@routing@result}}
+% reinsert the selected blocks in the block mask
+\iinet@single@block@specialblock{#1}{block}%
+\iinet@single@block@specialblock{#2}{block}%
+\iinet@update@present@squares
 }
 
 \endinput

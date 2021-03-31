@@ -280,6 +280,21 @@
 }
 
 
+\def\iinet@single@block@specialblock#1#2{
+  % block y
+  \setcounter{iinet@y}{0}
+  \@whilenum\value{iinet@y}<\iinet@getblock@{#1}{h}\do{%
+    \setcounter{iinet@x}{0}%
+    \@whilenum\value{iinet@x}<\iinet@getblock@{#1}{w}\do{%
+        \csname iinet@m@#2\endcsname(%
+            \the\numexpr\arabic{iinet@x}+\iinet@getblock@{#1}{x}\relax,%
+            \the\numexpr\arabic{iinet@y}+\iinet@getblock@{#1}{y}\relax)%
+        \stepcounter{iinet@x}% Block!
+    }
+    \stepcounter{iinet@y}%
+  }
+}
+
 \def\iinet@single@block@block{
   % block y
   \setcounter{iinet@y}{0}

@@ -1,7 +1,6 @@
 %% iris icon network generator package
 %% Florian Sihler, 2021-03-14
 \ProvidesPackage{iris-ico-net@debug}[2021/03/14 v1.0 iris icon network generator package]
-
 \def\iinet@debug@line{====================================}
 \def\iinet@debug@show@matrix{%
 \iinet@debug{\iinet@debug@line}%
@@ -14,7 +13,5 @@
         {\g@addto@macro\iinet@linebuf{O}}% occupied
 }
 \iinet@debug{\iinet@linebuf\space[\arabic{iinet@y}, \iinet@m@max@of@y{\arabic{iinet@y}}]}
-}
-\iinet@debug{\iinet@debug@line}
-}
+}\iinet@debug{\iinet@debug@line}}
 \endinput

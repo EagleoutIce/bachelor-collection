@@ -16,13 +16,10 @@
 \DeclareOption{debug}{\let\iinet@debug\typeout}
 \DeclareOption{nodebug}{\let\iinet@debug\@gobble}
 \let\iinet@debug\@gobble
-
 \ProcessOptions*
 \RequirePackage{tikz,etoolbox}
 \usetikzlibrary{backgrounds,decorations.markings}
-
-\RequirePackage{iris-ico-net@register}
-\RequirePackage{iris-ico-net@debug}
+\RequirePackage{iris-ico-net@register,iris-ico-net@debug}
 
 \RequirePackage{iris-ico-net@matrix}
 \RequirePackage{iris-ico-net@block}
@@ -35,7 +32,6 @@
 
 \newif\if@iinet@deadcycles@reached@
 \newcommand*\IrisIcoRandomNet[1][]{\IrisIcoNet[#1]{
-    % TODO: use @for?
     \setcounter{iinet@block@a}{0}
     \@whilenum\value{iinet@block@a}<\iinet@block@max@count\do{%
         \iinet@draw@single@block
@@ -85,7 +81,4 @@
     #2
 \end{tikzpicture}%
 \endgroup}
-
-
-
 \endinput

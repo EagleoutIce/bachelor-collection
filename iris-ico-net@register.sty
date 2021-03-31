@@ -25,12 +25,10 @@
     \fi
 \fi
 % TODO: extend with kprim selection etc
-
 \newcounter{iinet@block@count}
 \newcounter{iinet@x}\newcounter{iinet@y}
 \newcounter{iinet@a}\newcounter{iinet@b}\newcounter{iinet@c}
 \newcounter{iinet@block@a}
-
 \newdimen\iinet@start@x \newdimen\iinet@end@x
 \newdimen\iinet@start@y \newdimen\iinet@end@y
 
@@ -42,23 +40,18 @@
 \expandafter\newlength\csname iinet@default@#1\endcsname
 \expandafter\csname iinet@default@#1\endcsname=#2}
 \def\iinet@newreg#1=#2;{\expandafter\def\csname iinet@default@#1\endcsname{#2}}
-
 \iinet@newreg padding@x=2;
 \iinet@newreg padding@y=2;
-
 \iinet@newreg scale=1;
 
 % TODO: i use inset as buffer for not working checks
 \iinet@newreg inset@x=2;
 \iinet@newreg inset@y=2;
-
 \iinet@newreg jitter@x=0;
 \iinet@newreg jitter@y=0;
 \iinet@newreg jitter@steps=3;
-
 \iinet@newreg width=25;
 \iinet@newreg height=25;
-
 \iinet@newreg block@min@width=8;
 \iinet@newreg block@max@width=13;
 \iinet@newreg block@min@height=6;
@@ -67,10 +60,10 @@
 \iinet@newreg block@max@count=15;
 \iinet@newreg block@deadcycles@count=60;
 \iinet@newreg lines@max@count=12;
+\iinet@newreg lines@min@count=3;% maybe try?
 
 \newif\if@iinet@flag@a@
 \newif\if@iinet@flag@typeset@block@
-
 \newif\if@iinet@drawframe
 \newif\if@iinet@drawgrid
 \colorlet{iinet@framegray}{gray!60!lightgray}
@@ -86,20 +79,15 @@
         mark=between positions 0 and \pgfdecoratedpathlength step #1/3.75*\iinet@scale with {
         \pgfmathsetmacro\iinet@gradient{multiply(divide(\pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength),100)};
         \pgfsetfillcolor{#3!\iinet@gradient!#2};
-        %\pgfsetcornersarced{\pgfpoint{#1/1.75}{#1/1.75}}%
-        %\pgfpathrectangle{\pgfpointadd{\pgfpointorigin}{\pgfpoint{-#1}{-#1}}}{\pgfpoint{2*#1}{2*#1}};
         \pgfpathcircle{\pgfpointorigin}{#1*\iinet@scale};
-        \pgfusepath{fill};}
-    }},
+        \pgfusepath{fill};}}},
     },
     iinet@pathfade/.style 2 args={iinet@@pathfade={.45pt}{#1}{#2}},
 }
 
 \ifiinet@setup@frameblock@
-    \tikzset{iinet@node@block/.style={draw,thin,#1!80!black}}
-\else
-    \tikzset{iinet@node@block/.style={}}
-\fi
+\tikzset{iinet@node@block/.style={draw,thin,#1!80!black}}
+\else\tikzset{iinet@node@block/.style={}}\fi
 
 \pgfkeys{%
 /iinet@keys/.is family, /iinet@keys,
@@ -123,6 +111,7 @@ min block count/.store in=\iinet@block@min@count,
 deadcycles block count/.store in=\iinet@block@deadcycles@count,
 max block count/.store in=\iinet@block@max@count,
 max line count/.store in=\iinet@lines@max@count,
+min line count/.store in=\iinet@lines@min@count,
 frame/.is if=@iinet@drawframe,
 grid/.is if=@iinet@drawgrid,
 grid step/.store in=\iinet@grid@step,
@@ -141,8 +130,7 @@ defaults/.style={%
     min block count=\iinet@default@block@min@count,
     deadcycles block count=\iinet@default@block@deadcycles@count,
     max line count=\iinet@default@lines@max@count,%
-    grid step=1pt,%
-    scale=\iinet@default@scale
-}%
-}
+    min line count=\iinet@default@lines@min@count,%
+    grid step=1pt, scale=\iinet@default@scale
+}}
 \endinput

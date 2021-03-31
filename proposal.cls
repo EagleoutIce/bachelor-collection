@@ -10,15 +10,19 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 
 %% Options
 \RequirePackage{kvoptions}
-\SetupKeyvalOptions{family=MEPRO,prefix=bprop@}
-
-\DeclareBoolOption{userip}
-\DeclareComplementaryOption{norip}{userip}
+\SetupKeyvalOptions{family=bprop,prefix=bprop@}
 
 \DeclareStringOption[GreenWater]{cpalette}
 \DeclareStringOption[DeepInk]{tpalette}
-
+\DeclareBoolOption{debug}
 \ProcessKeyvalOptions*
+
+\ifbprop@debug
+\errorcontextlines99999
+\let\bprop@debug\typeout
+\else
+\let\bprop@debug\@gobble
+\fi
 
 %% Basic packages
 \RequirePackage[T1]{fontenc}
@@ -122,7 +126,7 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 \parindent=\z@ \parskip=\segskipamount
 
 \def\arraystretch{1.2}
-\linespread{1.15}
+\linespread{1.1}
 \hbadness=99999\vbadness=99999
 \hyphenpenalty=275
 \lefthyphenmin=2 \righthyphenmin=2
@@ -132,9 +136,8 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 
 \DeclareNewLayer[%
 topmargin,background,contents={%
-\color{black!95!white}\rule[\baselineskip]{\layerwidth}{0.2em}%
-}%
-]{mepro.digital.head.ruler}
+\color{black!95!white}\rule[\baselineskip]{\layerwidth}{.2em}%
+}]{bprop.digital.head.ruler}
 
 \colorlet{bprop@headfoot}{gray}
 \setkomafont{pageheadfoot}{\sffamily\footnotesize\color{bprop@headfoot}}
@@ -156,8 +159,8 @@ topmargin,background,contents={%
   }}}
 }
 \defpairofpagestyles[scrheadings]{bprop@title}{}
-\AddLayersAtBeginOfPageStyle{scrheadings}{mepro.digital.head.ruler}
-\AddLayersAtBeginOfPageStyle{plain.scrheadings}{mepro.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{scrheadings}{bprop.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{plain.scrheadings}{bprop.digital.head.ruler}
 \pagestyle{scrheadings}
 
 %% Coverpage
@@ -182,10 +185,10 @@ topmargin,background,contents={%
   \vskip6em
   {\usekomafont{subject}{\lecture@r{subject}\par}}
   \vskip2em
-  \sbox0{\pbox{\linewidth}{\usekomafont{title}\Huge\lecture@r{title}}}%
-  \textcolor{lightgray}{\rule{\linewidth}{.866pt}}\bigskip\par
+  \sbox0{\pbox{\linewidth}{\centering\usekomafont{title}\Huge\lecture@r{title}}}%\par
+  \textcolor{lightgray}{\rule{\linewidth}{\p@}}\medskip\par
   \usebox0\smallskip\par
-  \textcolor{lightgray}{\rule{\linewidth}{.866pt}}\smallskip\par
+  \textcolor{lightgray}{\rule{\linewidth}{\p@}}\smallskip\par
   \vskip.5em
   \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
 \end{center}
@@ -209,19 +212,19 @@ topmargin,background,contents={%
 
 \renewcommand*\captionformat{~~}
 
-\def\meprolinkcolor{%
+\def\bproplinkcolor{%
 % we do not use paletteA if we are in a box. we use the box-color instead!
 \ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteA\fi
 }
-\def\meprolinkfont{\relsize{-1}\sffamily}
+\def\bproplinkfont{\relsize{-1}\sffamily}
 \def\bprop@fig@style@nonbold#1{%
-  {\hypersetup{allcolors=\meprolinkcolor}\meprolinkfont{#1}}%
+  {\hypersetup{allcolors=\bproplinkcolor}\bproplinkfont{#1}}%
 }
 \def\sbfamily{\fontseries{sb}\selectfont}
 \def\bprop@fig@style#1{\bprop@fig@style@nonbold{{\sbfamily#1}}}
 
-\DeclareCaptionLabelFormat{mepro-caption}{\bprop@fig@style{\paletteA{#1 #2:~~}}}
-\captionsetup{format=plain,indention=1em,labelformat=mepro-caption,labelsep=none}
+\DeclareCaptionLabelFormat{bprop-caption}{\bprop@fig@style{\paletteA{#1 #2:~~}}}
+\captionsetup{format=plain,indention=1em,labelformat=bprop-caption,labelsep=none}
 
 \RequirePackage{lecture-links}
 \RequirePackage[outline]{contour}
@@ -233,7 +236,7 @@ topmargin,background,contents={%
 \SetUrlLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetHrefLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetFootnoteLinkStyle{\bprop@fig@style@nonbold{#1}}%
-\SetCiteColor{\meprolinkcolor}%
+\SetCiteColor{\bproplinkcolor}%
 }{% dirty patches
 \let\bprop@autoref\autoref
 \renewcommand*\autoref[1]{{\bprop@fig@style{\bprop@autoref{#1}}}}%
@@ -266,7 +269,6 @@ topmargin,background,contents={%
   \hskip\dimexpr-\wd0-\bprop@len@over@shift\relax
   \usebox0\hskip\bprop@len@over@shift\relax
 }
-
 
 \def\bpropo@sectionbar@left{}
 \def\bpropo@sectionbar@right{}
@@ -318,7 +320,7 @@ topmargin,background,contents={%
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-afterskip=.45\baselineskip]{section}
+afterskip=.35\baselineskip]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%

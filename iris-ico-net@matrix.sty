@@ -31,6 +31,8 @@
 \def\iinet@m@block(#1,#2){%
     \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter%
     \undef\iinet@m@get(#1,#2)}
+\def\iinet@m@unblock(#1,#2){%
+    \expandafter\def\csname iinet@m@#2@#1\endcsname{}}
 \def\iinet@m@cblock(#1,#2){\iinet@m@block(\arabic{#1},\arabic{#2})}
 
 \long\def\iinet@m@for@y#1{%

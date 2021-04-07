@@ -3,11 +3,11 @@
 \ProvidesPackage{iris-ico-net@matrix}[2021/03/14 v1.0 iris icon network generator package]
 \def\iinet@calcdiffs{
 \edef\iinet@block@dif@x
-    {\the\numexpr\iinet@block@max@width-\iinet@block@min@width\relax}%
+    {\the\numexpr\iinet@block@max@width-\iinet@block@min@width}%
 \edef\iinet@block@dif@y
-    {\the\numexpr\iinet@block@max@height-\iinet@block@min@height\relax}%
-\edef\iinet@matrix@x{\iinet@width}%
-\edef\iinet@matrix@y{\iinet@height}%
+    {\the\numexpr\iinet@block@max@height-\iinet@block@min@height}%
+\let\iinet@matrix@x\iinet@width
+\let\iinet@matrix@y\iinet@height
 }
 \def\iinet@element{}
 

@@ -6,7 +6,7 @@
 \def\LayoutName{proposal}
 % First we setup the document options
 \LoadClass[numbers=noenddot,english,%
-fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
+fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrartcl}
 
 %% Options
 \RequirePackage{kvoptions}
@@ -42,8 +42,7 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 }
 
 %% Microtype
-\RequirePackage[activate={true,nocompatibility},final,kerning=true,spacing=true,stretch=20,factor=1042,shrink=20,babel]{microtype}
-\SetTracking{encoding={*}, shape=sc}{42}
+\RequirePackage[activate={true,nocompatibility},final,kerning=true,spacing=true,babel]{microtype}
 
 % we do not want protusion in table of*
 \preto\tableofcontents{\microtypesetup{protrusion=false}}
@@ -88,9 +87,9 @@ fontsize=11pt,oneside,footnotes=nomultiple,a4paper]{scrartcl}
 
 \setlist{leftmargin=1.25em,labelwidth=1.25em}
 \newlist{inlist}{enumerate*}{1}
-\setlist[inlist]{itemjoin={{, }},itemjoin*={{and }},label=($\roman*$),mode=boxed}
+\setlist[inlist]{itemjoin={{, }},itemjoin*={{, and }},label=($\roman*$),mode=boxed}
 \newlist{orlist}{enumerate*}{1}
-\setlist[orlist]{itemjoin={{, }},itemjoin*={{or }},label=($\alph*$),mode=boxed}
+\setlist[orlist]{itemjoin={{, }},itemjoin*={{, or }},label=($\alph*$),mode=boxed}
 \setlist[description]{labelwidth=*,font=\normalfont\itshape,topsep=\z@ plus 2pt,partopsep=\z@ plus 2pt}
 \setlist[enumerate,1]{label=\arabic*.}
 \setlist[enumerate,2]{label=\roman*.}
@@ -343,10 +342,12 @@ afterskip=-\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
 \def\bprop@getsubsecmark{\csname bprop@subsec@\thesection @\endcsname}
 \def\ifbprop@subsecmark{\ifcsname bprop@subsec@\thesection @\endcsname\expandafter\bprop@firstoftwo\else\expandafter\bprop@secondoftwo\fi}
 
+\def\setsectionspace#1{\def\bprop@sec@spaceguard{\needspace{#1}}}
+\setsectionspace{3\baselineskip}
 \let\bprop@section\section
 \def\section{\@ifstar{\bprop@star@section}{\@dblarg\bprop@nostar@section}}
 \def\bprop@star@section#1{\bprop@section*{#1}}
-\def\bprop@nostar@section[#1]#2{\needspace{3\baselineskip}\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bprop@sec@@id@\thesection}\nobreak\bprop@section[#1]{#2}}
+\def\bprop@nostar@section[#1]#2{\bprop@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bprop@sec@@id@\thesection}\nobreak\bprop@section[#1]{#2}}
 
 \let\bprop@subsection\subsection
 \def\subsection{\@ifstar{\bprop@star@subsection}{\@dblarg\bprop@nostar@subsection}}

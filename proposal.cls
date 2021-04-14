@@ -36,8 +36,8 @@ fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrartcl}
 
 %% Fonts
 \AtEndPreamble{%
-\RequirePackage[charter,expert]{mathdesign}
-\RequirePackage[scaled=.96,sups,osf]{XCharter}%
+\RequirePackage[sc,osf]{mathpazo}
+\RequirePackage[euler-digits,small]{eulervm}%
 \RequirePackage[tabular,lining]{montserrat}%
 }
 
@@ -101,6 +101,8 @@ fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrartcl}
 \RequirePackage{tikz-palettes}
 \UsePalette{\bprop@cpalette}
 \UseTikzPalette{\bprop@tpalette}
+\def\cplenumi#1{\textcolor{#1}{\smaller[3]\raisebox{.25ex}{$\blacksquare$}}}
+% Note: smaller blocks :)
 
 %% Footnotes
 \LetLtxMacro\bprop@makefnmark\@makefnmark
@@ -122,13 +124,15 @@ fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrartcl}
 \segskipamount=.35\baselineskip minus .1\baselineskip
 \def\segskip{\vspace\segskipamount}
 
-\parindent=\z@ \parskip=\segskipamount
+\parindent\z@ \parskip\segskipamount
 
 \def\arraystretch{1.2}
-\linespread{1.1}
+\linespread{1.085}
 \hbadness=99999\vbadness=99999
 \hyphenpenalty=275
 \lefthyphenmin=2 \righthyphenmin=2
+\abovecaptionskip=5pt \@plus \p@ \@minus \p@
+\belowcaptionskip=5pt \@plus \p@ \@minus \p@
 
 %% Header and footer
 \renewcommand*\sectionmark[1]{\markboth{#1}{}}
@@ -328,8 +332,8 @@ afterskip=\z@]{subsection}
 runin=on,tocindent=7.15em,afterskip=1ex,%
 beforeskip=1\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
-runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
-afterskip=-\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
+runin=false,beforeskip=.33\baselineskip plus .33\baselineskip,%
+afterskip=-.65\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
 
 \def\@bprop@c@pre#1{\phantomsection\nobreak#1\nobreak}
 \def\bprop@firstoftwo#1#2{#1}\def\bprop@secondoftwo#1#2{#2}

@@ -149,7 +149,7 @@ topmargin,background,contents={%
 \def\ifbprop@subsecmark{\ifcsname bprop@subsec@\thesection @\endcsname\expandafter\bprop@firstoftwo\else\expandafter\bprop@secondoftwo\fi}
 
 \def\bprop@copyright@notice@upper{\iflecture@er{authority}{}{\lecture@r{authority},\quad}\iflecture@er{supervisor}{}{Supervisor\ifnum\value{bprop@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}}
-\def\bprop@copyright@notice@lower{\iflecture@er{copyright}{}{\lecture@r{copyright}}}
+\def\bprop@copyright@notice@lower{\typesetAuthor\iflecture@er{copyright}{}{, \lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
 \ofoot{\strut\nohyper{\sbfamily\thepage}}%
@@ -219,6 +219,10 @@ topmargin,background,contents={%
 % we do not use paletteA if we are in a box. we use the box-color instead!
 \ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteA\fi
 }
+\def\bproplinkcolorB{%
+% we do not use paletteA if we are in a box. we use the box-color instead!
+\ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteB\fi
+}
 \def\bproplinkfont{\relsize{-1}\sffamily}
 \def\bprop@fig@style@nonbold#1{%
   {\hypersetup{allcolors=\bproplinkcolor}\bproplinkfont{#1}}%
@@ -239,7 +243,7 @@ topmargin,background,contents={%
 \SetUrlLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetHrefLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetFootnoteLinkStyle{\bprop@fig@style@nonbold{#1}}%
-\SetCiteColor{\bproplinkcolor}%
+\SetCiteColor{\bproplinkcolorB}%
 }{% dirty patches
 \let\bprop@autoref\autoref
 \renewcommand*\autoref[1]{{\bprop@fig@style{\bprop@autoref{#1}}}}%
@@ -280,7 +284,21 @@ topmargin,background,contents={%
 \def\setsectionelement{%
   \@ifstar\bprop@setsectionelement\bprop@setsectionelement@center
 }
-\def\bprop@setsectionelement#1#2{\def\@tmpa{bpropo@sectionbar@#1}%
+\def\setsectionelementpar{%
+  \@ifstar\bprop@setsectionelementpar\bprop@setsectionelementpar@center
+}
+\long\def\bprop@setsectionelementpar#1#2{\def\@tmpa{bpropo@sectionbar@#1}%
+\expandafter\ifcsname\@tmpa\endcsname
+  \expandafter\def\csname\@tmpa\endcsname{#2}%
+\else\ClassError{proposal}{There is no sectionelement '#1'.}{Choose 'left' or 'right'.}\fi
+}
+
+\def\bprop@setsectionelementpar@center#1#2{\bprop@setsectionelementpar{#1}{%
+\llap{%
+  \parbox[t][\z@]{\bprop@len@margin}{\vspace*{\dimexpr\bprop@len@aftersec+.5\baselineskip}\par\noindent\centering#2}%
+}}}
+
+\long\def\bprop@setsectionelement#1#2{\def\@tmpa{bpropo@sectionbar@#1}%
 \expandafter\ifcsname\@tmpa\endcsname
   \expandafter\def\csname\@tmpa\endcsname{#2}%
 \else\ClassError{proposal}{There is no sectionelement '#1'.}{Choose 'left' or 'right'.}\fi
@@ -288,10 +306,9 @@ topmargin,background,contents={%
 
 \def\bprop@setsectionelement@center#1#2{%
 \bprop@setsectionelement{#1}{%
-  \llap{%
-    \parbox[t][\z@]{\bprop@len@margin}{\centering#2}%
-  }%
-}}
+\llap{%
+  \parbox[t][\z@]{\bprop@len@margin}{\centering#2}%
+}}}
 
 \def\bprop@sectionencap#1#2#3#4{%
 \remainingleft\bprop@len@a
@@ -309,7 +326,6 @@ topmargin,background,contents={%
   \bprop@secnumblock
 }{#2}}
 
-
 \renewcommand*\sectionlinesformat[4]{%
 \hspace*{#2}\protected@edef\@tmpa{#1}%
 \ifx\@tmpa\bprop@tx@section
@@ -320,20 +336,21 @@ topmargin,background,contents={%
 \renewcommand*\sectioncatchphraseformat[4]{%
 \hskip#2\bprop@subsectionencap{#3}{#4}}
 
+\def\bprop@len@aftersec{.3\baselineskip}
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-afterskip=.35\baselineskip]{section}
+afterskip=\bprop@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-afterskip=\z@]{subsection}
+afterskip=-.65\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=on,tocindent=7.15em,afterskip=1ex,%
 beforeskip=1\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
-runin=false,beforeskip=.33\baselineskip plus .33\baselineskip,%
-afterskip=-.65\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
+runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
+afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\@bprop@c@pre#1{\phantomsection\nobreak#1\nobreak}
 \def\bprop@firstoftwo#1#2{#1}\def\bprop@secondoftwo#1#2{#2}
@@ -375,5 +392,7 @@ afterskip=-.65\parskip, font=\mdseries\itshape\rmfamily]{paragraph}
 \def\bprop@supervisors{\ifx!#1!#3\else\href{mailto:#1}{#3}\fi}%
 \else\g@addto@macro\bprop@supervisors{, \ifx!#1!#3\else\href{mailto:#1}{#3}\fi}\fi}
 \supervisor{\bprop@supervisors}
+% TODO: fix those hacks :D
 \AtEndPreamble{\def\lecture@personal@defaultsuffix{}}
+\newcommand*\NoBreakPar{\@afterheading}
 \endinput

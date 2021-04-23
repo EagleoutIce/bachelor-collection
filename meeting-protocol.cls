@@ -303,4 +303,10 @@ topmargin,background,contents={%
   \end{minipage}\bigskip\par
 \endgroup}
 
+\AtEndPreamble{
+  \ifcsname attachfilesetup\endcsname
+    \attachfilesetup{color=paletteB}
+  \fi
+}
+
 \endinput

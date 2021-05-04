@@ -295,7 +295,7 @@ topmargin,background,contents={%
 
 \def\bprop@setsectionelementpar@center#1#2{\bprop@setsectionelementpar{#1}{%
 \llap{%
-  \parbox[t][\z@]{\bprop@len@margin}{\vspace*{\dimexpr\bprop@len@aftersec+.5\baselineskip}\par\noindent\centering#2}%
+  \parbox[t][\z@]{\bprop@len@margin}{\vspace*{\dimexpr\bprop@len@aftersec+.5\baselineskip+.3\p@}\par\noindent\centering#2}%
 }}}
 
 \long\def\bprop@setsectionelement#1#2{\def\@tmpa{bpropo@sectionbar@#1}%
@@ -316,7 +316,7 @@ topmargin,background,contents={%
 \@hangfrom{%
   \sbox0{\color{bprop@numcol}\contour{white}{#1}}%
   \bprop@secnumblock
-}{#2}%
+}{\strut#2\strut}%
 \remainingright\bprop@len@a
 \bprop@sectionbar{r}{#3}{#4}{\bpropo@sectionbar@right}}
 

@@ -182,7 +182,7 @@ topmargin,background,contents={%
 % First: Center top Type and title
 \vspace*{-.33\bprop@len@margin}%
 \begin{minipage}[t]{\linewidth}
-  \scalebox{.9}{\splogo}\hfill\scalebox{.9}{\uulmlogo}
+  \raisebox{2.525pt}{\scalebox{.9}{\splogo}}\hfill\resizebox{73mm}!{\uulmlogo}
 \end{minipage}\par
 \begin{center}
   \vskip6em

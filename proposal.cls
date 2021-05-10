@@ -121,7 +121,7 @@ fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrartcl}
 
 %% (non) Rectangular paragraphs & hyphenation
 \newlength\segskipamount
-\segskipamount=.35\baselineskip minus .1\baselineskip
+\segskipamount=.35\baselineskip
 \def\segskip{\vspace\segskipamount}
 
 \parindent\z@ \parskip\segskipamount
@@ -239,7 +239,7 @@ topmargin,background,contents={%
 
 \AtBeginDocument{%
 \@ifpackageloaded{lecture-links}{%
-\SetAllLinkStyle{\bprop@fig@style{#1}}%
+\SetAllLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetUrlLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetHrefLinkStyle{\bprop@fig@style@nonbold{#1}}%
 \SetFootnoteLinkStyle{\bprop@fig@style@nonbold{#1}}%

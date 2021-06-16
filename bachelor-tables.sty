@@ -2,7 +2,7 @@
 \ProvidesPackage{\filename}[2021/06/16 EagleoutIce - tables for my bachelor thesis]
 
 \PassOptionsToPackage{table}{xcolor}
-\RequirePackage{xcolor,array,booktabs}
+\RequirePackage{color-palettes,array,booktabs}
 
 \newdimen\bttb@smallspace
 \newcolumntype{.}{@{\hspace\bttb@smallspace}}
@@ -14,10 +14,10 @@
   \global\@rowcolorstrue
   \@ifxempty{#2}%
     {\def\@oddrowcolor{\@norowcolor}}%
-    {\def\@oddrowcolor{\gdef\CT@row@color{\CT@color{#2}\@tempdimb1em \@tempdimc1em}}}%
+    {\def\@oddrowcolor{\gdef\CT@row@color{\CT@color{#2}}}}%
   \@ifxempty{#3}%
     {\def\@evenrowcolor{\@norowcolor}}%
-    {\def\@evenrowcolor{\gdef\CT@row@color{\CT@color{#3}\@tempdimb1em \@tempdimc1em}}}%
+    {\def\@evenrowcolor{\gdef\CT@row@color{\CT@color{#3}}}}%
   \def\@rowcolors{\if@rowcolors
     \ifnum\bttb@row<#1\noalign{\@norowcolor}%
     \else\noalign{\ifodd\bttb@row\@oddrowcolor\else\@evenrowcolor\fi}\fi
@@ -26,13 +26,23 @@
   \ignorespaces
 }
 
-\def\btabular{\@ifnextchar[\@btabular{\@btabular[]}}
-\def\@btabular[#1]#2{%
+\def\btabular#1{\begingroup
 \bttb@smallspace=\dimexpr\arraycolsep+1ex\relax
-\bttb@rowcolors{3}{gray}{}
 \global\bttb@row\z@
-\tabular{>{\global\advance\bttb@row\@ne}#2}}
-\let\endbtabular\endtabular
+\let\tablebreak\bttb@tablebreak
+\tabular{>{\global\advance\bttb@row\@ne}#1}}
+\def\endbtabular{\endtabular\endgroup}
 
+% update rows
+\let\bttb@toprule\toprule
+\def\toprule{\arrayrulecolor{paletteA}\bttb@toprule[.15em]\arrayrulecolor{shadeA}}
+\let\bttb@bottomrule\bottomrule
+\def\bottomrule{\arrayrulecolor{paletteA}\bttb@bottomrule[.1em]}
+\let\bttb@midrule\midrule
+\def\midrule{\arrayrulecolor{shadeA}\bttb@midrule[.1em]}
+\let\bttb@cmidrule\cmidrule
+\def\cmidrule{\arrayrulecolor{shadeA}\bttb@cmidrule[.1em]}
+
+\def\bttb@tablebreak#1{\textit{#1}}
 
 \endinput

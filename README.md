@@ -4,3 +4,4 @@
 
 Collection of LaTeX and LuaLaTeX stuff (made specifically) for my bachelor.
 
+Documents may be found [here](https://media.githubusercontent.com/media/EagleoutIce/bachelor-collection/gh-pages/showcase-proposal.pdf) or [here](https://github.com/EagleoutIce/bachelor-collection/tree/gh-pages).

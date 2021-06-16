@@ -1,0 +1,66 @@
+\ProvidesPackage{dynamic-marks}[2021/06/16 EagleoutIce - dynamic soul based text marks]
+% currently based on: https://tex.stackexchange.com/questions/5959/cool-text-highlighting-in-latex
+
+\RequirePackage{soul,tikz}
+\usetikzlibrary{decorations.pathmorphing}
+
+\newcommand*\setDynamicMarkStyle[2][]{%
+  \tikzset{every highlighter/.style={color=#2, fill opacity=.2, #1}}%
+}
+\setDynamicMarkStyle{yellow}
+\newsavebox\dynMarks@box
+
+\def\dynMarks@DoHighlight{
+  \path[fill,decoration={random steps, amplitude=.8\p@, segment length=6pt},
+    outer sep=-6pt, inner sep =\z@, decorate, every highlighter, this highlighter,rounded corners]
+    ([yshift=\ht\dynMarks@box+\p@,xshift=-.5\p@]dyM@b) rectangle ([yshift=-\dp\dynMarks@box-\p@,xshift=.5\p@]dyM@e);
+}
+
+\def\dynMarks@BeginHighlight{\coordinate (dyM@b) at (0,0);}
+\def\dynMarks@EndHighlight{\coordinate (dyM@e) at (0,0);}
+
+\newdimen\dynMarks@previous
+\newdimen\dynMarks@current
+
+% consumes by SOUL@
+\DeclareRobustCommand*\mark[1][]{%
+  \tikzset{this highlighter/.style={#1}}%
+  \SOUL@setup
+  \def\SOUL@preamble{%
+    \tikzpicture[overlay, remember picture]
+      \dynMarks@BeginHighlight\dynMarks@EndHighlight
+    \endtikzpicture}%
+  \def\SOUL@postamble{%
+  \setbox\dynMarks@box=\hbox{Ag}%
+  \tikzpicture[overlay, remember picture]
+      \dynMarks@EndHighlight\dynMarks@DoHighlight
+    \endtikzpicture}%
+  \def\SOUL@everyhyphen{%
+    \discretionary{%
+      \SOUL@setkern\SOUL@hyphkern\SOUL@sethyphenchar
+      \tikz[overlay, remember picture] \dynMarks@EndHighlight;%
+    }{}{\SOUL@setkern\SOUL@charkern}%
+  }%
+  \def\SOUL@everyexhyphen##1{%
+    \SOUL@setkern\SOUL@hyphkern\hbox{##1}%
+    \discretionary{\tikz[overlay, remember picture] \dynMarks@EndHighlight;%
+    }{}{\SOUL@setkern\SOUL@charkern}%
+  }%
+  \def\SOUL@everysyllable{%
+    \setbox\dynMarks@box=\hbox{Ag}%
+    \tikzpicture[overlay, remember picture]
+      % calculate moved positions of both markers
+      \path let \p0 = (dyM@b), \p1 = (0,0) in \pgfextra
+        \global\dynMarks@previous=\y0
+        \global\dynMarks@current =\y1
+      \endpgfextra (0,0);
+      \ifdim\dynMarks@current<\dynMarks@previous
+        \dynMarks@DoHighlight\dynMarks@BeginHighlight
+      \fi
+    \endtikzpicture\the\SOUL@syllable
+    \tikz[overlay, remember picture] \dynMarks@EndHighlight;%
+  }%
+  \SOUL@
+}
+
+\endinput

@@ -1,0 +1,38 @@
+\def\filename{bachelor-tables}
+\ProvidesPackage{\filename}[2021/06/16 EagleoutIce - tables for my bachelor thesis]
+
+\PassOptionsToPackage{table}{xcolor}
+\RequirePackage{xcolor,array,booktabs}
+
+\newdimen\bttb@smallspace
+\newcolumntype{.}{@{\hspace\bttb@smallspace}}
+
+\newcount\bttb@row
+
+% #1 start #2 even #3 odd
+\def\bttb@rowcolors#1#2#3{%
+  \global\@rowcolorstrue
+  \@ifxempty{#2}%
+    {\def\@oddrowcolor{\@norowcolor}}%
+    {\def\@oddrowcolor{\gdef\CT@row@color{\CT@color{#2}\@tempdimb1em \@tempdimc1em}}}%
+  \@ifxempty{#3}%
+    {\def\@evenrowcolor{\@norowcolor}}%
+    {\def\@evenrowcolor{\gdef\CT@row@color{\CT@color{#3}\@tempdimb1em \@tempdimc1em}}}%
+  \def\@rowcolors{\if@rowcolors
+    \ifnum\bttb@row<#1\noalign{\@norowcolor}%
+    \else\noalign{\ifodd\bttb@row\@oddrowcolor\else\@evenrowcolor\fi}\fi
+  \fi}%
+  \CT@everycr{\@rowc@lors\the\everycr}%
+  \ignorespaces
+}
+
+\def\btabular{\@ifnextchar[\@btabular{\@btabular[]}}
+\def\@btabular[#1]#2{%
+\bttb@smallspace=\dimexpr\arraycolsep+1ex\relax
+\bttb@rowcolors{3}{gray}{}
+\global\bttb@row\z@
+\tabular{>{\global\advance\bttb@row\@ne}#2}}
+\let\endbtabular\endtabular
+
+
+\endinput

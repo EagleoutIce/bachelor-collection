@@ -1,0 +1,20 @@
+% special lualatex extensions for sopra listings and fira code
+% fira code has to be installed separately for this to work!
+\NeedsTeXFormat{LaTeX2e}
+\def\filename{bachelor-listings}
+\ProvidesPackage{\filename}[2021/06/16 EagleoutIce - lualatex extension of sopra-listings]
+
+\RequirePackage{ifluatex}
+\ifluatex\else\PackageError{\filename}{This package requires LuaTeX to function.}{Please change your pdf engine}\fi
+
+\DeclareOption*{\PassOptionsToPackage{\CurrentOption}{sopra-listings}}
+\ProcessOptions
+\RequirePackage{sopra-listings}
+
+% set font to fira code
+\RequirePackage{fontspec}
+\setmonofont{Fira Code}[Contextuals=Alternate]
+\RequirePackage{lstfiracode}
+\lstset{style=FiraCodeStyle}
+
+\endinput

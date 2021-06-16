@@ -32,7 +32,7 @@
 \let\tablebreak\bttb@tablebreak
 \tabular{>{\global\advance\bttb@row\@ne}#1}}
 \def\endbtabular{\endtabular\endgroup}
-\multicolumn{9}{p{\originalboxwidth-2\arraycolsep}}{\tablebreak{More Transformations!}\quad\color{shadeA}\leaders\hbox{\rule[.25\baselineskip]{1pt}{.1em}}\hfill\ifnum\originalboxwidth=\z@\else\rlap{\rule[.25\baselineskip]{\arraycolsep+\p@}{.1em}}\fi}\\
+
 % update rows
 \let\bttb@toprule\toprule
 \def\toprule{\arrayrulecolor{paletteA}\bttb@toprule[.15em]\arrayrulecolor{shadeA}}
@@ -43,6 +43,8 @@
 \let\bttb@cmidrule\cmidrule
 \def\cmidrule{\arrayrulecolor{shadeA}\bttb@cmidrule[.1em]}
 
-\def\bttb@tablebreak#1{\textit{#1}}
-
+\newsavebox\@bttb@b@x
+\def\bttb@tablebreak#1{%
+\specialrule{.1em}{\dimexpr1em+\aboverulesep}{\belowrulesep}%
+\noalign{\parskip\z@\parindent\z@\savebox\@bttb@b@x{\textit{#1}\quad}\vspace*{\dimexpr-\ht\@bttb@b@x-\dp\@bttb@b@x-.1em}\par}\smash{\fboxsep\z@\hspace*{\dimexpr-\arraycolsep-\p@}\colorbox{white}{\hspace*{\dimexpr\arraycolsep+\p@}\textit{#1}\quad}}}
 \endinput

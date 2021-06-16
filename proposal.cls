@@ -42,8 +42,9 @@ fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrartcl}
 }
 
 %% Microtype
-\RequirePackage[activate={true,nocompatibility},final,kerning=true,spacing=true,babel]{microtype}
-
+\RequirePackage{ifluatex}
+\ifluatex\else\PassOptionsToPackage{kerning=true,spacing=true}{microtype}\fi
+\RequirePackage[activate={true,nocompatibility},final,babel]{microtype}
 % we do not want protusion in table of*
 \preto\tableofcontents{\microtypesetup{protrusion=false}}
 \appto\tableofcontents{\microtypesetup{protrusion=true}}

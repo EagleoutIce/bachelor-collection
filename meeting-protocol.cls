@@ -183,6 +183,7 @@ topmargin,background,contents={%
 %% Figures, Tables and refs
 %% -----------------------------------------------------------------------------
 
+\show\markboth
 \appto\captionsngerman{\def\figurename{Abbildung}\def\figureautorefname{\figurename}\def\tablename{Tabelle}\def\tableautorefname{\tablename}}
 \appto\captionsenglish{\def\figurename{Figure}\def\figureautorefname{\figurename}\def\tablename{Table}\def\tableautorefname{\tablename}}
 

@@ -182,9 +182,13 @@ topmargin,background,contents={%
 \cfoot{\bt@runningpage}%
 }
 
+\AddLayersAtBeginOfPageStyle{bt@frontmatter}{bt.digital.head.ruler}
+
 \defpairofpagestyles[scrheadings]{bt@chapter@frontmatter}{%
 \cfoot{\bt@runningpage}%
 }
+
+\AddLayersAtBeginOfPageStyle{bt@chapter@frontmatter}{bt.digital.head.ruler}
 
 \appto\frontmatter{\pagestyle{bt@frontmatter}\renewcommand{\chapterpagestyle}{bt@chapter@frontmatter}}
 \appto\mainmatter{\pagestyle{scrheadings}\renewcommand{\chapterpagestyle}{bt@chapter}}
@@ -448,18 +452,26 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
 % garbage mp figures
-\NewEnviron{marginfig}[2][]{\makenote{\BODY\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
+\NewEnviron{marginfig}[2][]{\makenote{\BODY\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}\smallskip}}
 
-\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\makenote{\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\makenote{\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}\smallskip}\end{minipage}\par}
 
-\NewEnviron{fig}[2][]{\begin{figure}\makenote{\captionsetup{aboveskip=-\baselineskip}\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
+\NewEnviron{fig}[2][]{\begin{figure}\makenote{\captionsetup{aboveskip=-\baselineskip}\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}\smallskip}\BODY\end{figure}}
 
-\newenvironment{abstract}{\chapter*{Abstract}}{\par}
+\newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
+  \nohyper{\typesetAuthor}{\footnotesize\\*
+  \textcolor{gray}{\today}\par}%
+\endflushright\par}
 
 \LetLtxMacro\basefootnote\footnote
 \newcounter{side@fn}
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
-\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \makenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\arabic{side@fn}}$\rangle$ #1}}
+\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \makenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\arabic{side@fn}}$\rangle$ #1\smallskip}}
 %
+\long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par\smallskip}
+\long\def\csummary{\@ifstar\@@csummary\@csummary}
+\long\def\@@csummary#1{\addtocontents{toc}{\protect\makenote{\protect\let\protect\item\protect\bt@csum@sitem\textbf{Chapter \thechapter:}\par#1}}}
+\long\def\@csummary#1{\addtocontents{toc}{\protect\makenote{\protect\parskip1.5pt\textbf{Chapter \thechapter:}\smallskip\newline#1\smallskip}}}
+
 \endinput

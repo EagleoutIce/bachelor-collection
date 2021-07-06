@@ -467,33 +467,19 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 % garbage mp figures
 \NewEnviron{marginfig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\par\hspace*{\dimexpr\linewidth-\marginparwidth}\begin{minipage}[t][\z@]{\marginparwidth}%
-  \captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}%
-\end{minipage}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vspace{5pt}\par\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
-\def\bt@pinpoint@cap{\captionsetup{belowskip=\z@,aboveskip=\z@}}
-\def\@bt@fig@raisednote#1#2#3{\bt@pinpoint@cap% we have to pinpoint the target
-\savebox0{\parbox\linewidth{\captionof{#3}{#2}}}% calculate dimens
-\addtocounter{#3}{-1}% account for void caption
-\edef\@tmp{\the\dimexpr1.75\baselineskip+\ht0+\dp0}% get 0 dimens to account for early eject
-\raisebox\@tmp{\sidenote{\protect\bt@pinpoint@cap\protect\captionof{#3}[\ifx!#1!#2\else#1\fi]{#2}}}}
-\NewEnviron{fig}[2][]{%
-\begin{figure}%
-  \BODY\@bt@fig@raisednote{#1}{#2}{figure}%
-\end{figure}}
-\NewEnviron{rawfig}[2][]{\BODY\@bt@fig@raisednote{#1}{#2}{figure}}
+\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
+
+\NewEnviron{rawfig}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY}
 
 \NewEnviron{margintbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widetbl}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\par\hspace*{\dimexpr\linewidth-\marginparwidth}\begin{minipage}[t][\z@]{\marginparwidth}%
-  \captionof{table}[\ifx!#1!#2\else#1\fi]{#2}%
-\end{minipage}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vspace{9pt}\par\sidenote{\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
-\NewEnviron{tbl}[2][]{%
-\begin{table}%
-  \BODY\@bt@fig@raisednote{#1}{#2}{table}%
-\end{table}}
-\NewEnviron{rawtbl}[2][]{\BODY\@bt@fig@raisednote{#1}{#2}{table}}
+\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{table}}
+
+\NewEnviron{rawtbl}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\BODY}
 
 \newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
   \nohyper{\typesetAuthor}{\footnotesize\\*

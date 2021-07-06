@@ -60,7 +60,7 @@
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
 \newlength\bt@len@margin \bt@len@margin=2.25cm
-\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.85cm]{geometry}
+\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm]{geometry}
 \flushbottom
 
 
@@ -261,7 +261,7 @@ topmargin,background,contents={%
 \def\bt@fig@style#1{\bt@fig@style@nonbold{{\sbfamily#1}}}
 
 \DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1 #2:~~}}}
-\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,footnotesize},labelformat=bt-caption,labelsep=none}
+\captionsetup{format=plain,indention=.33ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none}
 
 \RequirePackage{lecture-links}
 \RequirePackage[outline]{contour}
@@ -352,7 +352,7 @@ topmargin,background,contents={%
 
 \def\bt@subsectionencap#1#2{%
 \@hangfrom{%
-  \sbox0{\color{bt@numcol}#1}%
+  \sbox0{\color{bt@numcol}#1\thinspace}%
   \bt@secnumblock
 }{#2}}
 
@@ -393,18 +393,18 @@ topmargin,background,contents={%
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
-beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.45\baselineskip plus .33\baselineskip minus .33\baselineskip,%
 afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-afterskip=-.65\parskip]{subsection}
+afterskip=-.6\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=on,tocindent=7.15em,afterskip=1ex,%
 beforeskip=1\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
 runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
-afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
+afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
 \def\@bt@c@pre#1{\phantomsection\nobreak#1\nobreak}
@@ -421,27 +421,31 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 \let\bt@chapter\chapter
 \def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
 \long\def\bt@star@chapter#1{\bt@chapter*{#1}}
-\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\thechapter)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2}\def\leftmark{#1}\def\rightmark{}\minitoc}
+\newif\ifappendix
+\preto\appendix{\appendixtrue}
+
+\def\@nextchap{\ifappendix\expandafter\@alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
+\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2}\def\leftmark{#1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{\dimexpr-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
 \def\setsectionspace#1{\def\bt@sec@spaceguard{\needspace{#1}}}
 \setsectionspace{3\baselineskip}
 \let\bt@section\section
-\def\section{\syncwithnotecolumn\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
+\def\section{\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
 \def\bt@star@section[#1]#2{\bt@section*[#1]{#2}}
 \def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{#1}}
 
 \let\bt@subsection\subsection
 \def\subsection{\@ifstar{\@dblarg\bt@star@subsection}{\@dblarg\bt@nostar@subsection}}
 \def\bt@star@subsection[#1]#2{\bt@subsection*[#1]{#2}\bt@subsecmark{#2}}
-\def\bt@nostar@subsection[#1]#2{\pdfbookmark[2]{\arabic{section}.\the\numexpr\value{subsection}+1\relax)\space#1}{bt@subsec@@id@\thesubsection}\nobreak\bt@subsection[#1]{{\bt@subsecmark{#1}}#2}}
+\def\bt@nostar@subsection[#1]#2{\bt@sec@spaceguard\pdfbookmark[2]{\arabic{section}.\the\numexpr\value{subsection}+1\relax)\space#1}{bt@subsec@@id@\thesubsection}\nobreak\bt@subsection[#1]{{\bt@subsecmark{#1}}#2}}
 
 \newcounter{bt@paragraph}[subsection]
 \let\bt@paragraph\paragraph
 \def\paragraph{\@ifstar{\bt@star@paragraph}{\@dblarg\bt@nostar@paragraph}}
 \def\bt@star@paragraph#1{\stepcounter{bt@paragraph}\pdfbookmark[3]{#1}{bt@paragr@@id@\thesubsection @\thebt@paragraph}\bt@paragraph*{#1}}
-\def\bt@nostar@paragraph[#1]#2{\stepcounter{bt@paragraph}\@bt@c@pre{\pdfbookmark[3]{\roman{bt@paragraph})\space#1}{bt@paragr@@id@\thesubsection @\thebt@paragraph}}\bt@paragraph[#1]{#2}}
+\def\bt@nostar@paragraph[#1]#2{\bt@sec@spaceguard\stepcounter{bt@paragraph}\@bt@c@pre{\pdfbookmark[3]{\roman{bt@paragraph})\space#1}{bt@paragr@@id@\thesubsection @\thebt@paragraph}}\bt@paragraph[#1]{#2}}
 
 %% Upper Segment
 \def\bt@supervisors{}
@@ -463,9 +467,33 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 % garbage mp figures
 \NewEnviron{marginfig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widefig}[2][]{\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\sidenote{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\par\hspace*{\dimexpr\linewidth-\marginparwidth}\begin{minipage}[t][\z@]{\marginparwidth}%
+  \captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}%
+\end{minipage}\end{minipage}\par}
 
-\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
+\def\bt@pinpoint@cap{\captionsetup{belowskip=\z@,aboveskip=\z@}}
+\def\@bt@fig@raisednote#1#2#3{\bt@pinpoint@cap% we have to pinpoint the target
+\savebox0{\parbox\linewidth{\captionof{#3}{#2}}}% calculate dimens
+\addtocounter{#3}{-1}% account for void caption
+\edef\@tmp{\the\dimexpr1.75\baselineskip+\ht0+\dp0}% get 0 dimens to account for early eject
+\raisebox\@tmp{\sidenote{\protect\bt@pinpoint@cap\protect\captionof{#3}[\ifx!#1!#2\else#1\fi]{#2}}}}
+\NewEnviron{fig}[2][]{%
+\begin{figure}%
+  \BODY\@bt@fig@raisednote{#1}{#2}{figure}%
+\end{figure}}
+\NewEnviron{rawfig}[2][]{\BODY\@bt@fig@raisednote{#1}{#2}{figure}}
+
+\NewEnviron{margintbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}}
+
+\NewEnviron{widetbl}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\par\hspace*{\dimexpr\linewidth-\marginparwidth}\begin{minipage}[t][\z@]{\marginparwidth}%
+  \captionof{table}[\ifx!#1!#2\else#1\fi]{#2}%
+\end{minipage}\end{minipage}\par}
+
+\NewEnviron{tbl}[2][]{%
+\begin{table}%
+  \BODY\@bt@fig@raisednote{#1}{#2}{table}%
+\end{table}}
+\NewEnviron{rawtbl}[2][]{\BODY\@bt@fig@raisednote{#1}{#2}{table}}
 
 \newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
   \nohyper{\typesetAuthor}{\footnotesize\\*
@@ -594,4 +622,14 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
   % \fi
 }
 \hfuzz=\dimexpr\marginparsep+\marginparwidth
+
+\c@topnumber\tw@
+\c@bottomnumber\@ne
+\c@totalnumber\thr@@
+\def\floatpagefraction{.75}% 0.2
+\def\topfraction{.5}% 0.7
+\g@addto@macro\end@float{%
+\ifnum\@floatpenalty<0 \ifnum\@floatpenalty<-\@Mii
+\else\ifhmode\if@ignore\penalty\@M \hskip\z@skip\fi\fi
+\fi\fi}
 \endinput

@@ -4,7 +4,7 @@
 \def\LayoutName{bachelor-thesis}
 \ProvidesClass{\LayoutName}[2021/04/04 documentclass for bachelor-thesis]
 % First we setup the document options
-\LoadClass[numbers=noenddot,fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper,headings=big]{scrbook}
+\LoadClass[numbers=noenddot,fontsize=10pt,twoside=false,footnotes=nomultiple,a4paper,headings=big]{scrbook}
 \KOMAoption{listof}{leveldown,chaptergapline,totocnumbered}
 
 %% Options
@@ -14,6 +14,7 @@
 \DeclareStringOption[GreenWater]{cpalette}
 \DeclareStringOption[DeepInk]{tpalette}
 \DeclareBoolOption{debug}
+\DeclareBoolOption{draft}
 \ProcessKeyvalOptions*
 
 \ifbt@debug
@@ -30,10 +31,10 @@
 \RequirePackage{lecture-coverpage}
 
 \RequirePackage[ngerman,main=english]{babel}
-\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,environ,tikz,tcolorbox}
+\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,environ,tikz,tcolorbox,ragged2e}
 \RequirePackage{uulm-logos}
 
-
+\linespread{1.05}
 %% Fonts
 \AtEndPreamble{%
 \RequirePackage[sc,osf]{mathpazo}
@@ -65,7 +66,7 @@
 
 %% Hyperlinks => Figures, Tables and refs
 \RequirePackage[%
-  unicode=true,pdfencoding=auto,psdextra,pdftex, %
+  unicode=true,pdfencoding=auto,psdextra,luatex, %
   backref, pagebackref=false,%
   bookmarks=true, bookmarksopen=false, pdfdisplaydoctitle, %
   pdfborder={0 0 0}, breaklinks=true,%
@@ -75,8 +76,10 @@
 
 \RequirePackage{bookmark}
 
-\RequirePackage{scrlayer-notecolumn}
-\setkomafont{notecolumn.marginpar}{\scriptsize\itshape\color{gray}\raggedright}
+\ifbt@draft
+\RequirePackage{marginnote}
+\else \RequirePackage[draft=false,autoclearnotecolumns]{scrlayer-notecolumn}
+\setkomafont{notecolumn.marginpar}{\scriptsize\itshape\color{gray}}\fi
 
 % just erases color
 \def\nohyper#1{\begingroup\bt@disablehyper#1\endgroup}
@@ -161,7 +164,7 @@ topmargin,background,contents={%
 \ohead{\begingroup\normalsize\normalfont\linespread{1.25}\begin{tikzpicture}[remember picture,overlay]
   \node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
 \end{tikzpicture}\endgroup}%
-\ihead{\parbox[t][3em]{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
+\ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
 \cfoot{\bt@runningpage}
 }
 
@@ -178,7 +181,7 @@ topmargin,background,contents={%
 \AddLayersAtBeginOfPageStyle{bt@chapter}{bt.digital.head.ruler}
 
 \defpairofpagestyles[scrheadings]{bt@frontmatter}{%
-\ihead{\parbox[t][3em]{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
+\ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
 \cfoot{\bt@runningpage}%
 }
 
@@ -257,8 +260,8 @@ topmargin,background,contents={%
 \def\sbfamily{\fontseries{sb}\selectfont}
 \def\bt@fig@style#1{\bt@fig@style@nonbold{{\sbfamily#1}}}
 
-\DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\paletteA{#1 #2:~~}}}
-\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,it,footnotesize},labelformat=bt-caption,labelsep=none}
+\DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1 #2:~~}}}
+\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,footnotesize},labelformat=bt-caption,labelsep=none}
 
 \RequirePackage{lecture-links}
 \RequirePackage[outline]{contour}
@@ -366,13 +369,10 @@ topmargin,background,contents={%
 %% Table of contents & sectioning
 
 \let\old@tableofcontents\tableofcontents
-\preto\tableofcontents{%
-\begingroup
-\phantomsection\label{toc}\pdfbookmark[0]{\contentsname}{bt@toc@@id@toc}%
-}
+\preto\tableofcontents{\begingroup}
 \appto\tableofcontents{\endgroup}
 
-\deftocheading{toc}{\chapter*{\contentsname}}
+\deftocheading{toc}{\chapter*{\contentsname}\label{toc}\pdfbookmark[0]{\contentsname}{bt@toc@@id@toc}}
 
 \CloneTOCEntryStyle{tocline}{bt@toc@section}
 \TOCEntryStyleStartInitCode{bt@toc@section}{%
@@ -418,12 +418,19 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@getsubsecmark{\csname bt@subsec@\thesection @\endcsname}
 \def\ifbt@subsecmark{\ifcsname bt@subsec@\thesection @\endcsname\expandafter\bt@firstoftwo\else\expandafter\bt@secondoftwo\fi}
 
+\let\bt@chapter\chapter
+\def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
+\long\def\bt@star@chapter#1{\bt@chapter*{#1}}
+\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\thechapter)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2}\def\leftmark{#1}\def\rightmark{}\minitoc}
+
+\def\bt@sum@prechap#1{\vspace*{\dimexpr-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
+
 \def\setsectionspace#1{\def\bt@sec@spaceguard{\needspace{#1}}}
 \setsectionspace{3\baselineskip}
 \let\bt@section\section
-\def\section{\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
+\def\section{\syncwithnotecolumn\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
 \def\bt@star@section[#1]#2{\bt@section*[#1]{#2}}
-\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}}
+\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{#1}}
 
 \let\bt@subsection\subsection
 \def\subsection{\@ifstar{\@dblarg\bt@star@subsection}{\@dblarg\bt@nostar@subsection}}
@@ -454,11 +461,11 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
 % garbage mp figures
-\NewEnviron{marginfig}[2][]{\makenote{\BODY\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}\smallskip}}
+\NewEnviron{marginfig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\makenote{\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}\smallskip}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\BODY\sidenote{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
-\NewEnviron{fig}[2][]{\begin{figure}\makenote{\captionsetup{aboveskip=-\baselineskip}\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}\smallskip}\BODY\end{figure}}
+\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
 
 \newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
   \nohyper{\typesetAuthor}{\footnotesize\\*
@@ -469,17 +476,122 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 \newcounter{side@fn}
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
-\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \makenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\arabic{side@fn}}$\rangle$ #1\smallskip}}
+\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\arabic{side@fn}}$\rangle$ #1}}
 %
-\long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par\smallskip}
-\long\def\csummary{\@ifstar\@@csummary\@csummary}
-\long\def\@@csummary#1{\addtocontents{toc}{\protect\makenote{\protect\let\protect\item\protect\bt@csum@sitem\textbf{Chapter \thechapter:}\par#1}}}
-\long\def\@csummary#1{\addtocontents{toc}{\protect\makenote{\protect\parskip1.5pt\textbf{Chapter \thechapter:}\smallskip\newline#1\smallskip}}}
+\long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
+\long\def\csummary#1{\protect\sidenote[\z@]{\textbf{Chapter \thechapter:}\smallskip\newline\relax#1}}
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%
-  \sbox0{\scalebox{2.33}{\color{bt@numcol}\thechapter}}%
+  \sbox0{\scalebox{2.33}{\color{bt@numcol}\thechapter}\thinspace}%
   \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
+\def\sidenote{\@ifstar\@sidenote\@@sidenote}
+\long\def\bt@sn@guard#1#2{\raisebox{#1}{\parbox{\linewidth}{\RaggedRight#2\medskip}}}
+\def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[1.66\baselineskip]}}
+\def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[1.66\baselineskip]}}
+\ifbt@draft
+\long\def\s@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
+\long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
+\else
+\long\def\s@sidenote[#1]#2{\makenote*{\bt@sn@guard{#1}{#2}}}
+\long\def\s@@sidenote[#1]#2{\makenote{\protect\bt@sn@guard{#1}{#2}}}
+\fi
+\def\cvsep{\smallskip\newline}
+
+
+\RequirePackage[tight,k-tight,undotted]{minitoc}
+\AtBeginDocument{\dominitoc[n]}
+\mtcsetrules{*}{off}
+\def\mtcSfont{\small\rmfamily\upshape}
+\mtcindent\z@
+\def\mtcoffset{0pt}
+\let\bt@mtc@numberline\@gobble
+\def\bt@thirdofthree#1#2#3{#3}% gobble mtc fonts :) they are hacked into the pagenum and destroy hyperpage :)
+\newif\if@bt@mtc@nxt@
+\def\@mtcstyles{\normalfont\global\@bt@mtc@nxt@false\vspace*{\dimexpr-4.75\baselineskip-\parskip}\par\let\numberline\bt@mtc@numberline\def\l@section##1##2{\unskip\if@bt@mtc@nxt@\space\thinspace\textbullet\thinspace\space\else\global\@bt@mtc@nxt@true\fi\mbox{\nohyper{##1},~~\expandafter\hyperpage\expandafter{\bt@thirdofthree##2}}}}
+\preto\minitoc{\unskip\minipage{\dimexpr\linewidth+\marginparsep+\marginparwidth-2\fboxsep}\parskip\z@\par\@mtcstyles}\appto\minitoc{\endminipage\bigskip\par}
+
+% deny minitoc the filtering of subsections and lower
+\def\MTC@contentsline#1#2#3#4{%
+  \gdef\themtc{\arabic{mtc}}%
+  \expandafter\ifx\csname #1\endcsname\chapter
+    \stepcounter{mtc}%
+    \if@mtc@longext@%
+      \mtcPackageInfo[I0033]{minitoc}%
+        {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+        {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \mtc@toks{\noexpand\leavevmode #2}%
+  \expandafter\ifx\csname #1\endcsname\appendix
+    \stepcounter{mtc}%
+    \if@mtc@longext@%
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.mtc\themtc\@gobble}%
+      \def\mtcname{\jobname.mtc\themtc}%
+    \else
+      \mtcPackageInfo[I0033]{minitoc}%
+         {Writing\space\jobname.M\themtc\@gobble}%
+      \def\mtcname{\jobname.M\themtc}%
+    \fi
+    \immediate\closeout\tf@mtc
+    \immediate\openout\tf@mtc=\mtcname
+  \fi
+  \expandafter\ifx\csname #1\endcsname\section
+    \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  \fi
+  % \expandafter\ifx\csname #1\endcsname\subsection
+  %   \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\subsubsection
+  %   \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\paragraph
+  %   \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\subparagraph
+  %   \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\coffee
+  %   \MTC@WriteCoffeeline{#1}{#3}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\starchapter
+  %   \stepcounter{mtc}%
+  %   \if@mtc@longext@
+  %     \mtcPackageInfo[I0033]{minitoc}%
+  %        {Writing\space\jobname.mtc\themtc\@gobble}%
+  %     \def\mtcname{\jobname.mtc\themtc}%
+  %   \else
+  %     \mtcPackageInfo[I0033]{minitoc}%
+  %        {Writing\space\jobname.M\themtc\@gobble}%
+  %     \def\mtcname{\jobname.M\themtc}%
+  %   \fi
+  %   \immediate\closeout\tf@mtc
+  %   \immediate\openout\tf@mtc=\mtcname
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\starsection
+  %   \MTC@WriteContentsline{#1}{mtcS}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\starsubsection
+  %   \MTC@WriteContentsline{#1}{mtcSS}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\starsubsubsection
+  %   \MTC@WriteContentsline{#1}{mtcSSS}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\starparagraph
+  %   \MTC@WriteContentsline{#1}{mtcP}{#3}{#4}%
+  % \fi
+  % \expandafter\ifx\csname #1\endcsname\starsubparagraph
+  %   \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
+  % \fi
+}
+\hfuzz=\dimexpr\marginparsep+\marginparwidth
 \endinput

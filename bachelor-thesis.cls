@@ -4,7 +4,7 @@
 \def\LayoutName{bachelor-thesis}
 \ProvidesClass{\LayoutName}[2021/04/04 documentclass for bachelor-thesis]
 % First we setup the document options
-\LoadClass[numbers=noenddot,fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper]{scrbook}
+\LoadClass[numbers=noenddot,fontsize=11pt,twoside=false,footnotes=nomultiple,a4paper,headings=big]{scrbook}
 \KOMAoption{listof}{leveldown,chaptergapline,totocnumbered}
 
 %% Options
@@ -390,6 +390,7 @@ topmargin,background,contents={%
 \DeclareTOCStyleEntry[]{bt@toc@section}{subsection}
 
 \def\bt@len@aftersec{.3\baselineskip}
+
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
 beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
@@ -404,6 +405,7 @@ beforeskip=1\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
 runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
 afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
+
 
 \def\@bt@c@pre#1{\phantomsection\nobreak#1\nobreak}
 \def\bt@firstoftwo#1#2{#1}\def\bt@secondoftwo#1#2{#2}
@@ -473,5 +475,11 @@ afterskip=-.65\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\csummary{\@ifstar\@@csummary\@csummary}
 \long\def\@@csummary#1{\addtocontents{toc}{\protect\makenote{\protect\let\protect\item\protect\bt@csum@sitem\textbf{Chapter \thechapter:}\par#1}}}
 \long\def\@csummary#1{\addtocontents{toc}{\protect\makenote{\protect\parskip1.5pt\textbf{Chapter \thechapter:}\smallskip\newline#1\smallskip}}}
+
+\def\chapterextra{}
+\renewcommand*\chapterformat{%
+  \sbox0{\scalebox{2.33}{\color{bt@numcol}\thechapter}}%
+  \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
+  \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
 \endinput

@@ -79,7 +79,7 @@
 \ifbt@draft
 \RequirePackage{marginnote}
 \else \RequirePackage[draft=false,autoclearnotecolumns]{scrlayer-notecolumn}
-\setkomafont{notecolumn.marginpar}{\scriptsize\itshape\color{gray}}\fi
+\setkomafont{notecolumn.marginpar}{\footnotesize\itshape\color{gray}}\fi
 
 % just erases color
 \def\nohyper#1{\begingroup\bt@disablehyper#1\endgroup}
@@ -261,7 +261,7 @@ topmargin,background,contents={%
 \def\bt@fig@style#1{\bt@fig@style@nonbold{{\sbfamily#1}}}
 
 \DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1 #2:~~}}}
-\captionsetup{format=plain,indention=.25ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.66\baselineskip}
+\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.66\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
 
 \setcounter{tocdepth}{1}
 
@@ -471,7 +471,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 % garbage mp figures
 \NewEnviron{sidefig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip5pt\par\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
 \NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
 
@@ -479,7 +479,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip5pt\par\sidenote{\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
 \NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{table}}
 
@@ -494,7 +494,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \newcounter{side@fn}[chapter]
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
-\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\arabic{side@fn}}$\rangle$ #1}}
+\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\protect\sbfamily\arabic{side@fn}}$\rangle$ #1}}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
 \long\def\csummary#1{\protect\sidenote[\z@]{\textbf{Chapter \thechapter:}\smallskip\newline\relax#1}}
@@ -506,9 +506,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
-\long\def\bt@sn@guard#1#2{\raisebox{#1}{\parbox{\linewidth}{\RaggedRight#2\medskip}}}
-\def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[1.66\baselineskip]}}
-\def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[1.66\baselineskip]}}
+\long\def\bt@sn@guard#1#2{\raisebox{#1}{\parbox{\linewidth}{\RaggedRight#2\vskip5pt}}}
+\def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[7\p@]}}
+\def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[7\p@]}}
 \ifbt@draft
 \long\def\s@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
 \long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
@@ -624,7 +624,8 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \fi\fi}
 
 \def\bt@lotlof@base#1#2{\@tempdima=2em\nohyper{#1}\dotfill\hb@xt@\@pnumwidth{\hss\hyperpage{#2}\kern-\p@\kern\p@}\par}
-\def\@loflotstyles{\begingroup\let\l@figure\bt@lotlof@base \let\l@table\bt@lotlof@base}
+\def\bt@lotlof@xchap#1#2{}
+\def\@loflotstyles{\begingroup\let\l@figure\bt@lotlof@base \let\l@table\bt@lotlof@base \let\l@xchapter\bt@lotlof@xchap}
 \preto\listoffigures\@loflotstyles \appto\listoffigures\endgroup
 \preto\listoftables\@loflotstyles \appto\listoftables\endgroup
 

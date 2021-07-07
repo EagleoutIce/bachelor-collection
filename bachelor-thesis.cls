@@ -95,9 +95,9 @@
 
 \setlist{leftmargin=1.25em,labelwidth=1.25em,font=\normalfont\slshape}
 \newlist{inlist}{enumerate*}{1}
-\setlist[inlist]{itemjoin={{, }},itemjoin*={{, and }},label=($\roman*$),mode=boxed}
+\setlist[inlist]{itemjoin={{, }},itemjoin*={{, and }},label=$\roman*$),mode=boxed}
 \newlist{orlist}{enumerate*}{1}
-\setlist[orlist]{itemjoin={{, }},itemjoin*={{, or }},label=($\alph*$),mode=boxed}
+\setlist[orlist]{itemjoin={{, }},itemjoin*={{, or }},label=$\alph*$),mode=boxed}
 \setlist[description]{labelwidth=*,topsep=\z@ plus 2pt,partopsep=\z@ plus 2pt}
 \setlist[enumerate,1]{label=\arabic*.}
 \setlist[enumerate,2]{label=\roman*.}

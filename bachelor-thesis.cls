@@ -422,9 +422,11 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
 \long\def\bt@star@chapter#1{\bt@chapter*{#1}}
 \newif\ifappendix
+\newif\ifdisableside
+\def\disableside{\disablesidetrue}
 \preto\appendix{\appendixtrue}
 
-\def\@nextchap{\ifappendix\expandafter\@alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
+\def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
 \long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2}\def\leftmark{#1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{\dimexpr-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
@@ -618,4 +620,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \ifnum\@floatpenalty<0 \ifnum\@floatpenalty<-\@Mii
 \else\ifhmode\if@ignore\penalty\@M \hskip\z@skip\fi\fi
 \fi\fi}
+
+\def\bt@lotlof@base#1#2{\@tempdima=2em\nohyper{#1}\dotfill\hb@xt@\@pnumwidth{\hss\hyperpage{#2}\kern-\p@\kern\p@}\par}
+\def\@loflotstyles{\begingroup\let\l@figure\bt@lotlof@base \let\l@table\bt@lotlof@base}
+\preto\listoffigures\@loflotstyles \appto\listoffigures\endgroup
+\preto\listoftables\@loflotstyles \appto\listoftables\endgroup
 \endinput

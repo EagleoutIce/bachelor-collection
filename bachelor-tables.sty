@@ -27,7 +27,8 @@
 }
 
 \def\btabular#1{\begingroup
-\bttb@smallspace=\dimexpr\arraycolsep+1ex\relax
+\bttb@smallspace=\dimexpr\arraycolsep+2ex\relax
+\edef\bttsep{\the\dimexpr\bttb@smallspace-3pt}%
 \global\bttb@row\z@
 \let\tablebreak\bttb@tablebreak
 \tabular{>{\global\advance\bttb@row\@ne}#1}}

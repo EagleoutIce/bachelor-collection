@@ -74,7 +74,7 @@
   bookmarkstype=X@b@X% erase
 ]{hyperref}
 
-\RequirePackage{bookmark}
+\RequirePackage{hypcap,bookmark}
 
 \ifbt@draft
 \RequirePackage{marginnote}
@@ -93,12 +93,12 @@
 \PassOptionsToPackage{inline}{enumitem}
 \RequirePackage{enumitem}
 
-\setlist{leftmargin=1.25em,labelwidth=1.25em}
+\setlist{leftmargin=1.25em,labelwidth=1.25em,font=\normalfont\slshape}
 \newlist{inlist}{enumerate*}{1}
 \setlist[inlist]{itemjoin={{, }},itemjoin*={{, and }},label=($\roman*$),mode=boxed}
 \newlist{orlist}{enumerate*}{1}
 \setlist[orlist]{itemjoin={{, }},itemjoin*={{, or }},label=($\alph*$),mode=boxed}
-\setlist[description]{labelwidth=*,font=\normalfont\itshape,topsep=\z@ plus 2pt,partopsep=\z@ plus 2pt}
+\setlist[description]{labelwidth=*,topsep=\z@ plus 2pt,partopsep=\z@ plus 2pt}
 \setlist[enumerate,1]{label=\arabic*.}
 \setlist[enumerate,2]{label=\roman*.}
 \setlist[enumerate,3]{label=\alph*.}
@@ -261,7 +261,9 @@ topmargin,background,contents={%
 \def\bt@fig@style#1{\bt@fig@style@nonbold{{\sbfamily#1}}}
 
 \DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1 #2:~~}}}
-\captionsetup{format=plain,indention=.33ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none}
+\captionsetup{format=plain,indention=.25ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.66\baselineskip}
+
+\setcounter{tocdepth}{1}
 
 \RequirePackage{lecture-links}
 \RequirePackage[outline]{contour}
@@ -393,15 +395,15 @@ topmargin,background,contents={%
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
-beforeskip=1.45\baselineskip plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.75\baselineskip plus .33\baselineskip minus .33\baselineskip,%
 afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
-beforeskip=1\baselineskip plus .33\baselineskip minus .33\baselineskip,%
-afterskip=-.6\parskip]{subsection}
+beforeskip=1.5\baselineskip plus .33\baselineskip minus .33\baselineskip,%
+afterskip=-.5\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=on,tocindent=7.15em,afterskip=1ex,%
-beforeskip=1\baselineskip]{subsubsection}
+beforeskip=1.5\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
 runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
 afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
@@ -467,17 +469,17 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
 % garbage mp figures
-\NewEnviron{marginfig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
+\NewEnviron{sidefig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widefig}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vspace{5pt}\par\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip5pt\par\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
 \NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
 
 \NewEnviron{rawfig}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY}
 
-\NewEnviron{margintbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}}
+\NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}}
 
-\NewEnviron{widetbl}[2][]{\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vspace{9pt}\par\sidenote{\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip5pt\par\sidenote{\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
 
 \NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{table}}
 
@@ -512,7 +514,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
 \else
 \long\def\s@sidenote[#1]#2{\makenote*{\bt@sn@guard{#1}{#2}}}
-\long\def\s@@sidenote[#1]#2{\makenote{\protect\bt@sn@guard{#1}{#2}}}
+\long\def\s@@sidenote[#1]#2{{\makenote{\protect\bt@sn@guard{#1}{#2}}}}
 \fi
 \def\cvsep{\smallskip\newline}
 

@@ -31,7 +31,7 @@
 \RequirePackage{lecture-coverpage}
 
 \RequirePackage[ngerman,main=english]{babel}
-\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,environ,tikz,tcolorbox,ragged2e}
+\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,environ,tikz,tcolorbox,ragged2e,chngcntr}
 \RequirePackage{uulm-logos}
 
 \linespread{1.05}
@@ -491,7 +491,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \endflushright\par}
 
 \LetLtxMacro\basefootnote\footnote
-\newcounter{side@fn}
+\newcounter{side@fn}[chapter]
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
 \long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\arabic{side@fn}}$\rangle$ #1}}
@@ -627,4 +627,6 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\@loflotstyles{\begingroup\let\l@figure\bt@lotlof@base \let\l@table\bt@lotlof@base}
 \preto\listoffigures\@loflotstyles \appto\listoffigures\endgroup
 \preto\listoftables\@loflotstyles \appto\listoftables\endgroup
+
+\@addtoreset{footnote}{chapter}
 \endinput

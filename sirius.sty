@@ -136,7 +136,7 @@
   \edef\@blk@currid{\number\c@sirius@internal@id}%
   \pgfkeys{/sirius/block/.cd,defaults,#1,name=#2}%
 \let\sirius@current@entries\@empty % TODO: block nestings!
-#3%
+\relax#3%
 \g@addto@macro\sirius@currentbody{{
   \sirius@t id\sirius@t: \sirius@t\sirius@block@id\sirius@t,
   \sirius@t type\sirius@t: \sirius@t\sirius@block@type\sirius@t,
@@ -153,7 +153,7 @@
 % TODO: support for multiple singles?
 % Note Writing those directly does not work, as '\Block' has to perform
 % key calculation that mess up the naive write routine...
-\NewEnviron{sirius-draw}[2][]{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property
+\NewEnviron{sirius-draw}[2][]{\savebox\voidb@x{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property
 \c@sirius@internal@id0\relax
 \pgfkeys{/sirius/.cd,defaults,#1}%
 \let\sirius@currentbody\@empty % TODO: block nestings!
@@ -162,7 +162,7 @@
 \sirius@Model{\sirius@model@year@start}{\sirius@model@year@end}{\sirius@model@connectors}{\sirius@currentbody}%
 }}}}%
 \@sirius[\@sirius@extra]{.noouse-file}\relax
-\endgroup}
+\endgroup}}
 
 
 % TODO: give me block like interface:

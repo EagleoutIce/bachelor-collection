@@ -7,7 +7,7 @@
 \sirius{sirius.config}
 \graphicspath{{images/}}
 
-\siriusdefaults{host=http://0.0.0.0:8081,output-dir=images,freshness=3}
+\siriusdefaults{host=http://0.0.0.0:8081,output-dir=images,freshness=3,prefix='showcase_'}
 
 \begin{document}
 Halloo:
@@ -15,10 +15,12 @@ Halloo:
   \includegraphics[width=8cm]{single.pdf}
 \end{center}
 
-\begin{sirius-draw}[start-year=2025,offsets=-.33 -.33 .2 -.33]{Amazing}
+Draw: \fbox{\begin{sirius-draw}[start-year=2025,offsets=-.33 -.33 .2 -.33]{Amazing}
 \Block{Super-Block}{
   \Property{Mathe}{2 + 3 * 4}
 }
-\end{sirius-draw}
+\end{sirius-draw}}
+
+\includegraphics[width=8cm]{showcase_Amazing.pdf}
 
 \end{document}

@@ -29,6 +29,8 @@
   freshness/.store in    = \sirius@core@freshness,
   input-dir/.store in    = \sirius@core@input@dir,
   output-dir/.store in   = \sirius@core@output@dir,
+  prefix/.store in       = \sirius@core@prefix,
+  postfix/.store in      = \sirius@core@postfix,
   retain/.store in       = \sirius@core@defaults@retain,
   bb/.store in           = \sirius@core@defaults@bb,
   offsets/.store in      = \sirius@core@defaults@offsets, % TODO: clearer offset reads
@@ -39,7 +41,7 @@
     title=Sirius-Config,host=http://0.0.0.0:8080,
     description=Automatically generated sirius configuration,
     verbose=false,freshness=250,check-host=true,
-    input-dir=./,output-dir=./
+    input-dir=./,output-dir=./,prefix=,postfix=%
   },
   /sirius/block/.cd,
   id/.store in             = \sirius@block@id,
@@ -81,6 +83,8 @@
   ".check-host": \sirius@core@check@host,%
   "input-dir": "\sirius@core@input@dir",
   "output-dir": "\sirius@core@output@dir",% TODO: hooks and clips (.defaults)!
+  "prefix": "\sirius@core@prefix",
+  "postfix": "\sirius@core@postfix",
   "payloads": % Only one that will nest itself
     #1%
 }}

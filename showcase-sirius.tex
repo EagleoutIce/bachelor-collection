@@ -7,13 +7,18 @@
 \sirius{sirius.config}
 \graphicspath{{images/}}
 
+\siriusdefaults{host=http://0.0.0.0:8081,output-dir=images,freshness=3}
+
 \begin{document}
 Halloo:
 \begin{center}
   \includegraphics[width=8cm]{single.pdf}
 \end{center}
 
-\SiriusDraw[start-year=2025]{Amazing}{
-\Block[]{Super-Block}{}{}}
+\begin{sirius-draw}[start-year=2025,offsets=-.33 -.33 .2 -.33]{Amazing}
+\Block{Super-Block}{
+  \Property{Mathe}{2 + 3 * 4}
+}
+\end{sirius-draw}
 
 \end{document}

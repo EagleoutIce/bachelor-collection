@@ -20,10 +20,26 @@
   start-year/.store in  = \sirius@model@year@start,
   end-year/.store in    = \sirius@model@year@end,
   connectors/.store in  = \sirius@model@connectors,
+  % core
+  title/.store in        = \sirius@core@title,
+  description/.store in  = \sirius@core@description,
+  host/.store in         = \sirius@core@host,
+  verbose/.store in      = \sirius@core@verbose, % TODO: ifs/selection
+  check-host/.store in   = \sirius@core@check@host,
+  freshness/.store in    = \sirius@core@freshness,
+  input-dir/.store in    = \sirius@core@input@dir,
+  output-dir/.store in   = \sirius@core@output@dir,
+  retain/.store in       = \sirius@core@defaults@retain,
+  bb/.store in           = \sirius@core@defaults@bb,
+  offsets/.store in      = \sirius@core@defaults@offsets, % TODO: clearer offset reads
   defaults/.style={
     api-version=6,snapshots=[],
     start-year=2020,end-year=2040,%
-    connectors=[]%
+    connectors=[],retain=0,bb=m,offsets=-.33 -.25 -.25 -.25,%
+    title=Sirius-Config,host=http://0.0.0.0:8080,
+    description=Automatically generated sirius configuration,
+    verbose=false,freshness=250,check-host=true,
+    input-dir=./,output-dir=./
   },
   /sirius/block/.cd,
   id/.store in             = \sirius@block@id,
@@ -36,19 +52,35 @@
   defaults/.style={% TODO: bases
     id = \number\c@sirius@internal@id,
     type =  component,
-    x = 0, y = 0, width = 300,canvas-height=0%
+    x = 0, y = 0, width = 250,canvas-height=0%
+  },
+  /sirius/property/.cd,
+  id/.store in             = \sirius@elem@id,
+  tag/.store in            = \sirius@elem@tag,
+  name/.store in           = \sirius@elem@name,
+  defaults/.style={%
+    id = \number\c@sirius@internal@id,
+    tag = property,
   }
 }
 
+% TODO: sirius also for file execution?! (or at least allow option)
+\def\siriusdefaults#1{\pgfkeys{/sirius/defaults/.append style={#1}}}
+\def\siriusblockdefaults#1{\pgfkeys{/sirius/block/defaults/.append style={#1}}}
+\def\siriuspropertydefaults#1{\pgfkeys{/sirius/property/defaults/.append style={#1}}}
+
+% todo: toggle, nesting, and usability in normal user code for  hidden nests
 \def\sirius@t{\string\"}
 
 \long\def\sirius@Meta#1{{%
-  ".title": "Sirius-Config",%
-  ".description": "Automatically generated sirius configuration",%
-  ".verbose": false,%
-  "freshness": 10,
-  "host": "http://0.0.0.0:8081",% TODO: configure
-  ".check-host": true,%
+  ".title": "\sirius@core@title",%
+  ".description": "\sirius@core@description",%
+  ".verbose": \sirius@core@verbose,%
+  "freshness": \sirius@core@freshness,
+  "host": "\sirius@core@host",
+  ".check-host": \sirius@core@check@host,%
+  "input-dir": "\sirius@core@input@dir",
+  "output-dir": "\sirius@core@output@dir",% TODO: hooks and clips (.defaults)!
   "payloads": % Only one that will nest itself
     #1%
 }}
@@ -56,6 +88,11 @@
 \long\def\sirius@Single#1#2{{%
   "#1": {%
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
+    ".config": {
+      "retain": \sirius@core@defaults@retain,
+      "bb": "\sirius@core@defaults@bb",
+      "offsets": "\sirius@core@defaults@offsets"%
+    },
     "model-view-positions64": { "x": 0, "y": 0 },
     "model-view-zooms64": [ 1 ]%
     % TODO: configure others
@@ -68,6 +105,18 @@
   #3
 }}
 
+\newcommand*\sirius@Property[3][]{
+  \global\advance\c@sirius@internal@id\@ne
+  \edef\@elem@currid{\number\c@sirius@internal@id}%
+  \pgfkeys{/sirius/property/.cd,defaults,#1,name=#2}%
+  \g@addto@macro\sirius@current@entries{{
+    \sirius@t id\sirius@t: \sirius@t\sirius@elem@id\sirius@t,
+    \sirius@t tag\sirius@t: \sirius@t\sirius@elem@tag\sirius@t,
+    \sirius@t name\sirius@t: \sirius@t\sirius@elem@name\sirius@t,
+    \sirius@t formula\sirius@t: \sirius@t#3\sirius@t
+  }}%
+}
+
 \long\def\sirius@Model#1#2#3#4{ \sirius@t model\sirius@t: {
   \sirius@t startYear\sirius@t: #1,
   \sirius@t endYear\sirius@t: #2,
@@ -75,11 +124,15 @@
   \sirius@t rootBlocks\sirius@t: [#4]
 }}
 
-\def\sirius@Block{\@dblarg\@sirius@Block}
-\def\@sirius@Block[#1]#2#3#4{%
+% bases with '()' to make them fully optional
+\def\sirius@Block{\@ifnextchar[\@sirius@Block{\@sirius@Block[]}}
+\def\@sirius@Block[#1]#2#3{\@ifnextchar({\@sirius@Block[#1]{#2}{#3}}{\@@sirius@Block[#1]{#2}{#3}()}}%
+\def\@@sirius@Block[#1]#2#3(#4){%
   \global\advance\c@sirius@internal@id\@ne
   \edef\@blk@currid{\number\c@sirius@internal@id}%
   \pgfkeys{/sirius/block/.cd,defaults,#1,name=#2}%
+\let\sirius@current@entries\@empty % TODO: block nestings!
+#3%
 \g@addto@macro\sirius@currentbody{{
   \sirius@t id\sirius@t: \sirius@t\sirius@block@id\sirius@t,
   \sirius@t type\sirius@t: \sirius@t\sirius@block@type\sirius@t,
@@ -87,7 +140,7 @@
   \sirius@t position\sirius@t: { \sirius@t x\sirius@t: \sirius@block@x, \sirius@t y\sirius@t: \sirius@block@y },
   \sirius@t width\sirius@t: \sirius@block@width,
   \sirius@t canvasHeight\sirius@t: \sirius@block@canvasHeight,
-  \sirius@t entries\sirius@t: [#3],
+  \sirius@t entries\sirius@t: [\sirius@current@entries],
   \sirius@t children\sirius@t: [#4]%
 }}}
 \newcount\c@sirius@internal@id
@@ -96,17 +149,15 @@
 % TODO: support for multiple singles?
 % Note Writing those directly does not work, as '\Block' has to perform
 % key calculation that mess up the naive write routine...
-\newcommand*\SiriusDraw{\begingroup\let\Block\sirius@Block \@SiriusDraw}% preconsume Block
-\newcommand\@SiriusDraw[3][]{%
-\pgfkeys{/sirius/.cd,defaults,#1}%
+\NewEnviron{sirius-draw}[2][]{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property
 \c@sirius@internal@id0\relax
+\pgfkeys{/sirius/.cd,defaults,#1}%
 \let\sirius@currentbody\@empty % TODO: block nestings!
-#3\relax
+\BODY\relax
 \def\@sirius@extra{\sirius@Meta{\sirius@Single{#2}{\sirius@File{\sirius@file@api@version}{\sirius@file@snapshots}{%
 \sirius@Model{\sirius@model@year@start}{\sirius@model@year@end}{\sirius@model@connectors}{\sirius@currentbody}%
 }}}}%
-\typeout{sirius-draw is ready to spell-cast: \@sirius@extra}
-\@sirius[\@sirius@extra]{.noouse-file}
+\@sirius[\@sirius@extra]{.noouse-file}\relax
 \endgroup}
 
 

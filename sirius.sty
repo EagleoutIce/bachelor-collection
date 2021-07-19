@@ -115,6 +115,8 @@
   \global\advance\c@sirius@internal@id\@ne
   \edef\@elem@currid{\number\c@sirius@internal@id}%
   \pgfkeys{/sirius/property/.cd,defaults,#1,name=#2}%
+  \ifx\sirius@current@entries\@empty\else\g@addto@macro\sirius@current@entries{,}\fi
+  % Auto comma
   \g@addto@macro\sirius@current@entries{{
     \sirius@t id\sirius@t: \sirius@t\sirius@elem@id\sirius@t,
     \sirius@t tag\sirius@t: \sirius@t\sirius@elem@tag\sirius@t,

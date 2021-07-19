@@ -7,7 +7,8 @@
 \sirius{sirius.config}
 \graphicspath{{images/}}
 
-\siriusdefaults{host=http://0.0.0.0:8081,output-dir=images,freshness=3,prefix='showcase_'}
+\siriusdefaults{host=http://0.0.0.0:8081,output-dir=images,freshness=3,prefix='showcase_',
+  hooks-after={"gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -dAutoRotatePages=/None -sOutputFile={target_nooext}-compressed.pdf {target} &"}}
 
 \begin{document}
 Halloo:

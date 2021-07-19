@@ -40,6 +40,8 @@
   }
 }
 
+\def\sirius@t{\string\"}
+
 \long\def\sirius@Meta#1{{%
   ".title": "Sirius-Config",%
   ".description": "Automatically generated sirius configuration",%
@@ -52,22 +54,22 @@
 
 \long\def\sirius@Single#1#2{{%
   "#1": {%
-    ".inline": \string\'#2\string\',% cant use " because nesting and do not use unescaped cause root call
+    ".inline": "#2"% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     % TODO: others
   }%
 }}
 
 \long\def\sirius@File#1#2#3{{
-  "apiVersion": #1,
-  "snapshots": #2,
+  \sirius@t apiVersion\sirius@t: #1,
+  \sirius@t snapshots\sirius@t: #2,
   #3
 }}
 
-\long\def\sirius@Model#1#2#3#4{{
-  "startYear": #1,
-  "endYear": #2,
-  "connectors": #3,
-  "rootBlocks": [#4]
+\long\def\sirius@Model#1#2#3#4{ \sirius@t model\sirius@t: {
+  \sirius@t startYear\sirius@t: #1,
+  \sirius@t endYear\sirius@t: #2,
+  \sirius@t connectors\sirius@t: #3,
+  \sirius@t rootBlocks\sirius@t: [#4]
 }}
 
 \def\sirius@Block{\@dblarg\@sirius@Block}
@@ -75,14 +77,14 @@
   \global\advance\c@sirius@internal@id\@ne
   \pgfkeys{/sirius/block/.cd,defaults,#1,name=#2}%
 {
-  "id": \sirius@block@id,
-  "type": \sirius@block@type,
-  "name": \sirius@block@name,
-  "position": { "x": \sirius@block@x, "y": \sirius@block@y },
-  "width": \sirius@block@width,
-  "canvasHeight": \sirius@block@canvasHeight,
-  "entries": [#3],
-  "children": [#4]%
+  \sirius@t id\sirius@t: \sirius@block@id,
+  \sirius@t type\sirius@t: \sirius@block@type,
+  \sirius@t name\sirius@t: \sirius@block@name,
+  \sirius@t position\sirius@t: { "x": \sirius@block@x, "y": \sirius@block@y },
+  \sirius@t width\sirius@t: \sirius@block@width,
+  \sirius@t canvasHeight\sirius@t: \sirius@block@canvasHeight,
+  \sirius@t entries\sirius@t: [#3],
+  \sirius@t children\sirius@t: [#4]%
 }}
 \newcount\c@sirius@internal@id
 

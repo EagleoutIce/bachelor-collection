@@ -74,7 +74,7 @@
   bookmarkstype=X@b@X% erase
 ]{hyperref}
 
-\RequirePackage{hypcap,bookmark}
+\RequirePackage{hypcap,bookmark,nameref}
 
 \ifbt@draft
 \RequirePackage{marginnote}
@@ -261,6 +261,7 @@ topmargin,background,contents={%
 \def\bt@fig@style#1{\bt@fig@style@nonbold{{\sbfamily#1}}}
 
 \DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1 #2:~~}}}
+\DeclareCaptionLabelFormat{bt-caption-theorems}{\bt@fig@style{\itshape\paletteD{#1 #2:~~}}}
 \captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.66\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
 
 \setcounter{tocdepth}{1}
@@ -429,7 +430,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \preto\appendix{\appendixtrue}
 
 \def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
-\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2}\def\leftmark{#1}\def\rightmark{}\minitoc}
+\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2\label{bt@chp@\thechapter}}\def\leftmark{#1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{\dimexpr-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
@@ -497,7 +498,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\protect\sbfamily\arabic{side@fn}}$\rangle$ #1}}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
-\long\def\csummary#1{\protect\sidenote[\z@]{\textbf{Chapter \thechapter:}\smallskip\newline\relax#1}}
+\long\def\csummary#1{\protect\sidenote[\z@]{\textbf{\protect\protect\protect\nohyper{\protect\protect\protect\hyperref[bt@chp@\thechapter]{Chapter \thechapter:}}}\smallskip\newline\relax#1}}
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%

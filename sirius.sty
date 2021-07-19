@@ -74,6 +74,7 @@
 
 % todo: toggle, nesting, and usability in normal user code for  hidden nests
 \long\def\sirius@t#1{\string\"#1\string\"}
+\long\def\sirius@tn#1{\string\\\string\"#1\string\\\string\"}
 
 \long\def\sirius@Meta#1{{%
   ".title": "\sirius@core@title",%
@@ -121,7 +122,7 @@
     \sirius@t{id}: \sirius@t{\sirius@elem@id},
     \sirius@t{tag}: \sirius@t{\sirius@elem@tag},
     \sirius@t{name}: \sirius@t{\sirius@elem@name},
-    \sirius@t{formula}: \sirius@t{#3}\relax
+    \sirius@t{formula}: \sirius@t{#3}%
   }}%
 }
 
@@ -157,7 +158,7 @@
 % TODO: support for multiple singles?
 % Note Writing those directly does not work, as '\Block' has to perform
 % key calculation that mess up the naive write routine...
-\NewEnviron{sirius-draw}[2][]{\savebox\voidb@x{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property
+\NewEnviron{sirius-draw}[2][]{\savebox\voidb@x{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property\let\s\sirius@tn
 \c@sirius@internal@id0\relax
 \pgfkeys{/sirius/.cd,defaults,#1}%
 \let\sirius@currentbody\@empty % TODO: block nestings!

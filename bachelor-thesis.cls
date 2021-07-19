@@ -246,14 +246,10 @@ topmargin,background,contents={%
 
 \renewcommand*\captionformat{~~}
 
-\def\btlinkcolor{%
-% we do not use paletteA if we are in a box. we use the box-color instead!
-\ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteA\fi
-}
-\def\btlinkcolorB{%
-% we do not use paletteA if we are in a box. we use the box-color instead!
-\ifcsname libx@boxid\endcsname\libx@get{BoxColor}\else paletteB\fi
-}
+\def\@primarylinkcolor{paletteA}
+\def\btlinkcolor{\@primarylinkcolor}%
+\def\@secondarylinkcolor{paletteB}
+\def\btlinkcolorB{\@secondarylinkcolor}
 \def\bt@fig@style@nonbold#1{%
   {\hypersetup{allcolors=\btlinkcolor}#1}%
 }

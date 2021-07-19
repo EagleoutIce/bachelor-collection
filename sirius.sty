@@ -5,7 +5,7 @@
   \PackageError{\filename}{sirius is a python script and does require write18 (amongst other deps)}{}%
 }
 
-\RequirePackage{pdftexcmds,environ,pgfkeys}
+\RequirePackage{pdftexcmds,environ,pgfkeys,etoolbox}
 % allow 1
 \ifcase\pdf@shellescape\sirius@error@se\or\or\sirius@error@se\fi
 
@@ -73,7 +73,7 @@
 \def\siriuspropertydefaults#1{\pgfkeys{/sirius/property/defaults/.append style={#1}}}
 
 % todo: toggle, nesting, and usability in normal user code for  hidden nests
-\def\sirius@t{\string\"}
+\long\def\sirius@t#1{\string\"#1\string\"}
 
 \long\def\sirius@Meta#1{{%
   ".title": "\sirius@core@title",%
@@ -106,8 +106,8 @@
 }}
 
 \long\def\sirius@File#1#2#3{{
-  \sirius@t apiVersion\sirius@t: #1,
-  \sirius@t snapshots\sirius@t: #2,
+  \sirius@t{apiVersion}: #1,
+  \sirius@t{snapshots}: #2,
   #3
 }}
 
@@ -117,19 +117,19 @@
   \pgfkeys{/sirius/property/.cd,defaults,#1,name=#2}%
   \ifx\sirius@current@entries\@empty\else\g@addto@macro\sirius@current@entries{,}\fi
   % Auto comma
-  \g@addto@macro\sirius@current@entries{{
-    \sirius@t id\sirius@t: \sirius@t\sirius@elem@id\sirius@t,
-    \sirius@t tag\sirius@t: \sirius@t\sirius@elem@tag\sirius@t,
-    \sirius@t name\sirius@t: \sirius@t\sirius@elem@name\sirius@t,
-    \sirius@t formula\sirius@t: \sirius@t#3\sirius@t
+  \protected@xappto\sirius@current@entries{{
+    \sirius@t{id}: \sirius@t{\sirius@elem@id},
+    \sirius@t{tag}: \sirius@t{\sirius@elem@tag},
+    \sirius@t{name}: \sirius@t{\sirius@elem@name},
+    \sirius@t{formula}: \sirius@t{#3}\relax
   }}%
 }
 
-\long\def\sirius@Model#1#2#3#4{ \sirius@t model\sirius@t: {
-  \sirius@t startYear\sirius@t: #1,
-  \sirius@t endYear\sirius@t: #2,
-  \sirius@t connectors\sirius@t: #3,
-  \sirius@t rootBlocks\sirius@t: [#4]
+\long\def\sirius@Model#1#2#3#4{ \sirius@t{model}: {
+  \sirius@t{startYear}: #1,
+  \sirius@t{endYear}: #2,
+  \sirius@t{connectors}: #3,
+  \sirius@t{rootBlocks}: [#4]
 }}
 
 % bases with '()' to make them fully optional
@@ -141,15 +141,15 @@
   \pgfkeys{/sirius/block/.cd,defaults,#1,name=#2}%
 \let\sirius@current@entries\@empty % TODO: block nestings!
 \relax#3%
-\g@addto@macro\sirius@currentbody{{
-  \sirius@t id\sirius@t: \sirius@t\sirius@block@id\sirius@t,
-  \sirius@t type\sirius@t: \sirius@t\sirius@block@type\sirius@t,
-  \sirius@t name\sirius@t: \sirius@t\sirius@block@name\sirius@t,
-  \sirius@t position\sirius@t: { \sirius@t x\sirius@t: \sirius@block@x, \sirius@t y\sirius@t: \sirius@block@y },
-  \sirius@t width\sirius@t: \sirius@block@width,
-  \sirius@t canvasHeight\sirius@t: \sirius@block@canvasHeight,
-  \sirius@t entries\sirius@t: [\sirius@current@entries],
-  \sirius@t children\sirius@t: [#4]%
+\protected@xappto\sirius@currentbody{{
+  \sirius@t{id}: \sirius@t{\sirius@block@id},
+  \sirius@t{type}: \sirius@t{\sirius@block@type},
+  \sirius@t{name}: \sirius@t{\sirius@block@name},
+  \sirius@t{position}: { \sirius@t{x}: \sirius@block@x, \sirius@t{y}: \sirius@block@y },
+  \sirius@t{width}: \sirius@block@width,
+  \sirius@t{canvasHeight}: \sirius@block@canvasHeight,
+  \sirius@t{entries}: [\sirius@current@entries],
+  \sirius@t{children}: [#4]%
 }}}
 \newcount\c@sirius@internal@id
 

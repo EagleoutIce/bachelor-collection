@@ -33,12 +33,16 @@
   postfix/.store in      = \sirius@core@postfix,
   retain/.store in       = \sirius@core@defaults@retain,
   bb/.store in           = \sirius@core@defaults@bb,
-  offsets/.store in      = \sirius@core@defaults@offsets, % TODO: clearer offset reads
+  offsets/.style n args  = {4}{/sirius/offset l={#1},/sirius/offset b={#1},/sirius/offset r={#1},/sirius/offset t={#1}},
+  offset l/.store in     = \sirius@core@defaults@offset@l,
+  offset t/.store in     = \sirius@core@defaults@offset@t,
+  offset r/.store in     = \sirius@core@defaults@offset@r,
+  offset b/.store in     = \sirius@core@defaults@offset@b,
   hooks-after/.store in  = \sirius@core@defaults@hooks@after,
   defaults/.style={
     api-version=6,snapshots=[],
     start-year=2020,end-year=2040,%
-    connectors=[],retain=0,bb=m,offsets=-.33 -.25 -.25 -.25,%
+    connectors=[],retain=0,bb=m,offsets={-.33}{-.25}{-.25}{-.25},%
     title=Sirius-Config,host=http://0.0.0.0:8080,
     description=Automatically generated sirius configuration,
     verbose=false,freshness=250,check-host=true,
@@ -97,7 +101,7 @@
     ".config": {
       "retain": \sirius@core@defaults@retain,
       "bb": "\sirius@core@defaults@bb",
-      "offsets": "\sirius@core@defaults@offsets",%
+      "offsets": "\sirius@core@defaults@offset@l\space\sirius@core@defaults@offset@b\space\sirius@core@defaults@offset@r\space\sirius@core@defaults@offset@t",%
       ".hook-after": [\sirius@core@defaults@hooks@after]%
     },
     "model-view-positions64": { "x": 0, "y": 0 },

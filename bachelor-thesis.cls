@@ -466,10 +466,11 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
 % garbage mp figures
-\NewEnviron{sidefig}[2][]{\sidenote{\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
+\def\bt@cpstart@hook#1{\def\@captype{#1}\capstart}
+\NewEnviron{sidefig}[2][]{\sidenote{\protect\bt@cpstart@hook{figure}\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
-\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
 \NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
 

@@ -30,6 +30,7 @@
   input-dir/.store in    = \sirius@core@input@dir,
   output-dir/.store in   = \sirius@core@output@dir,
   prefix/.store in       = \sirius@core@prefix,
+  collapse/.store in     = \sirius@core@collapse,
   postfix/.store in      = \sirius@core@postfix,
   retain/.store in       = \sirius@core@defaults@retain,
   bb/.store in           = \sirius@core@defaults@bb,
@@ -45,7 +46,7 @@
     connectors=[],retain=0,bb=m,offsets={-.33}{-.25}{-.25}{-.25},%
     title=Sirius-Config,host=http://0.0.0.0:8080,
     description=Automatically generated sirius configuration,
-    verbose=false,freshness=250,check-host=true,
+    verbose=false,freshness=250,check-host=true,collapse=true,
     input-dir=./,output-dir=./,prefix=,postfix=,hooks-after=%
   },
   /sirius/block/.cd,
@@ -98,6 +99,7 @@
 \long\def\sirius@Single#1#2{{%
   "#1": {%
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
+    "collapse": "\sirius@core@collapse",
     ".config": {
       "retain": \sirius@core@defaults@retain,
       "bb": "\sirius@core@defaults@bb",

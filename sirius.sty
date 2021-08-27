@@ -148,6 +148,7 @@
   \pgfkeys{/sirius/block/.cd,defaults,#1,name=#2}%
 \let\sirius@current@entries\@empty % TODO: block nestings!
 \relax#3%
+\ifx\sirius@currentbody\@empty\else\g@addto@macro\sirius@currentbody{,}\fi
 \protected@xappto\sirius@currentbody{{
   \sirius@t{id}: \sirius@t{\sirius@block@id},
   \sirius@t{type}: \sirius@t{\sirius@block@type},

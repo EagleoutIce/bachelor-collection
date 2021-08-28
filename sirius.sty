@@ -22,6 +22,8 @@
   connectors/.store in  = \sirius@model@connectors,
   % core
   title/.store in        = \sirius@core@title,
+  hl/.store in           = \sirius@core@hl,
+ auto-obfuscate/.store in= \sirius@core@auto@obfuscate,
   description/.store in  = \sirius@core@description,
   host/.store in         = \sirius@core@host,
   verbose/.store in      = \sirius@core@verbose, % TODO: ifs/selection
@@ -47,7 +49,8 @@
     title=Sirius-Config,host=http://0.0.0.0:8080,
     description=Automatically generated sirius configuration,
     verbose=false,freshness=250,check-host=true,collapse=true,
-    input-dir=./,output-dir=./,prefix=,postfix=,hooks-after=%
+    input-dir=./,output-dir=./,prefix=,postfix=,hooks-after=,
+    hl=,auto-obfuscate=%
   },
   /sirius/block/.cd,
   id/.store in             = \sirius@block@id,
@@ -68,7 +71,7 @@
   name/.store in           = \sirius@elem@name,
   defaults/.style={%
     id = \number\c@sirius@internal@id,
-    tag = property,
+    tag = property%
   }
 }
 
@@ -100,6 +103,8 @@
   "#1": {%
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     "collapse": "\sirius@core@collapse",
+    "hl64": "\sirius@core@hl",
+    "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     ".config": {
       "retain": \sirius@core@defaults@retain,
       "bb": "\sirius@core@defaults@bb",

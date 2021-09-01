@@ -72,6 +72,14 @@
   defaults/.style={%
     id = \number\c@sirius@internal@id,
     tag = property%
+  },
+  /sirius/requirement/.cd,
+  id/.store in             = \sirius@elem@id,
+  tag/.store in            = \sirius@elem@tag,
+  name/.store in           = \sirius@elem@name,
+  defaults/.style={%
+    id = \number\c@sirius@internal@id,
+    tag = requirement%
   }
 }
 
@@ -137,6 +145,20 @@
   }}%
 }
 
+\newcommand*\sirius@Requirement[3][]{
+  \global\advance\c@sirius@internal@id\@ne
+  \edef\@elem@currid{\number\c@sirius@internal@id}%
+  \pgfkeys{/sirius/requirement/.cd,defaults,#1,name=#2}%
+  \ifx\sirius@current@entries\@empty\else\g@addto@macro\sirius@current@entries{,}\fi
+  % Auto comma
+  \protected@xappto\sirius@current@entries{{
+    \sirius@t{id}: \sirius@t{\sirius@elem@id},
+    \sirius@t{tag}: \sirius@t{\sirius@elem@tag},
+    \sirius@t{name}: \sirius@t{\sirius@elem@name},
+    \sirius@t{formula}: \sirius@t{#3}%
+  }}%
+}
+
 \long\def\sirius@Model#1#2#3#4{ \sirius@t{model}: {
   \sirius@t{startYear}: #1,
   \sirius@t{endYear}: #2,
@@ -170,7 +192,7 @@
 % TODO: support for multiple singles?
 % Note Writing those directly does not work, as '\Block' has to perform
 % key calculation that mess up the naive write routine...
-\NewEnviron{sirius-draw}[2][]{\savebox\voidb@x{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property\let\s\sirius@tn
+\NewEnviron{sirius-draw}[2][]{\savebox\voidb@x{\begingroup\let\Block\sirius@Block\let\Property\sirius@Property\let\Requirement\sirius@Requirement\let\s\sirius@tn
 \c@sirius@internal@id0\relax
 \pgfkeys{/sirius/.cd,defaults,#1}%
 \let\sirius@currentbody\@empty % TODO: block nestings!

@@ -113,7 +113,7 @@
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     "collapse": "\sirius@core@collapse",
     "hl64": "\sirius@core@hl",
-    "c-width": "\sirius@core@collector@width",
+    \ifcsname sirius@core@collector@width\endcsname"c-width": "\sirius@core@collector@width",\fi
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     ".config": {
       "retain": \sirius@core@defaults@retain,

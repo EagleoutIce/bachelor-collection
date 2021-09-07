@@ -46,7 +46,7 @@
   offset b/.store in       = \sirius@core@defaults@offset@b,
   hooks-after/.store in    = \sirius@core@defaults@hooks@after,
   defaults/.style={
-    api-version=6,snapshots=[],
+    api-version=6,snapshots=[],collector-width=400,
     start-year=2020,end-year=2040,%
     connectors=[],retain=0,bb=m,offsets={-.33}{-.25}{-.25}{-.25},%
     title=Sirius-Config,host=http://0.0.0.0:8080,
@@ -115,8 +115,7 @@
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     "collapse": "\sirius@core@collapse",
     "hl64": "\sirius@core@hl",
-    "obfuscate64": { "cleanup": ["cleanupOverwrites", "cleanUpCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi] },
-    \ifcsname sirius@core@collector@width\endcsname"c-width": "\sirius@core@collector@width",\fi
+    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": "\sirius@core@collector@width", "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": ["cleanupOverwrites", "cleanUpCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi] },
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     ".config": {
       "retain": \sirius@core@defaults@retain,

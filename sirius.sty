@@ -12,7 +12,7 @@
 \newcommand*\sirius{\@ifnextchar[\@sirius\@@sirius}
 \def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}}
 \def\@@sirius#1{\typeout{casts: sirius #1}\immediate\write18{sirius #1}}
-
+% TODO: improve obfuscate passthrough
 \pgfkeys{%
   /sirius/.cd,
   api-version/.store in     = \sirius@file@api@version,
@@ -23,6 +23,7 @@
   % core
   title/.store in           = \sirius@core@title,
   hl/.store in              = \sirius@core@hl,
+  obfuscate/.store in       = \sirius@core@obfuscate,
   collector-width/.store in = \sirius@core@collector@width,
   auto-obfuscate/.store in  = \sirius@core@auto@obfuscate,
   description/.store in     = \sirius@core@description,
@@ -113,6 +114,7 @@
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     "collapse": "\sirius@core@collapse",
     "hl64": "\sirius@core@hl",
+    "obfuscate64": "\sirius@core@obfuscate",
     \ifcsname sirius@core@collector@width\endcsname"c-width": "\sirius@core@collector@width",\fi
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     ".config": {

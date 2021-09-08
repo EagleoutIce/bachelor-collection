@@ -122,7 +122,7 @@
   }%
 }}
 
-\long\def\sirius@Single#1#2{{%
+\long\def\sirius@Single#1#2{%
 \sirius@Single@Raw{#1}{%
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     "collapse": "\sirius@core@collapse",
@@ -133,7 +133,7 @@
     "model-view-zooms64": [ 1 ]%
     % TODO: configure others
   }%
-}}
+}
 
 \long\def\sirius@File#1#2#3{{
   \sirius@t{apiVersion}: #1,

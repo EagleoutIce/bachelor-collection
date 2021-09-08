@@ -9,9 +9,9 @@
 % allow 1
 \ifcase\pdf@shellescape\sirius@error@se\or\or\sirius@error@se\fi
 \newif\if@sirisu@showcollector@
-\newcommand*\sirius{\@ifnextchar[\@sirius\@@sirius}
-\def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}}
-\def\@@sirius#1{\typeout{casts: sirius #1}\immediate\write18{sirius #1}}
+\newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
+\def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}\egroup}
+\def\@@sirius#1{\typeout{casts: sirius #1}\immediate\write18{sirius #1}\egroup}
 % TODO: improve obfuscate passthrough
 \pgfkeys{%
   /sirius/.cd,
@@ -110,19 +110,25 @@
     #1%
 }}
 
-\long\def\sirius@Single#1#2{{%
+\long\def\sirius@Single@Raw#1#2{{%
   "#1": {%
-    ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
-    "collapse": "\sirius@core@collapse",
-    "hl64": "\sirius@core@hl",
-    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": ["cleanupOverwrites", "cleanUpCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi] },
-    "auto-obfuscate64": "\sirius@core@auto@obfuscate",
+    #2,
     ".config": {
       "retain": \sirius@core@defaults@retain,
       "bb": "\sirius@core@defaults@bb",
       "offsets": "\sirius@core@defaults@offset@l\space\sirius@core@defaults@offset@b\space\sirius@core@defaults@offset@r\space\sirius@core@defaults@offset@t",%
       ".hook-after": [\sirius@core@defaults@hooks@after]%
-    },
+    }% TODO: configure others
+  }%
+}}
+
+\long\def\sirius@Single#1#2{{%
+\sirius@Single@Raw{#1}{%
+    ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
+    "collapse": "\sirius@core@collapse",
+    "hl64": "\sirius@core@hl",
+    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": ["cleanupOverwrites", "cleanUpCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi] },
+    "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     "model-view-positions64": { "x": 0, "y": 0 },
     "model-view-zooms64": [ 1 ]%
     % TODO: configure others
@@ -204,9 +210,19 @@
 \def\@sirius@extra{\sirius@Meta{\sirius@Single{#2}{\sirius@File{\sirius@file@api@version}{\sirius@file@snapshots}{%
 \sirius@Model{\sirius@model@year@start}{\sirius@model@year@end}{\sirius@model@connectors}{\sirius@currentbody}%
 }}}}%
-\@sirius[\@sirius@extra]{.noouse-file}\relax
+\bgroup\@sirius[\@sirius@extra]{.noouse-file}\relax
 \endgroup}}
+% IMPORTANT NOTE: 'auto-export' will be added manually, so the linked url will not contain it
+\newcommand*\sirius@url[2][]{\begingroup\sirius@@url{#1}{#2}}
+\def\sirius@@url#1#2{\let\do\@makeother\dospecials\catcode`{\@ne\catcode`}\tw@\catcode`\ =10 \catcode`\#=6\@ifnextchar\bgroup{\obeyspaces\obeylines\sirius@@@url{#1}{#2}}\sirius@@@url@}
+\def\sirius@@@url@#1#2#3{\catcode`{11\catcode`}11\obeyspaces\obeylines\def\@tempa##1#3{\sirius@@@url{#1}{#2}{##1}}\@tempa}
+\def\sirius@@@url#1#2#3{\toks@{#3}\edef\sirius@@urlstring{\the\toks@}\edef\sirius@@@urlstring{\expandafter\strip@prefix\meaning\sirius@@urlstring}%
+\pgfkeys{/sirius/.cd,defaults,#1}\expandafter\xdef\csname sirius@url@#2\endcsname{\sirius@core@host/?\sirius@@@urlstring}\bgroup\@sirius[\sirius@Meta{\sirius@Single@Raw{#2}{".url": "\sirius@@@urlstring&auto-export=true" }}]{.noouse-file}\endgroup}
 
+\def\sirius@geturl#1{\csname sirius@url@#1\endcsname}
+
+\let\siriusurl\sirius@url
+\let\siriusGetUrl\sirius@geturl
 
 % TODO: give me block like interface:
 % '\Block{}'... => Defintion file for sirius-generate or so

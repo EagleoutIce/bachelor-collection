@@ -9,6 +9,7 @@
 % allow 1
 \ifcase\pdf@shellescape\sirius@error@se\or\or\sirius@error@se\fi
 \newif\if@sirisu@showcollector@
+\newif\if@sirisu@hideunavailable@
 \newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
 \def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}\egroup}
 \def\@@sirius#1{\typeout{casts: sirius #1}\immediate\write18{sirius #1}\egroup}
@@ -25,6 +26,7 @@
   hl/.store in              = \sirius@core@hl,
   % obfuscate/.store in       = \sirius@core@obfuscate,
   show-collector/.is if     = @sirisu@showcollector@,
+  hide-unavailable-blocks/.is if = @sirisu@hideunavailable@,
   collector-width/.store in = \sirius@core@collector@width,
   auto-obfuscate/.store in  = \sirius@core@auto@obfuscate,
   description/.store in     = \sirius@core@description,
@@ -126,6 +128,7 @@
 \sirius@Single@Raw{#1}{%
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     "collapse": "\sirius@core@collapse",
+    "hide-unavailable-blocks": "\if@sirisu@hideunavailable@ true\else false\fi",
     "hl64": "\sirius@core@hl",
     "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": ["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi] },
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",

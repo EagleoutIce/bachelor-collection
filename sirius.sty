@@ -9,6 +9,7 @@
 % allow 1
 \ifcase\pdf@shellescape\sirius@error@se\or\or\sirius@error@se\fi
 \newif\if@sirisu@showcollector@
+\newif\if@sirisu@deterministic@
 \newif\if@sirisu@hideunavailable@
 \newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
 \def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}\egroup}
@@ -25,6 +26,7 @@
   title/.store in           = \sirius@core@title,
   hl/.store in              = \sirius@core@hl,
   % obfuscate/.store in       = \sirius@core@obfuscate,
+  deterministic/.is if      = @sirisu@deterministic@,
   show-collector/.is if     = @sirisu@showcollector@,
   transformations/.store in = \sirius@core@transformations,
   cleanup/.store in         = \sirius@core@cleanup,
@@ -132,7 +134,7 @@
     "collapse": "\sirius@core@collapse",
     "hide-unavailable-blocks": "\if@sirisu@hideunavailable@ true\else false\fi",
     "hl64": "\sirius@core@hl",
-    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi },
+    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi, "deterministic": \if@sirisu@deterministic@ true\else false\fi},
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     "model-view-positions64": { "x": 0, "y": 0 },
     "model-view-zooms64": [ 1 ]%

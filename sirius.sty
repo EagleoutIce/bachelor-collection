@@ -26,6 +26,8 @@
   hl/.store in              = \sirius@core@hl,
   % obfuscate/.store in       = \sirius@core@obfuscate,
   show-collector/.is if     = @sirisu@showcollector@,
+  transformations/.store in = \sirius@core@transformations,
+  cleanup/.store in         = \sirius@core@cleanup,
   hide-unavailable-blocks/.is if = @sirisu@hideunavailable@,
   collector-width/.store in = \sirius@core@collector@width,
   auto-obfuscate/.store in  = \sirius@core@auto@obfuscate,
@@ -130,7 +132,7 @@
     "collapse": "\sirius@core@collapse",
     "hide-unavailable-blocks": "\if@sirisu@hideunavailable@ true\else false\fi",
     "hl64": "\sirius@core@hl",
-    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": ["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi] },
+    "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi },
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     "model-view-positions64": { "x": 0, "y": 0 },
     "model-view-zooms64": [ 1 ]%

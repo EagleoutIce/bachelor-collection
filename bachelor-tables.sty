@@ -45,7 +45,9 @@
 \def\cmidrule{\arrayrulecolor{shadeA}\bttb@cmidrule[.1em]}
 
 \newsavebox\@bttb@b@x
+\def\settablebreakstyle#1{\def\@tablebreakstyle##1{#1}}
+\settablebreakstyle{\textit{#1}}
 \def\bttb@tablebreak#1{%
 \specialrule{.1em}{\dimexpr1em+\aboverulesep}{\belowrulesep}%
-\noalign{\parskip\z@\parindent\z@\savebox\@bttb@b@x{\textit{#1}\quad}\vspace*{\dimexpr-\ht\@bttb@b@x-\dp\@bttb@b@x-.1em}\par}\smash{\fboxsep\z@\hspace*{\dimexpr-\arraycolsep-\p@}\colorbox{white}{\hspace*{\dimexpr\arraycolsep+\p@}\textit{#1}\quad}}}
+\noalign{\parskip\z@\parindent\z@\savebox\@bttb@b@x{\textit{#1}\quad}\vspace*{\dimexpr-\ht\@bttb@b@x-\dp\@bttb@b@x-.1em}\par}\smash{\fboxsep\z@\hspace*{\dimexpr-\arraycolsep-\p@}\colorbox{white}{\hspace*{\dimexpr\arraycolsep+\p@}\@tablebreakstyle{#1}\quad}}}
 \endinput

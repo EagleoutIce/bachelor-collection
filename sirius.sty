@@ -9,6 +9,7 @@
 % allow 1
 \ifcase\pdf@shellescape\sirius@error@se\or\or\sirius@error@se\fi
 \newif\if@sirisu@showcollector@
+\newif\if@sirisu@show@full@
 \newif\if@sirisu@deterministic@
 \newif\if@sirisu@hideunavailable@
 \newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
@@ -31,6 +32,7 @@
   transformations/.store in = \sirius@core@transformations,
   cleanup/.store in         = \sirius@core@cleanup,
   hide-unavailable-blocks/.is if = @sirisu@hideunavailable@,
+  show-full/.is if          = @sirisu@show@full@,
   collector-width/.store in = \sirius@core@collector@width,
   auto-obfuscate/.store in  = \sirius@core@auto@obfuscate,
   auto-obfuscate-present/.style n args = 3{%
@@ -134,6 +136,7 @@
 \long\def\sirius@Single#1#2{%
 \sirius@Single@Raw{#1}{%
     ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
+    ".show-full": \if@sirisu@show@full@ true\else false\fi,
     "collapse": "\sirius@core@collapse",
     "hide-unavailable-blocks": "\if@sirisu@hideunavailable@ true\else false\fi",
     "hl64": "\sirius@core@hl",

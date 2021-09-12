@@ -33,6 +33,9 @@
   hide-unavailable-blocks/.is if = @sirisu@hideunavailable@,
   collector-width/.store in = \sirius@core@collector@width,
   auto-obfuscate/.store in  = \sirius@core@auto@obfuscate,
+  auto-obfuscate-present/.style n args = 3{%
+    auto-obfuscate={[{\sirius@t{tag}: \sirius@t{present}, \sirius@t{position}: {\sirius@t{x}: #2, \sirius@t{y}: #3}}]#1}%
+  },
   description/.store in     = \sirius@core@description,
   host/.store in            = \sirius@core@host,
   verbose/.store in         = \sirius@core@verbose, % TODO: ifs/selection

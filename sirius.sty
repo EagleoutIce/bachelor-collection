@@ -25,6 +25,7 @@
   connectors/.store in      = \sirius@model@connectors,
   % core
   title/.store in           = \sirius@core@title,
+  zoom/.store in            = \sirius@core@zoom,
   hl/.store in              = \sirius@core@hl,
   % obfuscate/.store in       = \sirius@core@obfuscate,
   deterministic/.is if      = @sirisu@deterministic@,
@@ -58,7 +59,7 @@
   hooks-after/.store in    = \sirius@core@defaults@hooks@after,
   defaults/.style={
     api-version=6,snapshots=[],collector-width=400,
-    start-year=2020,end-year=2040,%
+    start-year=2020,end-year=2040,zoom=1,%
     connectors=[],retain=0,bb=m,offsets={-.33}{-.25}{-.25}{-.25},%
     title=Sirius-Config,host=http://0.0.0.0:8080,
     description=Automatically generated sirius configuration,
@@ -143,7 +144,7 @@
     "obfuscate64": { "layout": { "layouter": "grid", "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi, "deterministic": \if@sirisu@deterministic@ true\else false\fi},
     "auto-obfuscate64": "\sirius@core@auto@obfuscate",
     "model-view-positions64": { "x": 0, "y": 0 },
-    "model-view-zooms64": [ 1 ]%
+    "model-view-zooms64": [ \sirius@core@zoom ]%
     % TODO: configure others
   }%
 }

@@ -134,9 +134,9 @@
   }%
 }}
 
-\long\def\sirius@Single#1#2{%
+\long\def\sirius@Single#1#2#3{%
 \sirius@Single@Raw{#1}{%
-    ".inline": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
+    "#3": "#2",% yet \string\' escape messes up sh. therefore we use good old hacks. '"'"' does not work as well, as json has problems with single quotes
     ".show-full": \if@sirisu@show@full@ true\else false\fi,
     "collapse": "\sirius@core@collapse",
     "hide-unavailable-blocks": "\if@sirisu@hideunavailable@ true\else false\fi",
@@ -223,9 +223,14 @@
 \BODY\relax
 \def\@sirius@extra{\sirius@Meta{\sirius@Single{#2}{\sirius@File{\sirius@file@api@version}{\sirius@file@snapshots}{%
 \sirius@Model{\sirius@model@year@start}{\sirius@model@year@end}{\sirius@model@connectors}{\sirius@currentbody}%
-}}}}%
+}}{.inline}}}%
 \bgroup\@sirius[\@sirius@extra]{.noouse-file}\relax
 \endgroup}}
+\newcommand\sirius@json@from@file[3][]{\begingroup%
+\pgfkeys{/sirius/.cd,defaults,#1}%
+\def\@sirius@extra{\sirius@Meta{\sirius@Single{#2}{#3}{.file}}}%
+\bgroup\@sirius[\@sirius@extra]{.noouse-file}\relax
+\endgroup}
 % IMPORTANT NOTE: 'auto-export' will be added manually, so the linked url will not contain it
 \newcommand*\sirius@url[2][]{\begingroup\sirius@@url{#1}{#2}}
 \def\sirius@@url#1#2{\let\do\@makeother\dospecials\catcode`{\@ne\catcode`}\tw@\catcode`\ =10 \catcode`\#=6\@ifnextchar\bgroup{\obeyspaces\obeylines\sirius@@@url{#1}{#2}}\sirius@@@url@}
@@ -237,6 +242,7 @@
 
 \let\siriusurl\sirius@url
 \let\siriusGetUrl\sirius@geturl
+\let\siriusFromFile\sirius@json@from@file
 
 % TODO: give me block like interface:
 % '\Block{}'... => Defintion file for sirius-generate or so

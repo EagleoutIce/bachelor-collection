@@ -1,0 +1,193 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bachelor-windwos}[2020/01/08 EagleoutIce - Windows in LaTeX]
+
+\RequirePackage{tikz,fontawesome}
+\usetikzlibrary{arrows.meta}
+
+\newlength\bachelorhw@width \bachelorhw@width=142mm
+\newlength\bachelorhw@height \bachelorhw@height=83mm % \bachelorhw@height=107mm % für 4:3#
+
+\pgfmathsetmacro\@tmp{\bachelorhw@width/2} %
+\newlength\bachelorhw@dialog@width \bachelorhw@dialog@width=\@tmp pt %
+\pgfmathsetmacro\@tmp{\bachelorhw@height/2} %
+\newlength\bachelorhw@dialog@height \bachelorhw@dialog@height=\@tmp pt %
+
+\newlength\bachelorhw@rcorners \bachelorhw@rcorners=1.65pt
+\newlength\bachelorhw@headerheight \bachelorhw@headerheight=12pt
+\newlength\bachelorhw@btwidth \bachelorhw@btwidth=42mm
+\newlength\bachelorhw@sbtwidth \bachelorhw@sbtwidth=19mm
+
+\newlength\bachelorhw@listfieldheight \bachelorhw@listfieldheight=4mm
+
+\pgfmathsetmacro\@hwcenterx{\bachelorhw@width/2} %
+\newlength\hwcenterx \hwcenterx=\@hwcenterx pt %
+\newlength\hwrightx \hwrightx=\bachelorhw@width %
+\newlength\hwboty \hwboty=-\bachelorhw@height %
+\newlength\hwtopy \hwtopy=-\bachelorhw@headerheight %
+
+\newlength\hwmargin \hwmargin=6.25pt
+\newlength\hwr \hwr=\bachelorhw@sbtwidth % raster
+
+\def\hwgamename{Unglaublicher Spielname -~}
+
+\colorlet{bachelorhw@backcolor}{cprimary!02!white}
+\colorlet{bachelorhw@titlecolor}{cprimary!09!white}
+
+\newenvironment{tikzwindow}[1][]{%
+    \tikzpicture%
+    %% 0,0 in upper left
+    \fill[bachelorhw@backcolor,rounded corners=\bachelorhw@rcorners,thin]%
+                (0,0) rectangle (\bachelorhw@width,-\bachelorhw@height);
+
+    % set clip to prevent overlay
+    \clip[rounded corners=\bachelorhw@rcorners] (0,0) rectangle (\bachelorhw@width,-\bachelorhw@height);
+
+    % Titlebar
+    \draw[fill=bachelorhw@titlecolor,thin] (0,0) rectangle (\bachelorhw@width,-\bachelorhw@headerheight);
+
+    % Border:
+    \draw[rounded corners=\bachelorhw@rcorners,thin]%
+        (0,0) rectangle (\bachelorhw@width,-\bachelorhw@height);
+
+    % de buttööööns
+    % faMinusCircle, faPlusCircle, faChevronDown, faChevronUp
+    \node[left=-1.75pt] at(\bachelorhw@width,-\bachelorhw@headerheight/2) %
+        {\small\faAngleDown~\,\faAngleUp~\,\footnotesize\rotatebox[origin=c]{45}{\color{cakzent}\faPlusCircle}};
+    % Icon left:
+    \node[right=0pt,yshift=-0.5pt] at(0,-\bachelorhw@headerheight/2) %
+        {\tiny\faUserSecret};
+    % Title:
+    \node[right=10pt,yshift=-1.25pt,font=\tiny,scale=0.9] at(0,-\bachelorhw@headerheight/2) %
+        {\strut\ifx\\#1\\\else\hwgamename#1\fi};
+}{\endtikzpicture}
+
+\tikzset{%
+    hw-button/.style={%
+        rectangle,fill=bachelorhw@titlecolor,draw,%
+        rounded corners=\bachelorhw@rcorners,%
+        text width=\bachelorhw@btwidth,align=center,%
+        execute at begin node=\strut{},%
+        font=\small%
+    },
+    hw-small-button/.style={%
+        hw-button,text width=\bachelorhw@sbtwidth,inner sep=0.75pt,font=\footnotesize%
+    },
+    hw-title/.style={
+        font=\LARGE%
+    },
+    hw-text/.style={},
+    hw-small-text/.style={font=\tiny},
+    hw-input-field@base/.style={hw-button,fill=bachelorhw@backcolor,%
+            font=\scriptsize\itshape\color{black!65!bachelorhw@titlecolor},%
+            minimum height=24pt},%{\tiny\faICursor}~~},%\raisebox{2pt}{\large\(|\)}},
+    hw-input-field/.style={hw-input-field@base,execute at begin node=\strut{}{\tiny\faTerminal}\hfill,
+    execute at end node=\hfill\hbox{}},
+    hw-small-input-field/.style={hw-input-field,text width=0.75\bachelorhw@sbtwidth},
+    hw-small-ibutton/.style={hw-input-field@base,hw-small-button,execute at begin node=\strut{},execute at end node=\relax,text width=0.75\bachelorhw@sbtwidth,inner sep=0.3333em},
+    hw-inactive/.style={opacity=0.45}%
+}
+
+\newcommand\hwBack[1][\faCaretLeft~Zurück]{% Return to main-menu:
+\node[hw-small-button,below right=\hwmargin] at (0,\hwtopy) {#1};} % \faLongArrowLeft} % \ensuremath{\mathbf{}} \leftarrow
+
+\def\PgetXY#1#2#3{%
+    \tikz@scan@one@point\pgfutil@firstofone#1\relax%
+    \edef#2{\the\pgf@x}%
+    \edef#3{\the\pgf@y}%
+}
+
+% #1 name, #2 coord, #3 dimensions
+\newenvironment{hw-group}[3][]{
+    \draw[rounded corners=\bachelorhw@rcorners] (#2) rectangle ++ (#3);
+    \ifx\\#1\\\else \node[fill=bachelorhw@backcolor,rectangle,right=\hwmargin,font=\footnotesize] at (#2) {#1}; \fi%
+    \PgetXY{($(#3)+(0,6pt)$)}{\hwWidth}{\hwHeight}
+    \begin{scope}[shift={($(#2)+(0,-6pt)$)}] % offset for title :D
+    }{\end{scope}}
+
+\newcounter{hwlistfield}
+\newenvironment{hw-list}[2]{%
+    \bgroup\edef\hw@tmp@a{#1}\edef\hw@tmp@b{#2}
+    \setcounter{hwlistfield}{0}
+    % slider
+    \PgetXY{($(#2)+(-9mm,0pt)$)}{\hwlistWidth}{\hwlistHeight}
+    % top padding
+    \draw[fill=bachelorhw@titlecolor,rounded corners=\bachelorhw@rcorners] ($(#1)+(0,\hwlistHeight)$) -- ++(\hwlistWidth,0) to[sharp corners] ++(0,3pt) to[sharp corners] ++(-\hwlistWidth,0) -- cycle;
+
+    % bottom padding
+    \draw[fill=bachelorhw@titlecolor,rounded corners=\bachelorhw@rcorners] ($(#1)-(0,3pt)$) to[sharp corners] ++(\hwlistWidth,0) -- ++(0,3pt) -- ++(-\hwlistWidth,0) to[sharp corners] ++(0,-3pt);
+    % #1 bonus height, #2 text
+    \newcommand*\Field[2][0]{%
+        \stepcounter{hwlistfield}%
+        \draw[fill=bachelorhw@backcolor,very thin] (0,-\bachelorhw@listfieldheight*\thehwlistfield+\bachelorhw@listfieldheight -3pt) rectangle ++(\hwlistWidth,-\bachelorhw@listfieldheight-##1*\bachelorhw@listfieldheight) node[midway,centered,font=\tiny,align=center, text width=\hwlistWidth] {##2};
+        \addtocounter{hwlistfield}{##1}%
+    }
+    \begin{scope}[shift={(#1)}]
+        % Slider
+        \draw[thick,Kite-Kite,black!65!bachelorhw@titlecolor] (\hwlistWidth+4.5mm+\hwmargin/2,0) -- ++(0,\hwlistHeight);
+        \draw[rectangle,thin, rounded corners=1.75pt,fill=bachelorhw@titlecolor] (\hwlistWidth+4.5mm+\hwmargin/2,-5mm)++(-2pt,0) rectangle ++(4pt,-9pt);
+    }{\end{scope}%
+        % draw border:
+        \draw[rounded corners=\bachelorhw@rcorners,] (\hw@tmp@a) rectangle ++ ($(\hw@tmp@b)+(-9mm,0)$);
+        \egroup% toss marker away
+    }
+
+
+\def\hwGenericBottomFeed{%
+    % help bottom right
+    \node[hw-small-button,above left=\hwmargin] at (\hwrightx,\hwboty) {Hilfe};
+
+    % text bottom left
+    \node[hw-small-text,above right=\hwmargin/2] at (0,\hwboty) {~Informationstext, wie Version\ldots};
+}
+
+% #1 dialog title, #2: dialog text, #3: Button one, #4: Button two
+\newenvironment{hw-dialog}[4][]{%
+% if theres a dialog we will remove the color-based interest for the rest (just a little bit.)
+    \fill[bachelorhw@backcolor,thin,fill opacity=0.70]%
+        (0,-\bachelorhw@headerheight) rectangle (\bachelorhw@width,-\bachelorhw@height);
+    %%
+    \draw[rounded corners=\bachelorhw@rcorners,thin]%
+    (0,0) rectangle (\bachelorhw@width,-\bachelorhw@height);
+    \coordinate (d@upperleft) at (\hwcenterx-\bachelorhw@dialog@width/2,\hwboty/2+\bachelorhw@dialog@height/2) ;
+    \fill[bachelorhw@backcolor,rounded corners=\bachelorhw@rcorners,thin]%
+    (d@upperleft) rectangle ++(\bachelorhw@dialog@width,-\bachelorhw@dialog@height);
+
+    % % set clip to prevent overlay
+    \clip[rounded corners=\bachelorhw@rcorners] (d@upperleft) rectangle ++(\bachelorhw@dialog@width,-\bachelorhw@dialog@height);
+
+    % % Titlebar
+    \draw[fill=bachelorhw@titlecolor,thin] (d@upperleft) rectangle ++(\bachelorhw@dialog@width,-\bachelorhw@headerheight);
+
+    % % Border:
+    \draw[rounded corners=\bachelorhw@rcorners,thin]%
+        (d@upperleft) rectangle ++(\bachelorhw@dialog@width,-\bachelorhw@dialog@height);
+
+    % % de buttööööns
+    % % faMinusCircle, faPlusCircle, faChevronDown, faChevronUp
+    % \node[left=-1.75pt] at(\bachelorhw@width,-\bachelorhw@headerheight/2) %
+    %     {\small\faAngleDown~\,\faAngleUp~\,\footnotesize\rotatebox[origin=c]{45}{\color{cakzent}\faPlusCircle}};
+    % % Icon left:
+    \node[right=0pt,yshift=-0.5pt] at ($(d@upperleft)+(0,-\bachelorhw@headerheight/2)$) %
+         {\tiny\faUserSecret};
+    % % Title:
+    \node[right=10pt,yshift=-1.25pt,font=\tiny,scale=0.9] at ($(d@upperleft)+(0,-\bachelorhw@headerheight/2)$) %
+        {\strut\ifx\\#1\\\else#1\fi};
+
+    % Frage Text:
+    \node[below=\hwmargin,align=center,text width=\bachelorhw@dialog@width,font=\footnotesize] at($(d@upperleft)+(\bachelorhw@dialog@width/2,-\bachelorhw@headerheight)$) {#2};
+
+    % Button One, Left bottom:
+    \ifx\\#3\\\else
+    \node[hw-small-button,above right=\hwmargin] at($(d@upperleft)+(0,-\bachelorhw@dialog@height)$) {#3};\fi
+    % Button two, right bottom
+    \ifx\\#4\\\else
+    \node[hw-small-button,above left=\hwmargin] at($(d@upperleft)+(\bachelorhw@dialog@width,-\bachelorhw@dialog@height)$) {#4};\fi
+
+}{}
+
+% #1 text, will force width
+\def\hwDropDownMenu#1{%
+    \tikz[baseline=0.6ex]{\draw[rounded corners=2pt,fill=bachelorhw@backcolor] (0,0) rectangle ++(1.5cm,\baselineskip) node[midway,centered,text width=1.25cm] {\smash{\scalebox{0.75}{\tiny#1}}\hfill\textcolor{black!65!bachelorhw@titlecolor}{\faCaretDown}};}%
+}
+
+\endinput

@@ -431,7 +431,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \preto\appendix{\appendixtrue}
 
 \def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
-\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2\label{bt@chp@\thechapter}}\def\leftmark{#1}\def\rightmark{}\minitoc}
+\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2\label{bt@chp@\thechapter}}\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{#1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{\dimexpr-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
@@ -501,7 +501,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\protect\sbfamily\arabic{side@fn}}$\rangle$ #1}}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
-\long\def\csummary#1{\protect\sidenote[\z@]{\textbf{\protect\protect\protect\nohyper{\protect\protect\protect\hyperref[bt@chp@\thechapter]{Chapter \thechapter:}}}\smallskip\newline\relax#1}}
+\long\def\csummary#1{\protect\sidenote[\z@]{\textbf{\protect\protect\protect\nohyper{\protect\protect\protect\hyperref[bt@chp@\thechapter]{Chapter \thechapter:}}}\smallskip\newline#1}}
+
+\long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.25ex,leftmargin=*]\item#1\enditemize}}
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%

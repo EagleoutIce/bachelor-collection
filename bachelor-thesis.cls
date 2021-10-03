@@ -100,6 +100,8 @@
 \setlist[inlist]{itemjoin={{, }},itemjoin*={{, and }},label=$\roman*$),mode=boxed}
 \newlist{orlist}{enumerate*}{1}
 \setlist[orlist]{itemjoin={{, }},itemjoin*={{, or }},label=$\alph*$),mode=boxed}
+\newlist{baseinlist}{enumerate*}{1}
+\setlist[baseinlist]{itemjoin={{, }},itemjoin*={{, }},label={},mode=boxed}
 \newlength\bt@desc@sep@len \bt@desc@sep@len=\z@ \@plus 2\p@
 \setlist[description]{labelwidth=*,topsep=\bt@desc@sep@len,partopsep=\bt@desc@sep@len}
 \setlist[enumerate,1]{label=\arabic*.}
@@ -530,7 +532,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \let\bt@mtc@numberline\@gobble
 \def\bt@thirdofthree#1#2#3{#3}% gobble mtc fonts :) they are hacked into the pagenum and destroy hyperpage :)
 \newif\if@bt@mtc@nxt@
-\def\@mtcstyles{\normalfont\global\@bt@mtc@nxt@false\vspace*{\dimexpr-4.75\baselineskip-\parskip}\par\let\numberline\bt@mtc@numberline\def\l@section##1##2{\unskip\if@bt@mtc@nxt@\space\thinspace\textbullet\thinspace\space\else\global\@bt@mtc@nxt@true\fi\mbox{\nohyper{##1},~~\expandafter\hyperpage\expandafter{\bt@thirdofthree##2}}}}
+\def\@mtcstyles{\normalfont\global\@bt@mtc@nxt@false\vspace*{\dimexpr-4.75\baselineskip-\parskip}\par\let\numberline\bt@mtc@numberline\def\l@section##1##2{\unskip\if@bt@mtc@nxt@~~\textbullet~~\else\global\@bt@mtc@nxt@true\fi\mbox{\nohyper{##1},~\thinspace\expandafter\hyperpage\expandafter{\bt@thirdofthree##2}}}}
 \preto\minitoc{\unskip\minipage{\dimexpr\linewidth+\marginparsep+\marginparwidth-2\fboxsep}\parskip\z@\par\@mtcstyles}\appto\minitoc{\endminipage\bigskip\par}
 
 % deny minitoc the filtering of subsections and lower

@@ -19,7 +19,7 @@
 
 \ifbt@debug
 \errorcontextlines99999
-\overfullrule=3cm
+\overfullrule3cm
 \let\bt@debug\typeout
 \else
 \let\bt@debug\@gobble
@@ -46,7 +46,7 @@
 \RequirePackage{ifluatex}
 \ifluatex\else\PassOptionsToPackage{kerning=true,spacing=true}{microtype}\fi
 \RequirePackage[activate={true,nocompatibility},final,babel]{microtype}
-% we do not want protusion in table of*
+% we do not want protrusion in table of*
 \preto\tableofcontents{\microtypesetup{protrusion=false}}
 \appto\tableofcontents{\microtypesetup{protrusion=true}}
 
@@ -59,18 +59,18 @@
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
-\newlength\bt@len@margin \bt@len@margin=2.25cm
+\newlength\bt@len@margin \bt@len@margin2.25cm
 \RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm]{geometry}
 \flushbottom
 
 
 %% Hyperlinks => Figures, Tables and refs
 \RequirePackage[%
-  unicode=true,pdfencoding=auto,psdextra,luatex, %
+  unicode=true,pdfencoding=auto,psdextra,luatex,%
   backref, pagebackref=false,%
-  bookmarks=true, bookmarksopen=false, pdfdisplaydoctitle, %
+  bookmarks=true, bookmarksopen=false, pdfdisplaydoctitle,%
   pdfborder={0 0 0}, breaklinks=true,%
-  colorlinks, hyperindex, %
+  colorlinks, hyperindex,%
   bookmarkstype=X@b@X% erase
 ]{hyperref}
 
@@ -78,8 +78,10 @@
 
 \ifbt@draft
 \RequirePackage{marginnote}
-\else \RequirePackage[draft=false,autoclearnotecolumns]{scrlayer-notecolumn}
-\setkomafont{notecolumn.marginpar}{\footnotesize\itshape\color{gray}}\fi
+\else
+\RequirePackage[draft=false,autoclearnotecolumns]{scrlayer-notecolumn}
+\setkomafont{notecolumn.marginpar}{\footnotesize\itshape\@declaredcolor{gray}}
+\fi
 
 % just erases color
 \def\nohyper#1{\begingroup\bt@disablehyper#1\endgroup}
@@ -98,7 +100,8 @@
 \setlist[inlist]{itemjoin={{, }},itemjoin*={{, and }},label=$\roman*$),mode=boxed}
 \newlist{orlist}{enumerate*}{1}
 \setlist[orlist]{itemjoin={{, }},itemjoin*={{, or }},label=$\alph*$),mode=boxed}
-\setlist[description]{labelwidth=*,topsep=\z@ plus 2pt,partopsep=\z@ plus 2pt}
+\newlength\bt@desc@sep@len \bt@desc@sep@len=\z@ \@plus 2\p@
+\setlist[description]{labelwidth=*,topsep=\bt@desc@sep@len,partopsep=\bt@desc@sep@len}
 \setlist[enumerate,1]{label=\arabic*.}
 \setlist[enumerate,2]{label=\roman*.}
 \setlist[enumerate,3]{label=\alph*.}
@@ -136,23 +139,23 @@
 
 \def\arraystretch{1.2}
 \linespread{1.085}
-\hbadness=99999\vbadness=99999
-\hyphenpenalty=275
-\lefthyphenmin=2 \righthyphenmin=2
-\abovecaptionskip=5pt \@plus \p@ \@minus \p@
-\belowcaptionskip=5pt \@plus \p@ \@minus \p@
+\hbadness99999 \vbadness99999
+\hyphenpenalty275
+\lefthyphenmin2 \righthyphenmin2
+\abovecaptionskip5\p@ \@plus \p@ \@minus \p@
+\belowcaptionskip5\p@ \@plus \p@ \@minus \p@
 
 %% Header and footer
-\renewcommand*\chaptermark[1]{}
-\renewcommand*\sectionmark[1]{}
+\let\chaptermark\@gobble
+\let\sectionmark\@gobble
 
 \DeclareNewLayer[%
 topmargin,background,contents={%
-\color{black!95!white}\rule[\baselineskip]{\layerwidth}{.2em}%
+\@declaredcolor{black!95!white}\rule[\baselineskip]{\layerwidth}{.2em}%
 }]{bt.digital.head.ruler}
 
 \colorlet{bt@headfoot}{gray}
-\setkomafont{pageheadfoot}{\sffamily\footnotesize\color{bt@headfoot}}
+\setkomafont{pageheadfoot}{\sffamily\footnotesize\@declaredcolor{bt@headfoot}}
 
 \def\bt@getsubsecmark{\csname bt@subsec@\thesection @\endcsname}
 \def\ifbt@subsecmark{\ifcsname bt@subsec@\thesection @\endcsname\expandafter\bt@firstoftwo\else\expandafter\bt@secondoftwo\fi}
@@ -161,9 +164,9 @@ topmargin,background,contents={%
 \def\bt@copyright@notice@lower{\typesetAuthor\iflecture@er{copyright}{}{, \lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
-\ohead{\begingroup\normalsize\normalfont\linespread{1.25}\begin{tikzpicture}[remember picture,overlay]
+\ohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
   \node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
-\end{tikzpicture}\endgroup}%
+\endtikzpicture\endgroup}%
 \ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
 \cfoot{\bt@runningpage}
 }
@@ -209,33 +212,33 @@ topmargin,background,contents={%
 \def\lecture@coverpage@geometry{}%
 \renewcommand*\maketitle{\begingroup
 \newgeometry{margin=\bt@len@margin,includemp=false}%
-\setparsizes{\z@}{\z@}{\z@ \@plus 1fil}%
-\thispagestyle{bt@title}\null%
+\setparsizes\z@\z@{\z@ \@plus 1fil}%
+\thispagestyle{bt@title}\null
 % First: Center top Type and title
 \vspace*{-.33\bt@len@margin}%
-\begin{minipage}[t]{\linewidth}
+\minipage[t]{\linewidth}
   \raisebox{2.525pt}{\scalebox{.9}{\splogo}}\hfill\resizebox{73mm}!{\uulmlogo}
-\end{minipage}\par
-\begin{center}
+\endminipage\par
+\center
   \vskip6em
   {\usekomafont{subject}{\lecture@r{subject}\par}}
   \vskip2em
   \sbox0{\pbox{\linewidth}{\centering\usekomafont{title}\Huge\lecture@r{title}}}%\par
-  \textcolor{lightgray}{\rule{\linewidth}{\p@}}\medskip\par
+  \textcolor{lightgray}{\rule\linewidth\p@}\medskip\par
   \usebox0\smallskip\par
-  \textcolor{lightgray}{\rule{\linewidth}{\p@}}\smallskip\par
+  \textcolor{lightgray}{\rule\linewidth\p@}\smallskip\par
   \vskip.5em
   \parbox{\wd0-1em}{\centering\usekomafont{subtitle}{\lecture@r{subtitle}\par}}
-\end{center}
+\endcenter
 \vfill\lecture@r{titleimage}
 \vfill\null
 \raggedleft
-\begin{minipage}{.45\linewidth}
+\minipage{.45\linewidth}
   \raggedleft\disablehyper
   {\usekomafont{author}\typesetAuthors\par}
   {\usekomafont{dedication}\lecture@r{date}\par}
   {\usekomafont{dedication}\lecture@r{institute}\par}
-\end{minipage}\vspace{-.66\bt@len@margin}\par
+\endminipage\vspace{-.66\bt@len@margin}\par
 \endgroup\clearpage}}
 
 \selectcoverpage{bachelor-proposal}

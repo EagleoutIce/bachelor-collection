@@ -474,7 +474,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@cpstart@hook#1{\def\@captype{#1}\capstart}
 \NewEnviron{sidefig}[2][]{\sidenote{\protect\bt@cpstart@hook{figure}\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 % starred variant will use tha detokinizing sidenote-variant
-\NewEnviron{sidefig*}[2][]{\sidenote*{\bt@cpstart@hook{figure}\BODY\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
+\long\def\bt@sidefigre@cntnt#1#2#3{\sidenote*{\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}}}
+% expand body once
+\NewEnviron{sidefig*}[2][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}}
 
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
 \NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}

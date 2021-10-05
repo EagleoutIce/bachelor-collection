@@ -274,7 +274,7 @@ topmargin,background,contents={%
 \AtBeginDocument{%
 \@ifpackageloaded{lecture-links}{%
 \SetAllLinkStyle{\bt@fig@style@nonbold{#1}}%
-\SetUrlLinkStyle{\bt@fig@style@nonbold{#1}}%
+\SetUrlLinkStyle{#1}%
 \SetHrefLinkStyle{\bt@fig@style@nonbold{#1}}%
 \SetFootnoteLinkStyle{\bt@fig@style@nonbold{#1}}%
 \SetCiteColor{\btlinkcolorB}%
@@ -407,7 +407,7 @@ afterskip=-.5\parskip]{subsection}
 runin=on,tocindent=7.15em,afterskip=1ex,%
 beforeskip=1.5\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
-runin=false,beforeskip=.25\baselineskip plus .25\baselineskip,%
+runin=false,beforeskip=.5\baselineskip plus .25\baselineskip,%
 afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
@@ -474,9 +474,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@cpstart@hook#1{\def\@captype{#1}\capstart}
 \NewEnviron{sidefig}[2][]{\sidenote{\protect\bt@cpstart@hook{figure}\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
 % starred variant will use tha detokinizing sidenote-variant
-\long\def\bt@sidefigre@cntnt#1#2#3{\sidenote*{\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}}}
-% expand body once
-\NewEnviron{sidefig*}[2][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}}
+\long\def\bt@sidefigre@cntnt#1#2#3#4{\sidenote*{\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}#4}}
+% expand body once; #3 is currently a sloppy way to pass a label or other stuff below the caption
+\NewEnviron{sidefig*}[3][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}{#3}}
 
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
 \NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
@@ -502,12 +502,12 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \newcounter{side@fn}[chapter]
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
-\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$} \sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\protect\sbfamily\arabic{side@fn}}$\rangle$~#1}}
+\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}\sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\protect\sbfamily\arabic{side@fn}}$\rangle$~#1}}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
 \long\def\csummary#1{\protect\sidenote[\z@]{\textbf{\protect\protect\protect\nohyper{\protect\protect\protect\hyperref[bt@chp@\thechapter]{Chapter \thechapter:}}}\smallskip\newline#1}}
 
-\long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*]\item#1\enditemize}}
+\long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*,itemsep=\smallskipamount]\item#1\enditemize}}
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%

@@ -397,17 +397,17 @@ topmargin,background,contents={%
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
-beforeskip=1.5\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.25\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
 afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
-beforeskip=1.25\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
 afterskip=-.5\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=on,tocindent=7.15em,afterskip=1ex,%
-beforeskip=1.25\baselineskip]{subsubsection}
+beforeskip=1.125\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
-runin=false,beforeskip=.5\baselineskip \@plus .25\baselineskip,%
+runin=false,beforeskip=.4\baselineskip \@plus .25\baselineskip,%
 afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 

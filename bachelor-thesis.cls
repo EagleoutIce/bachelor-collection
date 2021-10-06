@@ -34,7 +34,7 @@
 \RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,environ,tikz,tcolorbox,ragged2e,chngcntr}
 \RequirePackage{uulm-logos}
 
-\linespread{1.05}
+\linespread{1.044}
 %% Fonts
 \AtEndPreamble{%
 \RequirePackage[sc,osf]{mathpazo}

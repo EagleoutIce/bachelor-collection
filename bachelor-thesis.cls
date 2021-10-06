@@ -263,7 +263,7 @@ topmargin,background,contents={%
 
 \DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1 #2:~~}}}
 \DeclareCaptionLabelFormat{bt-caption-theorems}{\bt@fig@style{\itshape\paletteD{#1 #2:~~}}}
-\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.66\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
+\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.5\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
 
 \setcounter{tocdepth}{1}
 
@@ -274,7 +274,7 @@ topmargin,background,contents={%
 \AtBeginDocument{%
 \@ifpackageloaded{lecture-links}{%
 \SetAllLinkStyle{\bt@fig@style@nonbold{#1}}%
-\SetUrlLinkStyle{#1}%
+\SetUrlLinkStyle{\bt@fig@style@nonbold{#1}}%
 \SetHrefLinkStyle{\bt@fig@style@nonbold{#1}}%
 \SetFootnoteLinkStyle{\bt@fig@style@nonbold{#1}}%
 \SetCiteColor{\btlinkcolorB}%
@@ -397,17 +397,17 @@ topmargin,background,contents={%
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
-beforeskip=1.75\baselineskip plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.5\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
 afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
-beforeskip=1.5\baselineskip plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.25\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
 afterskip=-.5\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=on,tocindent=7.15em,afterskip=1ex,%
-beforeskip=1.5\baselineskip]{subsubsection}
+beforeskip=1.25\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
-runin=false,beforeskip=.5\baselineskip plus .25\baselineskip,%
+runin=false,beforeskip=.5\baselineskip \@plus .25\baselineskip,%
 afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 

@@ -521,9 +521,15 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 % sloppy :)
 \def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\expandafter\noexpand\xdef\noexpand\csname bt@secinchap@\thechapter\noexpand\endcsname{\number\c@section}}}
+\def\bt@dumpcurrentsection@subsection{\immediate\write\@auxout{\noexpand\expandafter\noexpand\xdef\noexpand\csname bt@subsecinsec@\thesection\noexpand\endcsname{\number\c@subsection}}}
 \preto\chapter{\bt@dumpcurrentchapter@section}
 \preto\appendix{\bt@dumpcurrentchapter@section}
 \AtEndDocument{\bt@dumpcurrentchapter@section}
+
+\preto\chapter{\bt@dumpcurrentsection@subsection}
+\preto\section{\bt@dumpcurrentsection@subsection}
+\preto\appendix{\bt@dumpcurrentsection@subsection}
+\AtEndDocument{\bt@dumpcurrentsection@subsection}
 
 
 \def\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter}{\number\c@chapter}}}
@@ -554,7 +560,6 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \fi}
 
 \def\bt@chapterlinkupsame{\bt@linkup{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\thechapter}}%
-% \c@chapter@totc is totcount chapter
 \def\bt@chapterlinkdown{\ifappendix\def\@tmp{\c@bt@total@chapter@appendix}\else\def\@tmp{\c@bt@total@chapter}\fi
 \ifnum\c@chapter<\@tmp% down link, if there is a next one
 \bt@linkdown{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\ifappendix\@Alph{\the\numexpr\c@chapter+1\relax}%
@@ -572,11 +577,16 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@sectionlinkup{\ifnum\c@section>1 \bt@linkup{\number\c@section}{section.\thechapter.\the\numexpr\c@section-1\relax}\fi}
 \def\bt@sectionlinkdown{\ifcsname bt@secinchap@\thechapter\endcsname \edef\@tmp{\@nameuse{bt@secinchap@\thechapter}}\else\def\@tmp{0}\fi \ifnum\c@section<\@tmp\relax \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
 
+\def\bt@sectionlinkupsame{\bt@linkup{\number\c@section}{section.\thechapter.\number\c@section}}%
+\def\bt@subsectionlinkup{\ifnum\c@subsection>1 \bt@linkup{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection-1\relax}\fi}
+\def\bt@subsectionlinkdown{\ifcsname bt@subsecinsec@\thesection\endcsname \edef\@tmp{\@nameuse{bt@subsecinsec@\thesection}}\else\def\@tmp{0}\fi \ifnum\c@subsection<\@tmp \bt@linkdown{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection+1\relax}\fi}%
+
 \ifbt@print
 \def\bt@linkchapter{\thechapter}
 \else
 \def\bt@linkchapter{\mbox{\bt@chapterlinkup\bt@chapterlinkdown\thechapter}}
 \def\sectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkup\bt@sectionlinkdown\number\c@section\autodot\enskip}}
+\def\subsectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkupsame\bt@sectionlinkdown\number\c@section.\bt@subsectionlinkup\bt@subsectionlinkdown\number\c@subsection\autodot\enskip}}
 \fi
 
 \def\chapterextra{}

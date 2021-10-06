@@ -516,11 +516,15 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*,itemsep=\smallskipamount]\item#1\enditemize}}
 
 % we want hyper arrows for the chapters and sections
-% sloppy :)
-\RequirePackage{cntperchap}
-\RegisterCounters{section}
 \newcounter{bt@total@chapter} \c@bt@total@chapter0
 \newcounter{bt@total@chapter@appendix} \c@bt@total@chapter@appendix0
+
+% sloppy :)
+\def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\expandafter\noexpand\xdef\noexpand\csname bt@secinchap@\thechapter\noexpand\endcsname{\number\c@section}}}
+\preto\chapter{\bt@dumpcurrentchapter@section}
+\preto\appendix{\bt@dumpcurrentchapter@section}
+\AtEndDocument{\bt@dumpcurrentchapter@section}
+
 
 \def\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter}{\number\c@chapter}}}
 \preto\appendix{\bt@RecordChapter\gdef\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter@appendix}{\number\c@chapter}}}}
@@ -566,7 +570,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 }
 
 \def\bt@sectionlinkup{\ifnum\c@section>1 \bt@linkup{\number\c@section}{section.\thechapter.\the\numexpr\c@section-1\relax}\fi}
-\def\bt@sectionlinkdown{\GetStoredCounterValue[\number\c@chapter]{section}\ifnum\c@section<\c@cps@@tempcounterstorage \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
+\def\bt@sectionlinkdown{\ifcsname bt@secinchap@\thechapter\endcsname \edef\@tmp{\@nameuse{bt@secinchap@\thechapter}}\else\def\@tmp{0}\fi \ifnum\c@section<\@tmp\relax \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
 
 \ifbt@print
 \def\bt@linkchapter{\thechapter}

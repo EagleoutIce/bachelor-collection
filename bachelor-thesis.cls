@@ -15,6 +15,7 @@
 \DeclareStringOption[DeepInk]{tpalette}
 \DeclareBoolOption{debug}
 \DeclareBoolOption{draft}
+\DeclareBoolOption{print}
 \ProcessKeyvalOptions*
 
 \ifbt@debug
@@ -567,8 +568,12 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@sectionlinkup{\ifnum\c@section>1 \bt@linkup{\number\c@section}{section.\thechapter.\the\numexpr\c@section-1\relax}\fi}
 \def\bt@sectionlinkdown{\GetStoredCounterValue[\number\c@chapter]{section}\ifnum\c@section<\c@cps@@tempcounterstorage \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
 
+\ifbt@print
+\def\bt@linkchapter{\thechapter}
+\else
 \def\bt@linkchapter{\mbox{\bt@chapterlinkup\bt@chapterlinkdown\thechapter}}
 \def\sectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkup\bt@sectionlinkdown\number\c@section\autodot\enskip}}
+\fi
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%

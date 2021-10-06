@@ -538,7 +538,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 % #1 is number. #2 is linktarget
 \def\bt@linkup#1#2{\savebox0{#1}%store the number for dimen
 \rlap{%rlapping box
-\smash{\raisebox{\dimexpr\ht0+.15ex}{% get it in the air; no depth
+\smash{\raisebox{\dimexpr\ht0}{% get it in the air; no depth
 \bt@disablehyper\hyperlink{#2}{\makebox[\wd0]{%\makebox[\wd0]{
   \null\hfill\color{gray!30!white}\normalfont\normalsize\faAngleUp\hfill\null
 }}}}}}
@@ -584,7 +584,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \ifbt@print
 \def\bt@linkchapter{\thechapter}
 \else
-\def\bt@linkchapter{\mbox{\bt@chapterlinkup\bt@chapterlinkdown\thechapter}}
+\def\bt@linkchapter{\mbox{\bt@chapterlinkup\bt@chapterlinkdown\thechapter\autodot}}
 \def\sectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkup\bt@sectionlinkdown\number\c@section\autodot\enskip}}
 \def\subsectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkupsame\bt@sectionlinkdown\number\c@section.\bt@subsectionlinkup\bt@subsectionlinkdown\number\c@subsection\autodot\enskip}}
 \fi

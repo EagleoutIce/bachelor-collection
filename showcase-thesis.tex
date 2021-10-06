@@ -1,0 +1,36 @@
+\errorcontextlines999999
+\documentclass{bachelor-thesis}
+
+\usepackage{blindtext,lipsum}
+\usepackage{pgffor}
+
+\institute{Institute of Software Engineering and Programming Languages}
+\authority{Ulm University, 2021}
+\addAuthor{Florian Sihler}
+\addSupervisor{Max Man}
+\addSupervisor{Brigitte Beta}(Brigitte $\beta$)
+\copyright{Isch bin Copy-Right}
+
+\begin{document}
+    \Blinddocument
+    \chapter{BBBB}{XX}
+
+    \foreach \i in {A,...,C} {\section{Abschnitt \i}\lipsum[2]}
+
+    \chapter{CCC}{YYY}
+    \chapter{DDD}{CCC}
+
+    \foreach \i in {A,B} {\section{Abschnitt \i}\lipsum[2]}
+
+    \appendix
+
+    \chapter{BBBB}{XX}
+
+    \foreach \i in {A,...,C} {\section{Abschnitt \i}\lipsum[2]}
+
+    \chapter{CCC}{YYY}
+    \chapter{DDD}{CCC}
+
+    \foreach \i in {A,B} {\section{Abschnitt \i}\lipsum[2]}
+
+\end{document}

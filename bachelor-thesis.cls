@@ -370,6 +370,7 @@ topmargin,background,contents={%
 \renewcommand*\sectioncatchphraseformat[4]{%
 \hskip#2\bt@subsectionencap{#3}{#4}}
 
+
 %% Table of contents & sectioning
 
 \let\old@tableofcontents\tableofcontents
@@ -513,9 +514,65 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*,itemsep=\smallskipamount]\item#1\enditemize}}
 
+% we want hyper arrows for the chapters and sections
+% sloppy :)
+\RequirePackage{cntperchap}
+\RegisterCounters{section}
+\newcounter{bt@total@chapter} \c@bt@total@chapter0
+\newcounter{bt@total@chapter@appendix} \c@bt@total@chapter@appendix0
+
+\def\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter}{\number\c@chapter}}}
+\preto\appendix{\bt@RecordChapter\gdef\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter@appendix}{\number\c@chapter}}}}
+\AtEndDocument{\bt@RecordChapter}
+% #1 is number. #2 is linktarget
+\def\bt@linkup#1#2{\savebox0{#1}%store the number for dimen
+\rlap{%rlapping box
+\smash{\raisebox{\dimexpr\ht0+.15ex}{% get it in the air; no depth
+\bt@disablehyper\hyperlink{#2}{\makebox[\wd0]{%\makebox[\wd0]{
+  \null\hfill\color{gray!30!white}\normalfont\normalsize\faAngleUp\hfill\null
+}}}}}}
+\def\bt@linkdown#1#2{\savebox0{#1}%store the number for dimen
+\rlap{% TODO: improve
+\smash{\raisebox{\dimexpr-\dp0-\height-.15ex}{% get in the ground
+\bt@disablehyper\hyperlink{#2}{\makebox[\wd0]{%
+  \null\hfill\color{gray!30!white}\normalfont\normalsize\faAngleDown\hfill\null
+}}}}}}
+
+\def\bt@chapterlinkup{\ifnum\c@chapter>1\relax
+\bt@linkup{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\ifappendix\@Alph{\the\numexpr\c@chapter-1\relax}\else
+\the\numexpr\c@chapter-1\relax
+\fi}%
+\else% appendix break
+\ifappendix\ifnum\c@chapter=1\relax
+\bt@linkup{\number\c@chapter}{chapter.\number\c@bt@total@chapter}% link to last
+\fi\fi
+\fi}
+
+\def\bt@chapterlinkupsame{\bt@linkup{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\thechapter}}%
+% \c@chapter@totc is totcount chapter
+\def\bt@chapterlinkdown{\ifappendix\def\@tmp{\c@bt@total@chapter@appendix}\else\def\@tmp{\c@bt@total@chapter}\fi
+\ifnum\c@chapter<\@tmp% down link, if there is a next one
+\bt@linkdown{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\ifappendix\@Alph{\the\numexpr\c@chapter+1\relax}%
+\else
+\the\numexpr\c@chapter+1\relax
+\fi}%
+\else% check if we are at the appendix break:
+\ifappendix\else
+\ifnum\c@bt@total@chapter@appendix>0\relax
+\bt@linkdown{\number\c@chapter}{appendix.A}%
+\fi\fi
+\fi% up link if prev
+}
+
+\def\bt@sectionlinkup{\ifnum\c@section>1 \bt@linkup{\number\c@section}{section.\thechapter.\the\numexpr\c@section-1\relax}\fi}
+\def\bt@sectionlinkdown{\GetStoredCounterValue[\number\c@chapter]{section}\ifnum\c@section<\c@cps@@tempcounterstorage \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
+
+\def\bt@linkchapter{\mbox{\bt@chapterlinkup\bt@chapterlinkdown\thechapter}}
+\def\sectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkup\bt@sectionlinkdown\number\c@section\autodot\enskip}}
+
 \def\chapterextra{}
 \renewcommand*\chapterformat{%
-  \sbox0{\scalebox{2.33}{\color{bt@numcol}\thechapter}\thinspace}%
+  \sbox0{\scalebox{2.33}{\color{bt@numcol}\bt@linkchapter}\thinspace}%
   \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 

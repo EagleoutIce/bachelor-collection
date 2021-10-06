@@ -472,26 +472,28 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 % garbage mp figures
 \def\bt@cpstart@hook#1{\def\@captype{#1}\capstart}
-\NewEnviron{sidefig}[2][]{\sidenote{\protect\bt@cpstart@hook{figure}\BODY\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}}
+\NewEnviron{sidefig}[2][]{\sidenote{\protect\bt@cpstart@hook{figure}\BODY\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}}
+\def\bt@fco#1#2{\ifx!#1!#2\else#1\fi}
+\robustify\bt@fco
 % starred variant will use tha detokinizing sidenote-variant
 \long\def\bt@sidefigre@cntnt#1#2#3#4{\sidenote*{\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}#4}}
 % expand body once; #3 is currently a sloppy way to pass a label or other stuff below the caption
 \NewEnviron{sidefig*}[3][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}{#3}}
 
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
-\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
-\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{figure}}
+\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY\end{figure}}
 
-\NewEnviron{rawfig}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\ifx!#1!#2\else#1\fi]{#2}}\BODY}
+\NewEnviron{rawfig}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
-\NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}}
+\NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}}
 
-\NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
 
-\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\BODY\end{table}}
+\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
 
-\NewEnviron{rawtbl}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\ifx!#1!#2\else#1\fi]{#2}}\BODY}
+\NewEnviron{rawtbl}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
 \newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
   \nohyper{\typesetAuthor}{\footnotesize\\*
@@ -502,7 +504,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \newcounter{side@fn}[chapter]
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
-\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}\sidenote{\protect\phantomsection\protect\label{bt@side@fn@side:\thesection:\arabic{side@fn}}$\langle$\protect\hyperref[bt@side@fn@tar:\thesection:\arabic{side@fn}]{\protect\sbfamily\arabic{side@fn}}$\rangle$~#1}}
+\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}\sidenote{\protect\bt@fnte{\thesection}{\arabic{side@fn}}{#1}}}
+% #1 section; #2 fn; #3 text
+\def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~#3}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
 \long\def\csummary#1{\protect\sidenote[\z@]{\textbf{\protect\protect\protect\nohyper{\protect\protect\protect\hyperref[bt@chp@\thechapter]{Chapter \thechapter:}}}\smallskip\newline#1}}
@@ -527,7 +531,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\s@@sidenote[#1]#2{{\makenote{\protect\bt@sn@guard{#1}{#2}}}}
 \fi
 \def\cvsep{\smallskip\newline}
-
+\robustify\cvsep
 
 \RequirePackage[tight,k-tight,undotted]{minitoc}
 \AtBeginDocument{\dominitoc[n]}

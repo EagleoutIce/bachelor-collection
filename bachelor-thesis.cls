@@ -434,14 +434,15 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
 \long\def\bt@nostar@chapter[#1]#2#3{\clearpage
-\begingroup
 % csummary as contents:
 \ifx\\\detokenize{#3}\\\else
 % cheat the next addtocontents declaration; currently not patching for argument failure
+% note: we do not re-store by group so spaces are calculated correctly
+\let\oldaddcontentsline\addcontentsline
 \long\def\addcontentsline##1##2##3{\begingroup \let \label \@gobble \ifx \@currentHref \@empty \Hy@Warning {No destination for bookmark of \string \addcontentsline ,\MessageBreak destination is added}\phantomsection \fi \expandafter \ifx \csname toclevel@##2\endcsname \relax \begingroup \def \Hy@tempa {##1}\ifx \Hy@tempa \Hy@bookmarkstype \Hy@WarningNoLine {bookmark level for unknown ##2 defaults to 0}\else\Hy@Info {bookmark level for unknown ##2 defaults to 0}\fi \endgroup \expandafter \gdef \csname toclevel@##2\endcsname {0}\fi \edef \Hy@toclevel {\csname toclevel@##2\endcsname }\Hy@writebookmark {\csname the##2\endcsname }{##3}{\@currentHref }{\Hy@toclevel }{##1}\ifHy@verbose \begingroup \def \Hy@tempa {##3}\@onelevel@sanitize \Hy@tempa \let \temp@online \on@line \let \on@line \@empty \Hy@Info {bookmark\temp@online :\MessageBreak thecounter {\csname the##2\endcsname }\MessageBreak text {\Hy@tempa }\MessageBreak reference {\@currentHref }\MessageBreak toclevel {\Hy@toclevel }\MessageBreak type {##1}}\endgroup \fi \addtocontents {##1}{\protect \contentsline {##2}{##3\protect\csummary{#3}{\thechapter}}{\thepage }{\@currentHref }\protected@file@percent }\endgroup}%
 \fi
 \pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1]{#2\label{bt@chp@\thechapter}}%
-\endgroup
+\let\addcontentsline\oldaddcontentsline
 \expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{#1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
@@ -494,17 +495,17 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
 \NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
-\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY\end{figure}}
+\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY\end{figure}}
 
-\NewEnviron{rawfig}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY}
+\NewEnviron{rawfig}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
 \NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}}
 
 \NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
 
-\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
+\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
 
-\NewEnviron{rawtbl}[2][]{\sidenote{\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
+\NewEnviron{rawtbl}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
 \newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
   \nohyper{\typesetAuthor}{\footnotesize\\*
@@ -606,15 +607,16 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
-\long\def\bt@sn@guard#1#2{\raisebox{#1}{\parbox{\linewidth}{\RaggedRight#2\vskip5pt}}}
-\def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[7\p@]}}
-\def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[7\p@]}}
+\long\def\bt@sn@guard#1#2{\raisebox{#1}{\bt@sn@guard@{#2}}}
+\long\def\bt@sn@guard@#1{\parbox\linewidth{\RaggedRight#1\vskip5pt}}
+\def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
+\def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[\z@]}}
 \ifbt@draft
 \long\def\s@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
 \long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
 \else
-\long\def\s@sidenote[#1]#2{\makenote*{\bt@sn@guard{#1}{#2}}}
-\long\def\s@@sidenote[#1]#2{{\makenote{\protect\bt@sn@guard{#1}{#2}}}}
+\long\def\s@sidenote[#1]#2{\ifx#1\z@ \makenote*{\bt@sn@guard@{#2}}\else\makenote*{\bt@sn@guard{#1}{#2}}\fi}
+\long\def\s@@sidenote[#1]#2{\ifx#1\z@ \makenote{\protect\bt@sn@guard@{#2}}\else\makenote{\protect\bt@sn@guard{#1}{#2}}\fi}
 \fi
 \def\cvsep{\smallskip\newline}
 \robustify\cvsep

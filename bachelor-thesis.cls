@@ -544,7 +544,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 }}}}}}
 \def\bt@linkdown#1#2{\savebox0{#1}%store the number for dimen
 \rlap{% TODO: improve
-\smash{\raisebox{\dimexpr-\dp0-\height-.15ex}{% get in the ground
+\smash{\raisebox{\dimexpr-\dp0-\height-.25ex}{% get in the ground
 \bt@disablehyper\hyperlink{#2}{\makebox[\wd0]{%
   \null\hfill\color{gray!30!white}\normalfont\normalsize\faAngleDown\hfill\null
 }}}}}}

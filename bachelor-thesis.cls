@@ -531,12 +531,15 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \newcounter{bt@total@chapter@appendix} \c@bt@total@chapter@appendix0
 
 % sloppy :)
-\def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\expandafter\noexpand\xdef\noexpand\csname bt@secinchap@\thechapter\noexpand\endcsname{\number\c@section}}}
-\def\bt@dumpcurrentsection@subsection{\immediate\write\@auxout{\noexpand\expandafter\noexpand\xdef\noexpand\csname bt@subsecinsec@\thesection\noexpand\endcsname{\number\c@subsection}}}
+\def\bt@xdef#1#2{\expandafter\xdef\csname #1\endcsname{#2}}
+\def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\bt@xdef{bt@secinchap@\thechapter}{\number\c@section}}}
+\def\bt@dumpcurrentsection@subsection{\immediate\write\@auxout{\noexpand\bt@xdef{bt@subsecinsec@\thesection}{\number\c@subsection}}}
+\preto\part{\bt@dumpcurrentchapter@section}
 \preto\chapter{\bt@dumpcurrentchapter@section}
 \preto\appendix{\bt@dumpcurrentchapter@section}
 \AtEndDocument{\bt@dumpcurrentchapter@section}
 
+\preto\part{\bt@dumpcurrentsection@subsection}
 \preto\chapter{\bt@dumpcurrentsection@subsection}
 \preto\section{\bt@dumpcurrentsection@subsection}
 \preto\appendix{\bt@dumpcurrentsection@subsection}
@@ -607,16 +610,16 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
-\long\def\bt@sn@guard#1#2{\raisebox{#1}{\bt@sn@guard@{#2}}}
-\long\def\bt@sn@guard@#1{\parbox\linewidth{\RaggedRight#1\vskip5pt}}
+\long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
+\long\def\bt@sn@gd@#1{\parbox\linewidth{\RaggedRight#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
 \def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[\z@]}}
 \ifbt@draft
-\long\def\s@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
-\long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@guard{#1}{#2}}}
+\long\def\s@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@gd{#1}{#2}}}
+\long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@gd{#1}{#2}}}
 \else
-\long\def\s@sidenote[#1]#2{\ifx#1\z@ \makenote*{\bt@sn@guard@{#2}}\else\makenote*{\bt@sn@guard{#1}{#2}}\fi}
-\long\def\s@@sidenote[#1]#2{\ifx#1\z@ \makenote{\protect\bt@sn@guard@{#2}}\else\makenote{\protect\bt@sn@guard{#1}{#2}}\fi}
+\long\def\s@sidenote[#1]#2{\ifx#1\z@ \makenote*{\bt@sn@gd@{#2}}\else\makenote*{\bt@sn@gd{#1}{#2}}\fi}
+\long\def\s@@sidenote[#1]#2{\ifx#1\z@ \makenote{\protect\bt@sn@gd@{#2}}\else\makenote{\protect\bt@sn@gd{#1}{#2}}\fi}
 \fi
 \def\cvsep{\smallskip\newline}
 \robustify\cvsep

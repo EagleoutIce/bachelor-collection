@@ -433,9 +433,18 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \preto\appendix{\appendixtrue}
 
 \def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
-\long\def\bt@nostar@chapter[#1]#2#3{\clearpage\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1\ifx\\\detokenize{#3}\\\else\csummary{#3}\fi]{#2\label{bt@chp@\thechapter}}\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{#1}\def\rightmark{}\minitoc}
+\long\def\bt@nostar@chapter[#1]#2#3{\clearpage
+\begingroup
+% csummary as contents:
+\ifx\\\detokenize{#3}\\\else
+% cheat the next addtocontents declaration; currently not patching for argument failure
+\long\def\addcontentsline##1##2##3{\begingroup \let \label \@gobble \ifx \@currentHref \@empty \Hy@Warning {No destination for bookmark of \string \addcontentsline ,\MessageBreak destination is added}\phantomsection \fi \expandafter \ifx \csname toclevel@##2\endcsname \relax \begingroup \def \Hy@tempa {##1}\ifx \Hy@tempa \Hy@bookmarkstype \Hy@WarningNoLine {bookmark level for unknown ##2 defaults to 0}\else\Hy@Info {bookmark level for unknown ##2 defaults to 0}\fi \endgroup \expandafter \gdef \csname toclevel@##2\endcsname {0}\fi \edef \Hy@toclevel {\csname toclevel@##2\endcsname }\Hy@writebookmark {\csname the##2\endcsname }{##3}{\@currentHref }{\Hy@toclevel }{##1}\ifHy@verbose \begingroup \def \Hy@tempa {##3}\@onelevel@sanitize \Hy@tempa \let \temp@online \on@line \let \on@line \@empty \Hy@Info {bookmark\temp@online :\MessageBreak thecounter {\csname the##2\endcsname }\MessageBreak text {\Hy@tempa }\MessageBreak reference {\@currentHref }\MessageBreak toclevel {\Hy@toclevel }\MessageBreak type {##1}}\endgroup \fi \addtocontents {##1}{\protect \contentsline {##2}{##3\protect\csummary{#3}{\thechapter}}{\thepage }{\@currentHref }\protected@file@percent }\endgroup}%
+\fi
+\pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1]{#2\label{bt@chp@\thechapter}}%
+\endgroup
+\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{#1}\def\rightmark{}\minitoc}
 
-\def\bt@sum@prechap#1{\vspace*{\dimexpr-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
+\def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
 \def\setsectionspace#1{\def\bt@sec@spaceguard{\needspace{#1}}}
 \setsectionspace{3\baselineskip}
@@ -511,7 +520,8 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~#3}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
-\long\def\csummary#1{\protect\sidenote[\z@]{\textbf{\protect\protect\protect\nohyper{\protect\protect\protect\hyperref[bt@chp@\thechapter]{Chapter \thechapter:}}}\smallskip\newline#1}}
+% #1 is text #2 is chapter
+\long\def\csummary#1#2{\sidenote[\z@]{\textbf{\protect\nohyper{\protect\hyperref[bt@chp@#2]{Chapter #2:}}}\smallskip\newline#1}}
 
 \long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*,itemsep=\smallskipamount]\item#1\enditemize}}
 

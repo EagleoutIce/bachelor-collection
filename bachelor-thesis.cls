@@ -532,8 +532,8 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 % sloppy :)
 \def\bt@xdef#1#2{\expandafter\xdef\csname #1\endcsname{#2}}
-\def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\bt@xdef{bt@secinchap@\thechapter}{\number\c@section}}}
-\def\bt@dumpcurrentsection@subsection{\immediate\write\@auxout{\noexpand\bt@xdef{bt@subsecinsec@\thesection}{\number\c@subsection}}}
+\def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\bt@xdef{bt@sic@\thechapter}{\number\c@section}}}
+\def\bt@dumpcurrentsection@subsection{\immediate\write\@auxout{\noexpand\bt@xdef{bt@suse@\thesection}{\number\c@subsection}}}
 \preto\part{\bt@dumpcurrentchapter@section}
 \preto\chapter{\bt@dumpcurrentchapter@section}
 \preto\appendix{\bt@dumpcurrentchapter@section}
@@ -589,11 +589,11 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 }
 
 \def\bt@sectionlinkup{\ifnum\c@section>1 \bt@linkup{\number\c@section}{section.\thechapter.\the\numexpr\c@section-1\relax}\fi}
-\def\bt@sectionlinkdown{\ifcsname bt@secinchap@\thechapter\endcsname \edef\@tmp{\@nameuse{bt@secinchap@\thechapter}}\else\def\@tmp{0}\fi \ifnum\c@section<\@tmp\relax \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
+\def\bt@sectionlinkdown{\ifcsname bt@sic@\thechapter\endcsname \edef\@tmp{\@nameuse{bt@sic@\thechapter}}\else\def\@tmp{0}\fi \ifnum\c@section<\@tmp\relax \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
 
 \def\bt@sectionlinkupsame{\bt@linkup{\number\c@section}{section.\thechapter.\number\c@section}}%
 \def\bt@subsectionlinkup{\ifnum\c@subsection>1 \bt@linkup{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection-1\relax}\fi}
-\def\bt@subsectionlinkdown{\ifcsname bt@subsecinsec@\thesection\endcsname \edef\@tmp{\@nameuse{bt@subsecinsec@\thesection}}\else\def\@tmp{0}\fi \ifnum\c@subsection<\@tmp \bt@linkdown{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection+1\relax}\fi}%
+\def\bt@subsectionlinkdown{\ifcsname bt@suse@\thesection\endcsname \edef\@tmp{\@nameuse{bt@suse@\thesection}}\else\def\@tmp{0}\fi \ifnum\c@subsection<\@tmp \bt@linkdown{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection+1\relax}\fi}%
 
 \ifbt@print
 \def\bt@linkchapter{\thechapter}

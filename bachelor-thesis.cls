@@ -16,6 +16,7 @@
 \DeclareBoolOption{debug}
 \DeclareBoolOption{draft}
 \DeclareBoolOption{print}
+\DeclareBoolOption{clever}
 \ProcessKeyvalOptions*
 
 \ifbt@debug
@@ -74,6 +75,13 @@
   colorlinks, hyperindex,%
   bookmarkstype=X@b@X% erase
 ]{hyperref}
+
+\RequirePackage{amsmath}
+
+\ifbt@clever
+\RequirePackage{varioref}
+\RequirePackage[noabbrev]{cleveref}% capitalise; before notecolumn so i can nest
+\fi
 
 \RequirePackage{hypcap,bookmark,nameref}
 
@@ -494,7 +502,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
-  \sidenote{\protect\bt@cpstart@hook{figure}#4\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}}
+  \sidenote{\protect\bt@cpstart@hook{figure}#4\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}}
   {}% empty endings
 
 \protected\def\bt@fco#1#2{\ifx!#1!#2\else#1\fi} % legacy

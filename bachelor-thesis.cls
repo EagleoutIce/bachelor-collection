@@ -526,86 +526,17 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*,itemsep=\smallskipamount]\item#1\enditemize}}
 
-% we want hyper arrows for the chapters and sections
-\newcounter{bt@total@chapter} \c@bt@total@chapter0
-\newcounter{bt@total@chapter@appendix} \c@bt@total@chapter@appendix0
-
-% sloppy :)
-\def\bt@xdef#1#2{\expandafter\xdef\csname #1\endcsname{#2}}
-\def\bt@dumpcurrentchapter@section{\immediate\write\@auxout{\noexpand\bt@xdef{bt@sic@\thechapter}{\number\c@section}}}
-\def\bt@dumpcurrentsection@subsection{\immediate\write\@auxout{\noexpand\bt@xdef{bt@suse@\thesection}{\number\c@subsection}}}
-\preto\part{\bt@dumpcurrentchapter@section}
-\preto\chapter{\bt@dumpcurrentchapter@section}
-\preto\appendix{\bt@dumpcurrentchapter@section}
-\AtEndDocument{\bt@dumpcurrentchapter@section}
-
-\preto\part{\bt@dumpcurrentsection@subsection}
-\preto\chapter{\bt@dumpcurrentsection@subsection}
-\preto\section{\bt@dumpcurrentsection@subsection}
-\preto\appendix{\bt@dumpcurrentsection@subsection}
-\AtEndDocument{\bt@dumpcurrentsection@subsection}
-
-
-\def\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter}{\number\c@chapter}}}
-\preto\appendix{\bt@RecordChapter\gdef\bt@RecordChapter{\immediate\write\@auxout{\noexpand\setcounter{bt@total@chapter@appendix}{\number\c@chapter}}}}
-\AtEndDocument{\bt@RecordChapter}
-% #1 is number. #2 is linktarget
-\def\bt@linkup#1#2{\savebox0{#1}%store the number for dimen
-\rlap{%rlapping box
-\smash{\raisebox{\dimexpr\ht0}{% get it in the air; no depth
-\bt@disablehyper\hyperlink{#2}{\makebox[\wd0]{%\makebox[\wd0]{
-  \null\hfill\color{gray!30!white}\normalfont\normalsize\faAngleUp\hfill\null
-}}}}}}
-\def\bt@linkdown#1#2{\savebox0{#1}%store the number for dimen
-\rlap{% TODO: improve
-\smash{\raisebox{\dimexpr-\dp0-\height-.25ex}{% get in the ground
-\bt@disablehyper\hyperlink{#2}{\makebox[\wd0]{%
-  \null\hfill\color{gray!30!white}\normalfont\normalsize\faAngleDown\hfill\null
-}}}}}}
-
-\def\bt@chapterlinkup{\ifnum\c@chapter>1\relax
-\bt@linkup{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\ifappendix\@Alph{\the\numexpr\c@chapter-1\relax}\else
-\the\numexpr\c@chapter-1\relax
-\fi}%
-\else% appendix break
-\ifappendix\ifnum\c@chapter=1\relax
-\bt@linkup{\number\c@chapter}{chapter.\number\c@bt@total@chapter}% link to last
-\fi\fi
-\fi}
-
-\def\bt@chapterlinkupsame{\bt@linkup{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\thechapter}}%
-\def\bt@chapterlinkdown{\ifappendix\def\@tmp{\c@bt@total@chapter@appendix}\else\def\@tmp{\c@bt@total@chapter}\fi
-\ifnum\c@chapter<\@tmp% down link, if there is a next one
-\bt@linkdown{\number\c@chapter}{\ifappendix appendix\else chapter\fi.\ifappendix\@Alph{\the\numexpr\c@chapter+1\relax}%
-\else
-\the\numexpr\c@chapter+1\relax
-\fi}%
-\else% check if we are at the appendix break:
-\ifappendix\else
-\ifnum\c@bt@total@chapter@appendix>0\relax
-\bt@linkdown{\number\c@chapter}{appendix.A}%
-\fi\fi
-\fi% up link if prev
-}
-
-\def\bt@sectionlinkup{\ifnum\c@section>1 \bt@linkup{\number\c@section}{section.\thechapter.\the\numexpr\c@section-1\relax}\fi}
-\def\bt@sectionlinkdown{\ifcsname bt@sic@\thechapter\endcsname \edef\@tmp{\@nameuse{bt@sic@\thechapter}}\else\def\@tmp{0}\fi \ifnum\c@section<\@tmp\relax \bt@linkdown{\number\c@section}{section.\thechapter.\the\numexpr\c@section+1\relax}\fi}
-
-\def\bt@sectionlinkupsame{\bt@linkup{\number\c@section}{section.\thechapter.\number\c@section}}%
-\def\bt@subsectionlinkup{\ifnum\c@subsection>1 \bt@linkup{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection-1\relax}\fi}
-\def\bt@subsectionlinkdown{\ifcsname bt@suse@\thesection\endcsname \edef\@tmp{\@nameuse{bt@suse@\thesection}}\else\def\@tmp{0}\fi \ifnum\c@subsection<\@tmp \bt@linkdown{\number\c@subsection}{subsection.\thechapter.\number\c@section.\the\numexpr\c@subsection+1\relax}\fi}%
+\def\bt@disabled@hyperlink#1#2{\bt@disablehyper\hyperlink{#1}{#2}}
+\AtBeginDocument{\let\hjs@hyperlink\bt@disabled@hyperlink}
 
 \ifbt@print
-\def\bt@linkchapter{\thechapter}
-\else
-\def\bt@linkchapter{\mbox{\bt@chapterlinkup\bt@chapterlinkdown\thechapter\autodot}}
-\def\sectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkup\bt@sectionlinkdown\number\c@section\autodot\enskip}}
-\def\subsectionformat{\mbox{\bt@chapterlinkupsame\bt@chapterlinkdown\thechapter.\bt@sectionlinkupsame\bt@sectionlinkdown\number\c@section.\bt@subsectionlinkup\bt@subsectionlinkdown\number\c@subsection\autodot\enskip}}
+\PassOptionsToPackage{disable}{hierarchy-jumpers}
 \fi
+\usepackage[usefa]{hierarchy-jumpers}
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%
-  \sbox0{\scalebox{2.33}{\color{bt@numcol}\bt@linkchapter}\thinspace}%
+  \sbox0{\scalebox{2.33}{\color{bt@numcol}\hjs@linkedchapter}\thinspace}%
   \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 

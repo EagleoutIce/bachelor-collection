@@ -679,7 +679,8 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \else\ifhmode\if@ignore\penalty\@M \hskip\z@skip\fi\fi
 \fi\fi}
 
-\def\bt@lotlof@base#1#2{\@tempdima=2em\nohyper{#1}\dotfill\hb@xt@\@pnumwidth{\hss\hyperpage{#2}\kern-\p@\kern\p@}\par}
+\newlength\bt@lo@numwidth \bt@lo@numwidth=2em
+\def\bt@lotlof@base#1#2{\@tempdima=\bt@lo@numwidth\relax\nohyper{#1}\dotfill\hb@xt@\@pnumwidth{\hss\hyperpage{#2}\kern-\p@\kern\p@}\par}
 \def\bt@lotlof@xchap#1#2{}
 \def\@loflotstyles{\begingroup\let\l@figure\bt@lotlof@base \let\l@table\bt@lotlof@base \let\l@xchapter\bt@lotlof@xchap}
 \preto\listoffigures\@loflotstyles \appto\listoffigures\endgroup

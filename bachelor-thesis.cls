@@ -527,10 +527,10 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \NewEnviron{rawtbl}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
-\newenvironment{abstract}{\chapter*{Abstract}}{\vskip4em\par\flushright
-  \nohyper{\typesetAuthor}{\footnotesize\\*
+\newenvironment{abstract}[1][]{\chapter*{Abstract}\begingroup\def\@arg@a{#1}}{\vskip4em\par\flushright
+\nohyper{\typesetAuthor\ifx\@arg@a\@empty\else\sidenote[\z@]{\@arg@a}\fi}{\footnotesize\\*
   \textcolor{gray}{\today}\par}%
-\endflushright\par}
+\endflushright\endgroup\par}
 
 \LetLtxMacro\basefootnote\footnote
 \newcounter{side@fn}[chapter]

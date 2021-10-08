@@ -32,7 +32,7 @@
 \RequirePackage{lecture-coverpage}
 
 \RequirePackage[ngerman,main=english]{babel}
-\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,environ,tikz,tcolorbox,ragged2e,chngcntr}
+\RequirePackage{etoolbox,calc,booktabs,scrhack,caption,wrapfig,tikz,tcolorbox,ragged2e,chngcntr}
 \RequirePackage{uulm-logos}
 
 \linespread{1.044}
@@ -484,9 +484,21 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 % garbage mp figures
 \def\bt@cpstart@hook#1{\def\@captype{#1}\capstart}
-\NewEnviron{sidefig}[2][]{\sidenote{\protect\bt@cpstart@hook{figure}\BODY\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}}
-\def\bt@fco#1#2{\ifx!#1!#2\else#1\fi}
-\robustify\bt@fco
+
+\RequirePackage{xparse}% used for environ collection
+\usepackage{environ}% should be removed in the future
+
+\NewDocumentEnvironment{sidefig}{%
+  O{#2}     % shortcation
+  m         % normal caption
+  D()\relax % optional label
+  +b        % bodiiiiii of ma auuuuun
+}{%
+  \sidenote{\protect\bt@cpstart@hook{figure}#4\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}}
+  {}% empty endings
+
+\protected\def\bt@fco#1#2{\ifx!#1!#2\else#1\fi} % legacy
+
 % starred variant will use tha detokinizing sidenote-variant
 \long\def\bt@sidefigre@cntnt#1#2#3#4{\sidenote*{\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}#4}}
 % expand body once; #3 is currently a sloppy way to pass a label or other stuff below the caption

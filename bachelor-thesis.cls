@@ -438,7 +438,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \newif\ifappendix
 \newif\ifdisableside
 \def\disableside{\disablesidetrue}
-\preto\appendix{\appendixtrue}
+\preto\appendix{\clearpage\appendixtrue}
 
 \def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
 \long\def\bt@nostar@chapter[#1]#2#3{\clearpage

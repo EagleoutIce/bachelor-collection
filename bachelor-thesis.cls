@@ -37,15 +37,16 @@
 \RequirePackage{uulm-logos}
 
 \linespread{1.044}
+\RequirePackage{ifluatex}
+
 %% Fonts
-\AtEndPreamble{%
+\AtEndPreamble{
 \RequirePackage[sc,osf]{mathpazo}
-\RequirePackage[euler-digits,small]{eulervm}%
-\RequirePackage[tabular,lining]{montserrat}%
+\RequirePackage[euler-digits,small]{eulervm}
+\RequirePackage[tabular,lining]{montserrat}
 }
 
 %% Microtype
-\RequirePackage{ifluatex}
 \ifluatex\else\PassOptionsToPackage{kerning=true,spacing=true}{microtype}\fi
 \RequirePackage[activate={true,nocompatibility},final,babel]{microtype}
 % we do not want protrusion in table of*
@@ -498,7 +499,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \NewDocumentEnvironment{sidefig}{%
   O{#2}     % shortcation
-  m         % normal caption
+  +m        % normal caption
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
@@ -515,7 +516,22 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
 \NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
-\NewEnviron{fig}[2][]{\begin{figure}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY\end{figure}}
+\NewDocumentEnvironment{fig}{%
+  O{#2}     % shortcation
+  +m        % normal caption
+  D()\relax % optional label
+  +b        % bodiiiiii of ma auuuuun
+}{%
+\begin{figure}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4\end{figure}}
+
+\NewDocumentEnvironment{fig*}{%
+  O{#2}     % shortcation
+  +m        % normal caption
+  D()\relax % optional label
+  +b        % bodiiiiii of ma auuuuun
+}{%
+\begin{figure}\sidenote*{\disablesidetrue\captionsetup{aboveskip=\z@}\captionof{figure}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}#4\end{figure}}
+
 
 \NewEnviron{rawfig}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
@@ -548,6 +564,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \newlist{smallitemize}{itemize}{1}
 \setlist[smallitemize,1]{label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*}
+
+\newlist{smallenumerate}{enumerate}{1}
+\setlist[smallenumerate,1]{nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*}
 
 \def\bt@disabled@hyperlink#1#2{\bt@disablehyper\hyperlink{#1}{#2}}
 \AtBeginDocument{\let\hjs@hyperlink\bt@disabled@hyperlink}

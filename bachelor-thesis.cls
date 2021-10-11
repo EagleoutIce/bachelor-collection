@@ -544,7 +544,10 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 % #1 is text #2 is chapter
 \long\def\csummary#1#2{\smash{\raisebox{-1.5\p@}{\sidenote[\z@]{\textbf{\protect\nohyper{\protect\hyperref[bt@chp@#2]{\ifappendix Appendix\else Chapter\fi~#2:}}}\smallskip\newline#1}}}}
 
-\long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\itemize[label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*,itemsep=\smallskipamount]\item#1\enditemize}}
+\long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\smallitemize[itemsep=\smallskipamount]\item#1\endsmallitemize}}
+
+\newlist{smallitemize}{itemize}{1}
+\setlist[smallitemize,1]{label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*}
 
 \def\bt@disabled@hyperlink#1#2{\bt@disablehyper\hyperlink{#1}{#2}}
 \AtBeginDocument{\let\hjs@hyperlink\bt@disabled@hyperlink}

@@ -564,8 +564,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
+\newif\ifinsidenote
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
-\long\def\bt@sn@gd@#1{\parbox\linewidth{\RaggedRight#1\vskip5pt}}
+\long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\RaggedRight#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
 \def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[\z@]}}
 

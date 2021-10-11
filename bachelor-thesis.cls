@@ -568,12 +568,17 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\RaggedRight#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
 \def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[\z@]}}
+
+% We want nested sidenotes to appear exactly where they should be and not in a second or third run. Currently i will not do this recursively but just for one level at a time.
+\newsavebox\bt@siddnote@cachebox
+
 \ifbt@draft
 \long\def\s@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@gd{#1}{#2}}}
 \long\def\s@@sidenote[#1]#2{\marginnote{\normalfont\scriptsize\itshape\color{gray}\bt@sn@gd{#1}{#2}}}
 \else
-\long\def\s@sidenote[#1]#2{\ifx#1\z@ \makenote*{\bt@sn@gd@{#2}}\else\makenote*{\bt@sn@gd{#1}{#2}}\fi}
-\long\def\s@@sidenote[#1]#2{\ifx#1\z@ \makenote{\protect\bt@sn@gd@{#2}}\else\makenote{\protect\bt@sn@gd{#1}{#2}}\fi}
+% savebox execution ensures recursive sidenotes are present :D
+\long\def\s@sidenote[#1]#2{\ifx#1\z@ \makenote*{\bt@sn@gd@{#2}}\else\makenote*{\bt@sn@gd{#1}{#2}}\fi\savebox\bt@siddnote@cachebox{\bt@sn@gd@{#2}}}
+\long\def\s@@sidenote[#1]#2{\ifx#1\z@ \makenote{\protect\bt@sn@gd@{#2}}\else\makenote{\protect\bt@sn@gd{#1}{#2}}\fi\savebox\bt@siddnote@cachebox{\bt@sn@gd@{#2}}}
 \fi
 \def\cvsep{\smallskip\newline}
 \robustify\cvsep

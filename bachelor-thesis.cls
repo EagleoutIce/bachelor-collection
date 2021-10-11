@@ -566,7 +566,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \setlist[smallitemize,1]{label=\textbullet~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*}
 
 \newlist{smallenumerate}{enumerate}{1}
-\setlist[smallenumerate,1]{nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*}
+\setlist[smallenumerate,1]{label=\arabic*.~,nosep,labelwidth=.75ex,labelsep=.75ex,leftmargin=*}
 
 \def\bt@disabled@hyperlink#1#2{\bt@disablehyper\hyperlink{#1}{#2}}
 \AtBeginDocument{\let\hjs@hyperlink\bt@disabled@hyperlink}

@@ -713,4 +713,17 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \preto\listoftables\@loflotstyles \appto\listoftables\endgroup
 
 \@addtoreset{footnote}{chapter}
+
+\def\shorttocname{Short Overview}
+\newcommand*\shorttoc[2][2]{%
+\begingroup\makeatletter
+\setcounter{tocdepth}{#2}%
+\def\contentsname{\shorttocname}%
+{%
+\expandafter\def\csname @starttoc\endcsname##1{\InputIfFileExists{\jobname.##1}{}{}}%
+\markboth{\shorttocname}{}%
+\old@tableofcontents
+}%
+\setcounter{tocdepth}{#1}%
+\endgroup}
 \endinput

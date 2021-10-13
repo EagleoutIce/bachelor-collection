@@ -554,7 +554,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
 \long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}\sidenote{\protect\bt@fnte{\thesection}{\arabic{side@fn}}{#1}}}
 % #1 section; #2 fn; #3 text
-\def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~#3}
+\def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~\protect\disablesidetrue#3}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
 % #1 is text #2 is chapter

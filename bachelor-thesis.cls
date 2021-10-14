@@ -434,9 +434,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@getsubsecmark{\csname bt@subsec@\thesection @\endcsname}
 \def\ifbt@subsecmark{\ifcsname bt@subsec@\thesection @\endcsname\expandafter\bt@firstoftwo\else\expandafter\bt@secondoftwo\fi}
 
-\let\bt@chapter\chapter
+\LetLtxMacro\bt@chapter\chapter
 \def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
-\long\def\bt@star@chapter#1{\bt@chapter*{#1}}
+\long\def\bt@star@chapter#1{\bt@chapter*{#1}\def\leftmark{#1}\def\rightmark{}}
 \newif\ifappendix
 \newif\ifdisableside
 \def\disableside{\disablesidetrue}
@@ -722,7 +722,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\contentsname{\shorttocname}%
 {%
 \expandafter\def\csname @starttoc\endcsname##1{\InputIfFileExists{\jobname.##1}{}{}}%
-\markboth{\shorttocname}{}%
+\def\leftmark{#1}\def\rightmark{}%
 \old@tableofcontents
 }%
 \setcounter{tocdepth}{#1}%

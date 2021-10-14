@@ -188,7 +188,7 @@ topmargin,background,contents={%
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{bt.digital.head.ruler}
 \pagestyle{scrheadings}
 
-\def\bt@runningpage{\strut\nohyper{\hyperref[toc]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
+\def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
 \defpairofpagestyles[scrheadings]{bt@chapter}{%
 \cfoot{\bt@runningpage}%
 }
@@ -387,7 +387,8 @@ topmargin,background,contents={%
 \preto\tableofcontents{\begingroup}
 \appto\tableofcontents{\endgroup}
 
-\deftocheading{toc}{\chapter*{\contentsname}\label{toc}\pdfbookmark[0]{\contentsname}{bt@toc@@id@toc}}
+\newcounter{bt@@toccounter}
+\deftocheading{toc}{\stepcounter{bt@@toccounter}\chapter*{\contentsname}\label{toc@\thebt@@toccounter}\pdfbookmark[0]{\contentsname}{bt@toc@@id@toc@\thebt@@toccounter}}
 
 \CloneTOCEntryStyle{tocline}{bt@toc@section}
 \TOCEntryStyleStartInitCode{bt@toc@section}{%

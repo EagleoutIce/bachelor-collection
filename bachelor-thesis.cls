@@ -58,7 +58,7 @@
 \RequirePackage{cuted}
 
 %% General Layout & Packages
-\RequirePackage{relsize,lastpage,fontawesome,afterpage,xstring,graphicx}
+\RequirePackage{relsize,lastpage,fontawesome5,afterpage,xstring,graphicx}
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 

@@ -124,7 +124,7 @@
 \RequirePackage{tikz-palettes}
 \UsePalette{\bt@cpalette}
 \UseTikzPalette{\bt@tpalette}
-\def\cplenumi#1{\textcolor{#1}{\smaller[3]\raisebox{.25ex}{$\blacksquare$}}}
+\def\cplenumi#1{{\smaller[4]\raisebox{.25ex}{$\blacksquare$}}}
 % Note: smaller blocks :)
 
 %% Footnotes

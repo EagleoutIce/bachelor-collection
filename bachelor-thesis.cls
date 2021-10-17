@@ -176,11 +176,10 @@ topmargin,background,contents={%
 \def\bt@copyright@notice@lower{\typesetAuthor\iflecture@er{copyright}{}{, \lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
-\rohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
-\node[below right,yshift=-.25cm,xshift=\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north west) {\bt@disablehyper\bt@copyright@notice@upper. Author:~\bt@copyright@notice@lower};
-\endtikzpicture\endgroup}\rehead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
-\node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper. Author:~\bt@copyright@notice@lower};
+\def\@lohd{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
+\node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
 \endtikzpicture\endgroup}%
+\rohead{\@lohd}\rehead{\@lohd}%
 \def\@lihd{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
 \lohead{\@lihd}\lehead{\@lihd}%
 \cfoot{\bt@runningpage}}
@@ -379,26 +378,16 @@ topmargin,background,contents={%
 \remainingright\bt@len@a
 \bt@sectionbar{r}{#3}{#4}{\bto@sectionbar@right}}
 
-\def\bt@subsectionencap#1#2#3#4{%
-\hskip\dimexpr-\marginparsep-\marginparwidth\relax\remainingleft\bt@len@a
-\bt@sectionbar{l}{#3}{#4}{\bto@sectionbar@left}%
-\hskip\dimexpr\marginparsep+\marginparwidth\relax
+\def\bt@subsectionencap#1#2{%
 \@hangfrom{%
-  \sbox0{\color{bt@numcol}\contour{white}{#1}}%
+  \sbox0{\color{bt@numcol}#1}%
   \bt@secnumblock
-}{\strut#2\strut}\remainingright\bt@len@a
-\bt@sectionbar{r}{#3}{#4}{\bto@sectionbar@right}}
+}{#2}}
 
-\def\bt@subsectionencap@r#1#2#3#4{%
-\remainingleft\bt@len@a
-\bt@sectionbar{l}{#3}{#4}{\bto@sectionbar@left}%
-\strut\savebox0{#2}\usebox0\strut
-\mbox{\hskip\dimexpr\linewidth-\wd0+\marginparsep+\marginparwidth\relax\remainingright\bt@len@a
-\bt@sectionbar{r}{#3}{#4}{\bto@sectionbar@right}%
-\hskip\dimexpr-\linewidth+\wd0-\marginparsep-\marginparwidth\relax}
-\hfill\rlap{%
-  \sbox0{\color{bt@numcol}\contour{white}{#1}}%
-  \bt@secnumblock@r
+\def\bt@subsectionencap@r#1#2{%
+#2\hfill\rlap{%
+\sbox0{\color{bt@numcol}\contour{white}{#1}}%
+\bt@secnumblock@r
 }}
 % inverted for numbers
 \renewcommand*\sectionlinesformat[4]{%
@@ -407,10 +396,11 @@ topmargin,background,contents={%
   \ifoddpage\bt@sectionencap@r{#3}{#4}{bt@backgray}{3pt}%
   \else\bt@sectionencap{#3}{#4}{bt@backgray}{3pt}\fi
 \else\ifx\@tmpa\bt@tx@subsection
-  \ifoddpage\bt@subsectionencap@r{#3}{#4}{bt@backgray!80!white}{1pt}%
-  \else\bt@subsectionencap{#3}{#4}{bt@backgray!80!white}{1pt}\fi
+  \ifoddpage\bt@subsectionencap@r{#3}{#4}\relax
+  \else\bt@subsectionencap{#3}{#4}\fi
 \else\@hangfrom{#3}{#4}\fi\fi}
-\renewcommand*\sectioncatchphraseformat[4]{\hskip#2\bt@subsectionencap{#3}{#4}}
+\renewcommand*\sectioncatchphraseformat[4]{%
+\hskip#2\bt@subsectionencap{#3}{#4}}
 
 
 %% Table of contents & sectioning
@@ -617,8 +607,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
-\def\bt@ragged{\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
-\robustify\bt@ragged
+\def\bt@ragged{\ifodd\c@page\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}

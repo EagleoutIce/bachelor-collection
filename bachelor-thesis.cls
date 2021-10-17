@@ -63,7 +63,7 @@
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
 \newlength\bt@len@margin \bt@len@margin2.25cm
-\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.8cm]{geometry}
+\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm,left=\dimexpr\bt@len@margin+1cm,right=\dimexpr\bt@len@margin-.75cm]{geometry}
 \flushbottom
 
 
@@ -74,7 +74,7 @@
   bookmarks=true, bookmarksopen=false, pdfdisplaydoctitle,%
   pdfborder={0 0 0}, breaklinks=true,%
   colorlinks, hyperindex,%
-  bookmarkstype=X@b@X% erase
+  bookmarkstype=X@@% erase
 ]{hyperref}
 
 \RequirePackage{amsmath}
@@ -177,7 +177,7 @@ topmargin,background,contents={%
 
 \renewpairofpagestyles{scrheadings}{%
 \ohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
-  \node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
+  \node[below left,yshift=-.25cm,xshift=-\bt@len@margin+.75cm,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
 \endtikzpicture\endgroup}%
 \ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
 \cfoot{\bt@runningpage}

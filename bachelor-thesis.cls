@@ -4,7 +4,7 @@
 \def\LayoutName{bachelor-thesis}
 \ProvidesClass{\LayoutName}[2021/04/04 documentclass for bachelor-thesis]
 % First we setup the document options
-\LoadClass[numbers=noenddot,fontsize=10pt,twoside=false,footnotes=nomultiple,a4paper,headings=big]{scrbook}
+\LoadClass[numbers=noenddot,fontsize=10pt,twoside=true,footnotes=nomultiple,a4paper,headings=big]{scrbook}
 \KOMAoption{listof}{leveldown,chaptergapline,totocnumbered}
 
 %% Options
@@ -124,7 +124,7 @@
 \RequirePackage{tikz-palettes}
 \UsePalette{\bt@cpalette}
 \UseTikzPalette{\bt@tpalette}
-\def\cplenumi#1{{\smaller[4]\raisebox{.25ex}{$\blacksquare$}}}
+\def\cplenumi#1{{\smaller[3]\raisebox{.25ex}{$\blacksquare$}}}
 % Note: smaller blocks :)
 
 %% Footnotes
@@ -585,8 +585,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
+\def\bt@ragged{\ifodd\c@page\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
-\long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\RaggedRight#1\vskip5pt}}
+\long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
 \def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[\z@]}}
 

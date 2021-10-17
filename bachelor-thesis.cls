@@ -584,9 +584,12 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
+\renewcommand*\chapterlinesformat[3]{\parbox{.75\linewidth+\marginparsep+\marginparwidth}{\@hangfrom{#2}{#3}}\par}
+
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
-\def\bt@ragged{\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
+\def\bt@ragged@do#1#2{\checkoddpage\ifoddpage#1\else#2\fi}
+\def\bt@ragged{\bt@ragged@do{\RaggedRight}{\RaggedLeft\captionsetup{justification=RaggedLeft}}}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}

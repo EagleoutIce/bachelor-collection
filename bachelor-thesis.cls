@@ -185,7 +185,7 @@ topmargin,background,contents={%
 \endtikzpicture\endgroup}%
 \rohead{\strut\leftmark\strut}
 \lehead{\strut\rightmark\strut}%
-\cfoot{\bt@runningpage}}
+\ofoot{\bt@runningpage}}
 
 \defpairofpagestyles[scrheadings]{bt@title}{}
 \AddLayersAtBeginOfPageStyle{scrheadings}{bt.digital.head.ruler}
@@ -194,21 +194,19 @@ topmargin,background,contents={%
 
 \def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
 \defpairofpagestyles[scrheadings]{bt@chapter}{%
-\cfoot{\bt@runningpage}%
+\ofoot{\bt@runningpage}%
 }
 
 \AddLayersAtBeginOfPageStyle{bt@chapter}{bt.digital.head.ruler}
 
 \defpairofpagestyles[scrheadings]{bt@frontmatter}{%
 \ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
-\cfoot{\bt@runningpage}%
+\ofoot{\bt@runningpage}%
 }
 
 \AddLayersAtBeginOfPageStyle{bt@frontmatter}{bt.digital.head.ruler}
 
-\defpairofpagestyles[scrheadings]{bt@chapter@frontmatter}{%
-\cfoot{\bt@runningpage}%
-}
+\defpairofpagestyles[scrheadings]{bt@chapter@frontmatter}{\ofoot{\bt@runningpage}}
 
 \AddLayersAtBeginOfPageStyle{bt@chapter@frontmatter}{bt.digital.head.ruler}
 

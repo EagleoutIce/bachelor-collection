@@ -437,7 +437,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \LetLtxMacro\bt@chapter\chapter
 \def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
-\long\def\bt@star@chapter#1{\bt@chapter*{#1}\def\leftmark{1}\def\rightmark{}}
+\long\def\bt@star@chapter#1{\bt@chapter*{#1}\def\leftmark{#1}\def\rightmark{}}
 \newif\ifappendix
 \newif\ifdisableside
 \def\disableside{\disablesidetrue}
@@ -454,7 +454,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \fi
 \pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1]{#2\label{bt@chp@\thechapter}}%
 \let\addcontentsline\oldaddcontentsline
-\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter\autodot #1}\def\rightmark{}\minitoc}
+\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter\autodot\space#1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
@@ -463,7 +463,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \let\bt@section\section
 \def\section{\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
 \def\bt@star@section[#1]#2{\bt@section*[#1]{#2}\def\rightmark{#1}}
-\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{\thesection\autodot #1}}
+\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{\thesection\autodot\space#1}}
 
 \let\bt@subsection\subsection
 \def\subsection{\@ifstar{\@dblarg\bt@star@subsection}{\@dblarg\bt@nostar@subsection}}

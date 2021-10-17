@@ -42,7 +42,8 @@
 %% Fonts
 \AtEndPreamble{
 \RequirePackage[sc,osf]{mathpazo}
-\RequirePackage[euler-digits,small]{eulervm}
+% \RequirePackage[euler-digits,small]{eulervm}
+\RequirePackage{ebgaramond-maths}
 \RequirePackage[tabular,lining]{montserrat}
 }
 
@@ -63,7 +64,7 @@
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
 \newlength\bt@len@margin \bt@len@margin2.25cm
-\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm]{geometry}
+\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.8cm]{geometry}
 \flushbottom
 
 
@@ -393,9 +394,9 @@ topmargin,background,contents={%
 \remainingleft\bt@len@a
 \bt@sectionbar{l}{#3}{#4}{\bto@sectionbar@left}%
 \strut\savebox0{#2}\usebox0\strut
-\hskip\dimexpr\linewidth-\wd0+\marginparsep+\marginparwidth\relax\remainingright\bt@len@a
+\mbox{\hskip\dimexpr\linewidth-\wd0+\marginparsep+\marginparwidth\relax\remainingright\bt@len@a
 \bt@sectionbar{r}{#3}{#4}{\bto@sectionbar@right}%
-\hskip\dimexpr-\linewidth+\wd0-\marginparsep-\marginparwidth\relax
+\hskip\dimexpr-\linewidth+\wd0-\marginparsep-\marginparwidth\relax}
 \hfill\rlap{%
   \sbox0{\color{bt@numcol}\contour{white}{#1}}%
   \bt@secnumblock@r
@@ -618,6 +619,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
 \def\bt@ragged{\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
+\robustify\bt@ragged
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}

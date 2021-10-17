@@ -42,8 +42,7 @@
 %% Fonts
 \AtEndPreamble{
 \RequirePackage[sc,osf]{mathpazo}
-% \RequirePackage[euler-digits,small]{eulervm}
-\RequirePackage{ebgaramond-maths}
+\RequirePackage[euler-digits,small]{eulervm}
 \RequirePackage[tabular,lining]{montserrat}
 }
 

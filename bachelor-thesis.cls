@@ -589,6 +589,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
 \def\bt@ragged@do#1#2{\checkoddpage\ifoddpage#1\else#2\fi}
+\let\btifodd\bt@ragged@do
 \def\bt@ragged{\bt@ragged@do{\RaggedRight}{\RaggedLeft\captionsetup{justification=RaggedLeft}}}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}

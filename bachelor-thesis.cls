@@ -63,7 +63,9 @@
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
 \newlength\bt@len@margin \bt@len@margin2.25cm
-\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm,left=\dimexpr\bt@len@margin+1cm,right=\dimexpr\bt@len@margin-.75cm]{geometry}
+\newlength\bt@len@margin@r \bt@len@margin@r1cm
+\newlength\bt@len@margin@l \bt@len@margin@l3cm
+\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm,left=\bt@len@margin@l,right=\bt@len@margin@r]{geometry}
 \flushbottom
 
 
@@ -176,12 +178,14 @@ topmargin,background,contents={%
 \def\bt@copyright@notice@lower{\typesetAuthor\iflecture@er{copyright}{}{, \lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
-\ohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
-  \node[below left,yshift=-.25cm,xshift=-\bt@len@margin+.75cm,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
+\cohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
+\node[below left,yshift=-.25cm,xshift=-\bt@len@margin@r,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
+\endtikzpicture\endgroup}\cehead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
+\node[below right,yshift=-.25cm,xshift=\bt@len@margin@r,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=left] at(current page.north west) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
 \endtikzpicture\endgroup}%
-\ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
-\cfoot{\bt@runningpage}
-}
+\rohead{\strut\leftmark\strut}
+\lehead{\strut\rightmark\strut}%
+\cfoot{\bt@runningpage}}
 
 \defpairofpagestyles[scrheadings]{bt@title}{}
 \AddLayersAtBeginOfPageStyle{scrheadings}{bt.digital.head.ruler}
@@ -316,10 +320,7 @@ topmargin,background,contents={%
 \newlength\bt@len@over@shift \bt@len@over@shift=.33em
 
 % the numline
-\def\bt@secnumblock{%
-  \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
-  \usebox0\hskip\bt@len@over@shift\relax
-}
+\def\bt@secnumblock{\usebox0\hskip\bt@len@over@shift}
 
 \def\bto@sectionbar@left{}
 \def\bto@sectionbar@right{}
@@ -436,7 +437,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \LetLtxMacro\bt@chapter\chapter
 \def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
-\long\def\bt@star@chapter#1{\bt@chapter*{#1}\def\leftmark{#1}\def\rightmark{}}
+\long\def\bt@star@chapter#1{\bt@chapter*{#1}\def\leftmark{1}\def\rightmark{}}
 \newif\ifappendix
 \newif\ifdisableside
 \def\disableside{\disablesidetrue}
@@ -453,7 +454,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \fi
 \pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1]{#2\label{bt@chp@\thechapter}}%
 \let\addcontentsline\oldaddcontentsline
-\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{#1}\def\rightmark{}\minitoc}
+\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter\autodot #1}\def\rightmark{}\minitoc}
 
 \def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
@@ -461,8 +462,8 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \setsectionspace{3\baselineskip}
 \let\bt@section\section
 \def\section{\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
-\def\bt@star@section[#1]#2{\bt@section*[#1]{#2}}
-\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{#1}}
+\def\bt@star@section[#1]#2{\bt@section*[#1]{#2}\def\rightmark{#1}}
+\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{\thesection\autodot #1}}
 
 \let\bt@subsection\subsection
 \def\subsection{\@ifstar{\@dblarg\bt@star@subsection}{\@dblarg\bt@nostar@subsection}}
@@ -515,7 +516,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \NewEnviron{sidefig*}[3][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}{#3}}
 
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
-\NewEnviron{widefig}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
+\NewEnviron{widefig}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
 \NewDocumentEnvironment{fig}{%
   O{#2}     % shortcation
@@ -538,7 +539,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}}
 
-\NewEnviron{widetbl}[2][]{\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
 
 \NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
 
@@ -585,7 +586,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
-\def\bt@ragged{\ifodd\c@page\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
+\def\bt@ragged{\checkoddpage\ifoddpage\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}

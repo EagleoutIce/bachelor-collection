@@ -194,7 +194,7 @@ topmargin,background,contents={%
 
 \def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
 \defpairofpagestyles[scrheadings]{bt@chapter}{%
-\ofoot{\bt@runningpage}%
+\rohead{}\ofoot{\bt@runningpage}%
 }
 
 \AddLayersAtBeginOfPageStyle{bt@chapter}{bt.digital.head.ruler}
@@ -452,7 +452,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \fi
 \pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1]{#2\label{bt@chp@\thechapter}}%
 \let\addcontentsline\oldaddcontentsline
-\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter\autodot\space#1}\def\rightmark{}\minitoc}
+\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter. #1}\def\rightmark{}\minitoc}% chapter always gets the dot :D
 
 \def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
@@ -461,7 +461,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \let\bt@section\section
 \def\section{\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
 \def\bt@star@section[#1]#2{\bt@section*[#1]{#2}\def\rightmark{#1}}
-\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{\thesection\autodot\space#1}}
+\def\bt@nostar@section[#1]#2{\bt@sec@spaceguard\pdfbookmark[1]{\the\numexpr\value{section}+1\relax)\space#1}{bt@sec@@id@\thesection}\nobreak\bt@section[#1]{#2}\def\rightmark{\thesection\autodot\space #1}}
 
 \let\bt@subsection\subsection
 \def\subsection{\@ifstar{\@dblarg\bt@star@subsection}{\@dblarg\bt@nostar@subsection}}

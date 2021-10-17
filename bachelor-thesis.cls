@@ -4,7 +4,7 @@
 \def\LayoutName{bachelor-thesis}
 \ProvidesClass{\LayoutName}[2021/04/04 documentclass for bachelor-thesis]
 % First we setup the document options
-\LoadClass[numbers=noenddot,fontsize=10pt,twoside=true,footnotes=nomultiple,a4paper,headings=big]{scrbook}
+\LoadClass[numbers=noenddot,fontsize=10pt,twoside=false,footnotes=nomultiple,a4paper,headings=big]{scrbook}
 \KOMAoption{listof}{leveldown,chaptergapline,totocnumbered}
 
 %% Options
@@ -124,7 +124,7 @@
 \RequirePackage{tikz-palettes}
 \UsePalette{\bt@cpalette}
 \UseTikzPalette{\bt@tpalette}
-\def\cplenumi#1{{\smaller[3]\raisebox{.25ex}{$\blacksquare$}}}
+\def\cplenumi#1{{\smaller[4]\raisebox{.25ex}{$\blacksquare$}}}
 % Note: smaller blocks :)
 
 %% Footnotes
@@ -176,13 +176,12 @@ topmargin,background,contents={%
 \def\bt@copyright@notice@lower{\typesetAuthor\iflecture@er{copyright}{}{, \lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
-\def\@lohd{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
-\node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
+\ohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
+  \node[below left,yshift=-.25cm,xshift=-\bt@len@margin,font=\usekomafont{pageheadfoot}\tiny,inner sep=\z@,outer sep=\z@,align=right] at(current page.north east) {\bt@disablehyper\bt@copyright@notice@upper\\\disablehyper\bt@copyright@notice@lower};
 \endtikzpicture\endgroup}%
-\rohead{\@lohd}\rehead{\@lohd}%
-\def\@lihd{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
-\lohead{\@lihd}\lehead{\@lihd}%
-\cfoot{\bt@runningpage}}
+\ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
+\cfoot{\bt@runningpage}
+}
 
 \defpairofpagestyles[scrheadings]{bt@title}{}
 \AddLayersAtBeginOfPageStyle{scrheadings}{bt.digital.head.ruler}
@@ -314,15 +313,13 @@ topmargin,background,contents={%
   \hskip\bt@sectionbar@skp\relax
 }}}% #2#3
 
-\newlength\bt@len@over@shift \bt@len@over@shift=1em
+\newlength\bt@len@over@shift \bt@len@over@shift=.33em
 
 % the numline
 \def\bt@secnumblock{%
-  \hskip\dimexpr-\wd0-\bt@len@over@shift-\marginparwidth-\marginparsep\relax
-  \usebox0\hskip\dimexpr\bt@len@over@shift+\marginparwidth+\marginparsep\relax
-}% TODO: alignment
-
-\def\bt@secnumblock@r{\hskip\dimexpr\bt@len@over@shift+\marginparwidth+\marginparsep\relax\rlap{\usebox0}}
+  \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
+  \usebox0\hskip\bt@len@over@shift\relax
+}
 
 \def\bto@sectionbar@left{}
 \def\bto@sectionbar@right{}
@@ -357,17 +354,6 @@ topmargin,background,contents={%
   \parbox[t][\z@]{\bt@len@margin}{\centering#2}%
 }}}
 
-\def\bt@sectionencap@r#1#2#3#4{%
-\remainingleft\bt@len@a
-\bt@sectionbar{l}{#3}{#4}{\bto@sectionbar@left}%
-\strut#2\strut
-\remainingright\bt@len@a
-\bt@sectionbar{r}{#3}{#4}{\bto@sectionbar@right}
-\hfill\rlap{%
-  \sbox0{\color{bt@numcol}\contour{white}{#1}}%
-  \bt@secnumblock@r
-}}
-
 \def\bt@sectionencap#1#2#3#4{%
 \remainingleft\bt@len@a
 \bt@sectionbar{l}{#3}{#4}{\bto@sectionbar@left}%
@@ -380,24 +366,16 @@ topmargin,background,contents={%
 
 \def\bt@subsectionencap#1#2{%
 \@hangfrom{%
-  \sbox0{\color{bt@numcol}#1}%
+  \sbox0{\color{bt@numcol}#1\thinspace}%
   \bt@secnumblock
 }{#2}}
 
-\def\bt@subsectionencap@r#1#2{%
-#2\hfill\rlap{%
-\sbox0{\color{bt@numcol}\contour{white}{#1}}%
-\bt@secnumblock@r
-}}
-% inverted for numbers
 \renewcommand*\sectionlinesformat[4]{%
-\checkoddpage\hspace*{#2}\protected@edef\@tmpa{#1}%
+\hspace*{#2}\protected@edef\@tmpa{#1}%
 \ifx\@tmpa\bt@tx@section
-  \ifoddpage\bt@sectionencap@r{#3}{#4}{bt@backgray}{3pt}%
-  \else\bt@sectionencap{#3}{#4}{bt@backgray}{3pt}\fi
+  \bt@sectionencap{#3}{#4}{bt@backgray}{3pt}%
 \else\ifx\@tmpa\bt@tx@subsection
-  \ifoddpage\bt@subsectionencap@r{#3}{#4}\relax
-  \else\bt@subsectionencap{#3}{#4}\fi
+  \bt@subsectionencap{#3}{#4}
 \else\@hangfrom{#3}{#4}\fi\fi}
 \renewcommand*\sectioncatchphraseformat[4]{%
 \hskip#2\bt@subsectionencap{#3}{#4}}
@@ -479,7 +457,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
-\def\setsectionspace#1{\def\bt@sec@spaceguard{\Needspace{#1}}}
+\def\setsectionspace#1{\def\bt@sec@spaceguard{\needspace{#1}}}
 \setsectionspace{3\baselineskip}
 \let\bt@section\section
 \def\section{\@ifstar{\@dblarg\bt@star@section}{\@dblarg\bt@nostar@section}}
@@ -601,15 +579,14 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\chapterextra{}
 \renewcommand*\chapterformat{%
-\sbox0{\scalebox{4}{\color{bt@numcol}\hjs@linkedchapter}\!\!}%
-\hskip\dimexpr\linewidth+\marginparwidth+\marginparsep-\wd0\relax
-\usebox0\hskip\dimexpr-\linewidth-\marginparwidth-\marginparsep\relax\chapterextra}
+  \sbox0{\scalebox{2.33}{\color{bt@numcol}\hjs@linkedchapter}\thinspace}%
+  \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
+  \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 
 \def\sidenote{\@ifstar\@sidenote\@@sidenote}
 \newif\ifinsidenote
-\def\bt@ragged{\ifodd\c@page\RaggedRight\else\RaggedLeft\captionsetup{justification=RaggedLeft}\fi}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
-\long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
+\long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\RaggedRight#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
 \def\@@sidenote{\@ifnextchar[{\s@@sidenote}{\s@@sidenote[\z@]}}
 

@@ -616,7 +616,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \let\bt@mtc@numberline\@gobble
 \def\bt@thirdofthree#1#2#3{#3}% gobble mtc fonts :) they are hacked into the pagenum and destroy hyperpage :)
 \newif\if@bt@mtc@nxt@
-\def\@mtcstyles{\normalfont\global\@bt@mtc@nxt@false\vspace*{\dimexpr-4.75\baselineskip-\parskip}\par\let\numberline\bt@mtc@numberline\def\l@section##1##2{\unskip\if@bt@mtc@nxt@~~\textbullet~~\else\global\@bt@mtc@nxt@true\fi\mbox{\nohyper{##1},~\thinspace\expandafter\hyperpage\expandafter{\bt@thirdofthree##2}}}}
+\def\@mtcstyles{\normalfont\global\@bt@mtc@nxt@false\vspace*{\dimexpr-4.75\baselineskip-\parskip}\par\let\numberline\bt@mtc@numberline\def\l@section##1##2{\unskip\if@bt@mtc@nxt@\hskip2ex\textbullet\hskip2ex\else\global\@bt@mtc@nxt@true\fi\mbox{\nohyper{##1},~\thinspace\expandafter\hyperpage\expandafter{\bt@thirdofthree##2}}}}
 \preto\minitoc{\unskip\minipage{\dimexpr\linewidth+\marginparsep+\marginparwidth-2\fboxsep}\parskip\z@\par\@mtcstyles}\appto\minitoc{\endminipage\bigskip\par}
 
 % deny minitoc the filtering of subsections and lower

@@ -577,8 +577,9 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \usepackage[usefa]{hierarchy-jumpers}
 
 \def\chapterextra{}
+\def\chapterprs{\color{lgray}\scalebox{5.5}{\huge\thechapter}}
 \renewcommand*\chapterformat{%
-  \sbox0{\scalebox{2.33}{\color{bt@numcol}\hjs@linkedchapter}\thinspace}%
+\savebox0{\chapterprs}\smash{\raisebox{\dimexpr\wd0+\dp0-.33\baselineskip}{\sidenote{\centering\chapterprs}}}\sbox0{\scalebox{2.33}{\color{bt@numcol}\hjs@linkedchapter}\thinspace}%
   \hskip\dimexpr-\wd0-\bt@len@over@shift\relax
   \usebox0\hskip\bt@len@over@shift\relax\chapterextra}
 

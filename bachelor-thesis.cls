@@ -126,7 +126,7 @@
 \RequirePackage{tikz-palettes}
 \UsePalette{\bt@cpalette}
 \UseTikzPalette{\bt@tpalette}
-\def\cplenumi#1{{\smaller[3]\raisebox{.25ex}{$\blacksquare$}}}
+\def\cplenumi#1{\scalebox{.66}{\@declaredcolor{darkgray}\raisebox{.25ex}{$\blacksquare$}}}
 % Note: smaller blocks :)
 
 %% Footnotes

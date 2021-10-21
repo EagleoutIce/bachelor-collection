@@ -357,7 +357,7 @@ topmargin,background,contents={%
 \remainingleft\bt@len@a
 \bt@sectionbar{l}{#3}{#4}{\bto@sectionbar@left}%
 \@hangfrom{%
-  \sbox0{\color{bt@numcol}\contour{white}{#1}}%
+  \sbox0{\color{bt@numcol}#1}%
   \bt@secnumblock
 }{\strut#2\strut}%
 \remainingright\bt@len@a

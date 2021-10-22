@@ -127,6 +127,7 @@
 \UsePalette{\bt@cpalette}
 \UseTikzPalette{\bt@tpalette}
 \def\cplenumi#1{\scalebox{.66}{\@declaredcolor{darkgray}\raisebox{.25ex}{$\blacksquare$}}}
+\def\cplenumii#1{\@declaredcolor{darkgray}\textbullet}
 % Note: smaller blocks :)
 
 %% Footnotes

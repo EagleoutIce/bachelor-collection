@@ -274,8 +274,8 @@ topmargin,background,contents={%
 \def\sbfamily{\fontseries{sb}\selectfont}
 \def\bt@fig@style#1{\bt@fig@style@nonbold{{\sbfamily#1}}}
 
-\DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1~#2:~\space}}}
-\DeclareCaptionLabelFormat{bt-caption-theorems}{\bt@fig@style{\itshape\paletteD{#1~#2:~\space}}}
+\DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1~#2:\space\space}}}
+\DeclareCaptionLabelFormat{bt-caption-theorems}{\bt@fig@style{\itshape\paletteD{#1~#2\space\space}}}
 \captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.5\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
 
 \setcounter{tocdepth}{1}

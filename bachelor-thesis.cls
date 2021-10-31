@@ -414,7 +414,7 @@ afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
 beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
-afterskip=-.5\parskip]{subsection}
+afterskip=-.25\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=on,tocindent=7.15em,afterskip=1ex,%
 beforeskip=1.125\baselineskip]{subsubsection}

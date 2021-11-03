@@ -515,7 +515,13 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \NewEnviron{sidefig*}[3][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}{#3}}
 
 \def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
-\NewEnviron{widefig}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
+\NewDocumentEnvironment{widefig}{%
+  O{#2}     % short caption
+  +m        % normal caption
+  D()\relax % optional label
+  +b        % bodiiiiii of ma auuuuun
+}{%
+\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
 \NewDocumentEnvironment{fig}{%
   O{#2}     % short caption

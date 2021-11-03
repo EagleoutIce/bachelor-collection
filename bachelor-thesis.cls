@@ -518,7 +518,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \NewEnviron{widefig}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{\BODY}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
 
 \NewDocumentEnvironment{fig}{%
-  O{#2}     % shortcation
+  O{#2}     % short caption
   +m        % normal caption
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
@@ -533,8 +533,13 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 }{%
 \begin{figure}\sidenote*{\disablesidetrue\captionsetup{aboveskip=\z@}\captionof{figure}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}#4\end{figure}}
 
-
-\NewEnviron{rawfig}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\BODY}
+\NewDocumentEnvironment{rawfig}{%
+  O{#2}     % short caption
+  +m        % normal caption
+  D()\relax % optional label
+  +b        % bodiiiiii of ma auuuuun
+}{%
+\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4}
 
 \NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}}
 

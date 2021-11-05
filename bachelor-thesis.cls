@@ -371,19 +371,16 @@ topmargin,background,contents={%
   \bt@secnumblock
 }{#2}}
 
-\setcounter{secnumdepth}{3}
+\setcounter{secnumdepth}{2}
 \renewcommand*\sectionlinesformat[4]{%
 \hspace*{#2}\protected@edef\@tmpa{#1}%
 \ifx\@tmpa\bt@tx@section
   \bt@sectionencap{#3}{#4}{bt@backgray}{3pt}%
 \else\ifx\@tmpa\bt@tx@subsection
   \bt@subsectionencap{#3}{#4}%
-\else\ifx\@tmpa\bt@tx@subsubsection
-  \bt@subsectionencap{#3}{ABCVA #4}%
-\else\@hangfrom{#3}{#4}\fi\fi\fi}
+\else\@hangfrom{#3}{#4}\fi\fi}
 \renewcommand*\sectioncatchphraseformat[4]{%
 \hskip#2\bt@subsectionencap{#3}{#4}}
-\def\thesubsubsection{~~\faAngleRight}
 
 %% Table of contents & sectioning
 
@@ -402,7 +399,7 @@ topmargin,background,contents={%
 \CloneTOCEntryStyle{tocline}{bt@toc@subsubsection}
 \TOCEntryStyleStartInitCode{bt@toc@subsubsection}{%
     \expandafter\renewcommand%
-    \csname scr@tso@#1@entryformat\endcsname[1]{\nohyper{\smaller##1}}%
+    \csname scr@tso@#1@entryformat\endcsname[1]{\nohyper{\color{gray}\small~~\faAngleRight~##1}}%
 }
 
 \newlength\bt@chapnumberboxwd
@@ -426,8 +423,8 @@ runin=false,tocindent=4.15em,%
 beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
 afterskip=-.25\parskip]{subsection}
 \RedeclareSectionCommand[%
-runin=on,tocindent=7.15em,afterskip=1ex,tocnumwidth=1.45em,%
-beforeskip=1.125\baselineskip]{subsubsection}
+runin=false,tocindent=7.15em,afterskip=1ex,tocnumwidth=1.45em,%
+beforeskip=.4\baselineskip \@plus .25\baselineskip,afterskip=-.6\parskip, font=\sffamily\sbfamily]{subsubsection}
 \RedeclareSectionCommand[%
 runin=false,beforeskip=.4\baselineskip \@plus .25\baselineskip,%
 afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
@@ -482,12 +479,12 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \let\bt@subsubsection\subsubsection
 \def\subsubsection{\@ifstar{\@dblarg\bt@star@subsubsection}{\@dblarg\bt@nostar@subsubsection}}
 \def\bt@star@subsubsection[#1]#2{\bt@subsubsection*[#1]{#2}}
-\def\bt@nostar@subsubsection[#1]#2{\bt@sec@spaceguard\pdfbookmark[2]{>\space#1}{bt@subsubsec@@id@\thesubsection @\arabic{subsubsection}}\nobreak\bt@subsubsection[#1]{#2}}
+\def\bt@nostar@subsubsection[#1]#2{\bt@sec@spaceguard\pdfbookmark[3]{\space\textbullet\space#1}{bt@subsubsec@@id@\thesubsection @\arabic{subsubsection}}\nobreak\bt@subsubsection[#1]{#2}}
 
 \newcounter{bt@paragraph}[subsubsection]
 \let\bt@paragraph\paragraph
 \def\paragraph{\@ifstar{\bt@star@paragraph}{\@dblarg\bt@nostar@paragraph}}
-\def\bt@star@paragraph#1{\stepcounter{bt@paragraph}\pdfbookmark[3]{#1}{bt@paragr@@id@\thesubsection @\arabic{subsubsection} @\thebt@paragraph}\bt@paragraph*{#1}}
+\def\bt@star@paragraph#1{\stepcounter{bt@paragraph}\pdfbookmark[4]{#1}{bt@paragr@@id@\thesubsection @\arabic{subsubsection} @\thebt@paragraph}\bt@paragraph*{#1}}
 \def\bt@nostar@paragraph[#1]#2{\bt@sec@spaceguard\stepcounter{bt@paragraph}\@bt@c@pre{\pdfbookmark[3]{\roman{bt@paragraph})\space#1}{bt@paragr@@id@\thesubsection @\arabic{subsubsection} @\thebt@paragraph}}\bt@paragraph[#1]{#2}}
 
 %% Upper Segment

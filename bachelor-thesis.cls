@@ -305,6 +305,7 @@ topmargin,background,contents={%
 \colorlet{bt@numcol}{black}
 \def\bt@tx@section{section}
 \def\bt@tx@subsection{subsection}
+\def\bt@tx@subsubsection{subsubsection}
 
 \def\bt@sectionbar@skp{.66ex}
 % the bar
@@ -366,20 +367,23 @@ topmargin,background,contents={%
 
 \def\bt@subsectionencap#1#2{%
 \@hangfrom{%
-  \sbox0{\color{bt@numcol}#1\thinspace}%
+  \sbox0{\color{bt@numcol}#1}%
   \bt@secnumblock
 }{#2}}
 
+\setcounter{secnumdepth}{3}
 \renewcommand*\sectionlinesformat[4]{%
 \hspace*{#2}\protected@edef\@tmpa{#1}%
 \ifx\@tmpa\bt@tx@section
   \bt@sectionencap{#3}{#4}{bt@backgray}{3pt}%
 \else\ifx\@tmpa\bt@tx@subsection
-  \bt@subsectionencap{#3}{#4}
-\else\@hangfrom{#3}{#4}\fi\fi}
+  \bt@subsectionencap{#3}{#4}%
+\else\ifx\@tmpa\bt@tx@subsubsection
+  \bt@subsectionencap{#3}{ABCVA #4}%
+\else\@hangfrom{#3}{#4}\fi\fi\fi}
 \renewcommand*\sectioncatchphraseformat[4]{%
 \hskip#2\bt@subsectionencap{#3}{#4}}
-
+\def\thesubsubsection{~~\faAngleRight}
 
 %% Table of contents & sectioning
 
@@ -395,6 +399,11 @@ topmargin,background,contents={%
     \expandafter\renewcommand%
     \csname scr@tso@#1@entryformat\endcsname[1]{\nohyper{##1}}%
 }
+\CloneTOCEntryStyle{tocline}{bt@toc@subsubsection}
+\TOCEntryStyleStartInitCode{bt@toc@subsubsection}{%
+    \expandafter\renewcommand%
+    \csname scr@tso@#1@entryformat\endcsname[1]{\nohyper{\smaller##1}}%
+}
 
 \newlength\bt@chapnumberboxwd
 \bt@chapnumberboxwd=2.25em
@@ -404,6 +413,7 @@ topmargin,background,contents={%
 
 \DeclareTOCStyleEntry[]{bt@toc@section}{section}
 \DeclareTOCStyleEntry[]{bt@toc@section}{subsection}
+\DeclareTOCStyleEntry[]{bt@toc@subsubsection}{subsubsection}
 
 \def\bt@len@aftersec{.3\baselineskip}
 
@@ -416,7 +426,7 @@ runin=false,tocindent=4.15em,%
 beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
 afterskip=-.25\parskip]{subsection}
 \RedeclareSectionCommand[%
-runin=on,tocindent=7.15em,afterskip=1ex,%
+runin=on,tocindent=7.15em,afterskip=1ex,tocnumwidth=1.45em,%
 beforeskip=1.125\baselineskip]{subsubsection}
 \RedeclareSectionCommand[%
 runin=false,beforeskip=.4\baselineskip \@plus .25\baselineskip,%
@@ -469,11 +479,16 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \def\bt@star@subsection[#1]#2{\bt@subsection*[#1]{#2}\bt@subsecmark{#2}}
 \def\bt@nostar@subsection[#1]#2{\bt@sec@spaceguard\pdfbookmark[2]{\arabic{section}.\the\numexpr\value{subsection}+1\relax)\space#1}{bt@subsec@@id@\thesubsection}\nobreak\bt@subsection[#1]{{\bt@subsecmark{#1}}#2}}
 
-\newcounter{bt@paragraph}[subsection]
+\let\bt@subsubsection\subsubsection
+\def\subsubsection{\@ifstar{\@dblarg\bt@star@subsubsection}{\@dblarg\bt@nostar@subsubsection}}
+\def\bt@star@subsubsection[#1]#2{\bt@subsubsection*[#1]{#2}}
+\def\bt@nostar@subsubsection[#1]#2{\bt@sec@spaceguard\pdfbookmark[2]{>\space#1}{bt@subsubsec@@id@\thesubsection @\arabic{subsubsection}}\nobreak\bt@subsubsection[#1]{#2}}
+
+\newcounter{bt@paragraph}[subsubsection]
 \let\bt@paragraph\paragraph
 \def\paragraph{\@ifstar{\bt@star@paragraph}{\@dblarg\bt@nostar@paragraph}}
-\def\bt@star@paragraph#1{\stepcounter{bt@paragraph}\pdfbookmark[3]{#1}{bt@paragr@@id@\thesubsection @\thebt@paragraph}\bt@paragraph*{#1}}
-\def\bt@nostar@paragraph[#1]#2{\bt@sec@spaceguard\stepcounter{bt@paragraph}\@bt@c@pre{\pdfbookmark[3]{\roman{bt@paragraph})\space#1}{bt@paragr@@id@\thesubsection @\thebt@paragraph}}\bt@paragraph[#1]{#2}}
+\def\bt@star@paragraph#1{\stepcounter{bt@paragraph}\pdfbookmark[3]{#1}{bt@paragr@@id@\thesubsection @\arabic{subsubsection} @\thebt@paragraph}\bt@paragraph*{#1}}
+\def\bt@nostar@paragraph[#1]#2{\bt@sec@spaceguard\stepcounter{bt@paragraph}\@bt@c@pre{\pdfbookmark[3]{\roman{bt@paragraph})\space#1}{bt@paragr@@id@\thesubsection @\arabic{subsubsection} @\thebt@paragraph}}\bt@paragraph[#1]{#2}}
 
 %% Upper Segment
 \def\bt@supervisors{}
@@ -514,14 +529,13 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 % expand body once; #3 is currently a sloppy way to pass a label or other stuff below the caption
 \NewEnviron{sidefig*}[3][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}{#3}}
 
-\def\widecustomraise{\z@} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
+\def\widecustomraise{-\medskipamount} % TODO: MAKE THIS MORE FLEXIBLE AND ELEGANT
 \NewDocumentEnvironment{widefig}{%
   O{#2}     % short caption
   +m        % normal caption
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
-}{%
-\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}}\vspace*{\widecustomraise}\end{minipage}\par}
+}{\checkoddpage\ifoddpage\else\noindent\hspace*{\dimexpr-\marginparsep-\marginparwidth}\relax\fi\begingroup\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}\ifx#3\relax\else\protect\label{#3}\fi}\vspace*{\widecustomraise}\end{minipage}\endgroup\par}
 
 \NewDocumentEnvironment{fig}{%
   O{#2}     % short caption

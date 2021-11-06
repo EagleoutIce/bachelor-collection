@@ -176,7 +176,7 @@ topmargin,background,contents={%
 \def\ifbt@subsecmark{\ifcsname bt@subsec@\thesection @\endcsname\expandafter\bt@firstoftwo\else\expandafter\bt@secondoftwo\fi}
 
 \def\bt@copyright@notice@upper{\iflecture@er{authority}{}{\lecture@r{authority},\quad}\iflecture@er{supervisor}{}{Supervisor\ifnum\value{bt@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}}
-\def\bt@copyright@notice@lower{\typesetAuthor\iflecture@er{copyright}{}{, \lecture@r{copyright}}}
+\def\bt@copyright@notice@lower{\iflecture@er{copyright}{}{\lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
 \cohead{\begingroup\normalsize\normalfont\linespread{1.25}\tikzpicture[remember picture,overlay]
@@ -774,4 +774,7 @@ D()\relax % optional label
 }%
 \setcounter{tocdepth}{#1}%
 \endgroup}
+
+\RaggedLeftLeftskip=\z@\@plus1em\relax
+
 \endinput

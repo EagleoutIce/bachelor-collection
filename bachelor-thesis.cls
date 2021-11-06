@@ -558,7 +558,26 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 }{%
 \sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4}
 
-\NewEnviron{sidetbl}[2][]{\sidenote{\BODY\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}}
+
+\NewDocumentEnvironment{sidetbl}{%
+  O{#2}     % shortcation
+  +m        % normal caption
+  D()\relax % optional label
+  +b        % bodiiiiii of ma auuuuun
+}{%
+  \sidenote{\protect\bt@cpstart@hook{table}#4\protect\captionof{table}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}}
+  {}% empty endings
+
+
+\NewDocumentEnvironment{sidetbl*}{%
+O{#2}     % shortcation
++m        % normal caption
+D()\relax % optional label
++b        % bodiiiiii of ma auuuuun
+}{%
+\sidenote*{\bt@cpstart@hook{table}#4\captionof{table}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}}
+{}% empty endings
+
 
 \NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
 

@@ -193,8 +193,7 @@ topmargin,background,contents={%
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{bt.digital.head.ruler}
 \pagestyle{scrheadings}
 
-\def\bt@pagerag#1{\savebox0{#1}\ifodd\c@page\rlap{\hspace*{\marginparsep+.5\marginparwidth-.5\wd0}\llap{#1}}\else\llap{\rlap{#1}\hspace*{\marginparsep+.5\marginparwidth+.5\wd0}}\fi}
-\def\bt@runningpage{\bt@pagerag{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}}
+\def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
 \defpairofpagestyles[scrheadings]{bt@chapter}{%
 \rohead{}\ofoot{\bt@runningpage}%
 }
@@ -506,6 +505,11 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 
 % garbage mp figures
+
+% allows for reset based labeling
+\newcounter{figure@lb}\newcounter{table@lb}
+\def\@bt@setfig{\stepcounter{figure@lb}}
+\def\@bt@settbl{\stepcounter{table@lb}}
 \def\bt@cpstart@hook#1{\def\@captype{#1}\capstart}
 
 \RequirePackage{xparse}% used for environ collection
@@ -517,13 +521,13 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
-  \sidenote{\protect\bt@cpstart@hook{figure}#4\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}}
+  \sidenote{\protect\@bt@setfig\protect\bt@cpstart@hook{figure}#4\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}}
   {}% empty endings
 
 \protected\def\bt@fco#1#2{\ifx!#1!#2\else#1\fi} % legacy
 
 % starred variant will use tha detokinizing sidenote-variant
-\long\def\bt@sidefigre@cntnt#1#2#3#4{\sidenote*{\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}#4}}
+\long\def\bt@sidefigre@cntnt#1#2#3#4{\sidenote*{\@bt@setfig\bt@cpstart@hook{figure}#1\captionof{figure}[\ifx!#2!#3\else#2\fi]{#3}#4}}
 % expand body once; #3 is currently a sloppy way to pass a label or other stuff below the caption
 \NewEnviron{sidefig*}[3][]{\expandafter\bt@sidefigre@cntnt\expandafter{\expandafter\strip@prefix\meaning\BODY}{#1}{#2}{#3}}
 
@@ -533,7 +537,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   +m        % normal caption
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
-}{\checkoddpage\ifoddpage\else\noindent\hspace*{\dimexpr-\marginparsep-\marginparwidth}\relax\fi\begingroup\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}\ifx#3\relax\else\protect\label{#3}\fi}\vspace*{\widecustomraise}\end{minipage}\endgroup\par}
+}{\checkoddpage\ifoddpage\else\noindent\hspace*{\dimexpr-\marginparsep-\marginparwidth}\relax\fi\begingroup\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\@bt@setfig\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}\ifx#3\relax\else\protect\label{#3}\fi}\vspace*{\widecustomraise}\end{minipage}\endgroup\par}
 
 \NewDocumentEnvironment{fig}{%
   O{#2}     % short caption
@@ -541,7 +545,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
-\begin{figure}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4\end{figure}}
+\begin{figure}\sidenote{\protect\@bt@setfig\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4\end{figure}}
 
 \NewDocumentEnvironment{fig*}{%
   O{#2}     % shortcation
@@ -549,7 +553,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
-\begin{figure}\sidenote*{\disablesidetrue\captionsetup{aboveskip=\z@}\captionof{figure}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}#4\end{figure}}
+\begin{figure}\sidenote*{\disablesidetrue\captionsetup{aboveskip=\z@}\@bt@setfig\captionof{figure}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}#4\end{figure}}
 
 \NewDocumentEnvironment{rawfig}{%
   O{#2}     % short caption
@@ -557,7 +561,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
-\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4}
+\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\@bt@setfig\protect\captionof{figure}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}#4}
 
 
 \NewDocumentEnvironment{sidetbl}{%
@@ -566,7 +570,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
 }{%
-  \sidenote{\protect\bt@cpstart@hook{table}#4\protect\captionof{table}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}}
+  \sidenote{\protect\@bt@settbl\protect\bt@cpstart@hook{table}#4\protect\captionof{table}[#1]{#2}\ifx#3\relax\else\protect\label{#3}\fi}}
   {}% empty endings
 
 
@@ -576,15 +580,15 @@ O{#2}     % shortcation
 D()\relax % optional label
 +b        % bodiiiiii of ma auuuuun
 }{%
-\sidenote*{\bt@cpstart@hook{table}#4\captionof{table}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}}
+\sidenote*{\@bt@settbl\bt@cpstart@hook{table}#4\captionof{table}[#1]{#2}\ifx#3\relax\else\label{#3}\fi}}
 {}% empty endings
 
 
-\NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\bt@cpstart@hook{table}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\@bt@settbl\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
 
-\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
+\NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\@bt@settbl\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
 
-\NewEnviron{rawtbl}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
+\NewEnviron{rawtbl}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\@bt@settbl\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
 \newenvironment{abstract}[1][]{\chapter*{Abstract}\begingroup\def\@arg@a{#1}}{\vskip4em\par\flushright
 \nohyper{\typesetAuthor\ifx\@arg@a\@empty\else\sidenote[\z@]{\@arg@a}\fi}{\footnotesize\\*

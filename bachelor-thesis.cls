@@ -175,7 +175,7 @@ topmargin,background,contents={%
 \def\bt@getsubsecmark{\csname bt@subsec@\thesection @\endcsname}
 \def\ifbt@subsecmark{\ifcsname bt@subsec@\thesection @\endcsname\expandafter\bt@firstoftwo\else\expandafter\bt@secondoftwo\fi}
 
-\def\bt@copyright@notice@upper{\iflecture@er{authority}{}{\lecture@r{authority},\quad}\iflecture@er{supervisor}{}{Supervisor\ifnum\value{bt@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}}
+\def\bt@copyright@notice@upper{\iflecture@er{authority}{}{\lecture@r{authority}\quad}\iflecture@er{supervisor}{}{, Supervisor\ifnum\value{bt@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}}
 \def\bt@copyright@notice@lower{\iflecture@er{copyright}{}{\lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
@@ -193,7 +193,8 @@ topmargin,background,contents={%
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{bt.digital.head.ruler}
 \pagestyle{scrheadings}
 
-\def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
+\def\bt@pagerag#1{\savebox0{#1}\ifodd\c@page\rlap{\hspace*{\marginparsep+.5\marginparwidth-.5\wd0}\llap{#1}}\else\llap{\rlap{#1}\hspace*{\marginparsep+.5\marginparwidth+.5\wd0}}\fi}
+\def\bt@runningpage{\bt@pagerag{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}}
 \defpairofpagestyles[scrheadings]{bt@chapter}{%
 \rohead{}\ofoot{\bt@runningpage}%
 }

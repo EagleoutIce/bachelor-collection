@@ -42,13 +42,18 @@
 %% Fonts
 \PassOptionsToPackage{euler-hat-accent}{eulervm}
 \AtEndPreamble{
-% \RequirePackage[sc,osf]{mathpazo}
-% \RequirePackage[euler-digits,small]{eulervm}
-% \RequirePackage[tabular,lining]{montserrat}
-\RequirePackage[osf,sc]{mathpazo}
-\setmainfont[Renderer=Basic, Numbers=OldStyle, Scale = 1.0]{TeX Gyre Pagella}
-\setsansfont[Renderer=Basic, Scale=0.90]{TeX Gyre Heros}
-\setmonofont[Renderer=Basic]{TeX Gyre Cursor}
+\RequirePackage[sc,osf]{mathpazo}
+\RequirePackage[euler-digits,small]{eulervm}
+\RequirePackage[tabular,lining]{montserrat}
+\newfontfamily\widerspaced[LetterSpace=18, Ligatures=TeX, SmallCapsFeatures={Letters=SmallCaps}, WordSpace=1.8]{cochineal}
+\setmainfont{Cochineal}[
+  Extension=.otf,
+  UprightFont=*-Roman,
+  ItalicFont=*-Italic,
+  BoldFont=*-Bold,
+  BoldItalicFont=*-BoldItalic,
+  Numbers={OldStyle}
+]
 }
 
 %% Microtype

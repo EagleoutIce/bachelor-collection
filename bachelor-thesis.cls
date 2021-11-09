@@ -40,10 +40,15 @@
 \RequirePackage{ifluatex}
 
 %% Fonts
+\PassOptionsToPackage{euler-hat-accent}{eulervm}
 \AtEndPreamble{
-\RequirePackage[sc,osf]{mathpazo}
-\RequirePackage[euler-digits,small]{eulervm}
-\RequirePackage[tabular,lining]{montserrat}
+% \RequirePackage[sc,osf]{mathpazo}
+% \RequirePackage[euler-digits,small]{eulervm}
+% \RequirePackage[tabular,lining]{montserrat}
+\RequirePackage[osf,sc]{mathpazo}
+\setmainfont[Renderer=Basic, Numbers=OldStyle, Scale = 1.0]{TeX Gyre Pagella}
+\setsansfont[Renderer=Basic, Scale=0.90]{TeX Gyre Heros}
+\setmonofont[Renderer=Basic]{TeX Gyre Cursor}
 }
 
 %% Microtype
@@ -65,7 +70,7 @@
 \newlength\bt@len@margin \bt@len@margin2.25cm
 \newlength\bt@len@margin@r \bt@len@margin@r1cm
 \newlength\bt@len@margin@l \bt@len@margin@l3cm
-\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.15cm,marginparsep=.75cm,left=\bt@len@margin@l,right=\bt@len@margin@r]{geometry}
+\RequirePackage[a4paper,margin=\bt@len@margin,bottom=\bt@len@margin-.75cm,includefoot,includemp,marginpar=4.45cm,marginparsep=.75cm,left=\bt@len@margin@l,right=\bt@len@margin@r]{geometry}
 \flushbottom
 
 
@@ -137,8 +142,8 @@
 % footnote handling NOTE: we know there is a chapter!
 \deffootnote{2em}{1em}{%
   \makebox[2em][r]{\nohyper{\hyperref[bt@fn:\thesection:\csname bt@footnoteref@\@mpfn\endcsname]{\thefootnotemark}}}~}
-\renewcommand*\thefootnote{$\langle$\arabic{footnote}$\rangle$}
-\renewcommand*\thempfootnote{$\langle$\alph{mpfootnote}$\rangle$}
+\renewcommand*\thefootnote{$\langle$\!\arabic{footnote}\!$\rangle$}
+\renewcommand*\thempfootnote{$\langle$\!\alph{mpfootnote}\!$\rangle$}
 
 \def\bt@footnoteref@footnote{fn@\arabic{footnote}}
 \def\bt@footnoteref@mpfootnote{fn@\alph{mpfootnote}}
@@ -193,7 +198,14 @@ topmargin,background,contents={%
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{bt.digital.head.ruler}
 \pagestyle{scrheadings}
 
-\def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
+\def\bt@@epage#1{%
+\tikz[align-half-base,lightgray]\fill[rounded corners=.2pt] (0,.45pt) [rounded corners=.1pt] -- (-12pt,.1pt) -- (-12pt,-.1pt) [rounded corners=.2pt] -- (0,-.45pt) -- cycle;%
+~#1~%
+\tikz[align-half-base,lightgray]\fill[rounded corners=.2pt] (0,.45pt) [rounded corners=.1pt] -- (12pt,.1pt) -- (12pt,-.1pt) [rounded corners=.2pt] -- (0,-.45pt) -- cycle;%
+}
+\def\bt@pagerag#1{\savebox0{\bt@@epage{#1}}\ifodd\c@page\rlap{\hspace*{\marginparsep+.5\marginparwidth-.5\wd0}\usebox0}\else\llap{\usebox0\hspace*{\marginparsep+.5\marginparwidth-.5\wd0}}\fi}
+\def\bt@runningpage{\bt@pagerag{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}}
+% \def\bt@runningpage{\strut\nohyper{\hyperref[toc@1]{\usekomafont{pageheadfoot}\textbf{\thepage}}}}
 \defpairofpagestyles[scrheadings]{bt@chapter}{%
 \rohead{}\ofoot{\bt@runningpage}%
 }

@@ -45,20 +45,11 @@
 \RequirePackage[sc,osf]{mathpazo}
 \RequirePackage[euler-digits,small]{eulervm}
 \RequirePackage[tabular,lining]{montserrat}
-\newfontfamily\widerspaced[LetterSpace=18, Ligatures=TeX, SmallCapsFeatures={Letters=SmallCaps}, WordSpace=1.8]{cochineal}
-\setmainfont{Cochineal}[
-  Extension=.otf,
-  UprightFont=*-Roman,
-  ItalicFont=*-Italic,
-  BoldFont=*-Bold,
-  BoldItalicFont=*-BoldItalic,
-  Numbers={OldStyle}
-]
 }
 
 %% Microtype
 \ifluatex\else\PassOptionsToPackage{kerning=true,spacing=true}{microtype}\fi
-\RequirePackage[activate={true,nocompatibility},final,babel]{microtype}
+\RequirePackage[activate={true,nocompatibility},tracking,expansion,final,babel]{microtype}
 % we do not want protrusion in table of*
 \preto\tableofcontents{\microtypesetup{protrusion=false}}
 \appto\tableofcontents{\microtypesetup{protrusion=true}}
@@ -106,7 +97,7 @@
 \fi
 
 % just erases color
-\def\nohyper#1{\begingroup\bt@disablehyper#1\endgroup}
+\def\nohyper#1{\bgroup\bt@disablehyper #1\egroup}
 \AtEndPreamble{%
 \@ifpackageloaded{lecture-links}{%
 \def\bt@disablehyper{\DisableLinkStyle\hypersetup{allcolors=.}}}%
@@ -601,7 +592,7 @@ D()\relax % optional label
 {}% empty endings
 
 
-\NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\bt@cpstart@hook{table}\vbox{\BODY}\vskip3.5pt\par\sidenote{\protect\@bt@settbl\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\bt@cpstart@hook{table}\vbox{\BODY}\vskip5pt\par\sidenote{\protect\@bt@settbl\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
 
 \NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\@bt@settbl\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
 

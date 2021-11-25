@@ -15,7 +15,7 @@
 \DeclareStringOption[DeepInk]{tpalette}
 \DeclareBoolOption{debug}
 \DeclareBoolOption{draft}
-\DeclareBoolOption{print}
+\DeclareBoolOption{nohs}
 \DeclareBoolOption{clever}
 \ProcessKeyvalOptions*
 
@@ -42,9 +42,12 @@
 %% Fonts
 \PassOptionsToPackage{euler-hat-accent}{eulervm}
 \AtEndPreamble{
-\RequirePackage[sc,osf]{mathpazo}
-\RequirePackage[euler-digits,small]{eulervm}
+\RequirePackage[osf,proportional,space=1.105,scaled=1.0122]{erewhon}
+\RequirePackage[varqu,varl,scale=1.0122]{zi4} % typewriter
 \RequirePackage[tabular,lining]{montserrat}
+% \RequirePackage[type1,scaled=1.03]{cabin} % sans serif like Gill Sans
+% \RequirePackage[vvarbb,bigdelims]{newtxmath}
+\RequirePackage[euler-digits]{eulervm}
 }
 
 %% Microtype
@@ -55,7 +58,7 @@
 \appto\tableofcontents{\microtypesetup{protrusion=true}}
 
 %% Line handling
-\RequirePackage[all]{nowidow}
+\RequirePackage[defaultlines=3,all]{nowidow}
 \RequirePackage{cuted}
 
 %% General Layout & Packages
@@ -175,8 +178,8 @@ topmargin,background,contents={%
 
 \def\bt@getsubsecmark{\csname bt@subsec@\thesection @\endcsname}
 \def\ifbt@subsecmark{\ifcsname bt@subsec@\thesection @\endcsname\expandafter\bt@firstoftwo\else\expandafter\bt@secondoftwo\fi}
-
-\def\bt@copyright@notice@upper{\iflecture@er{authority}{}{\lecture@r{authority}\quad}\iflecture@er{supervisor}{}{, Supervisor\ifnum\value{bt@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}}
+% \iflecture@er{authority}{}{\lecture@r{authority}\quad}\iflecture@er{supervisor}{}{, Supervisor\ifnum\value{bt@supervisor@count}>0\relax s\fi: \lecture@r{supervisor}}
+\def\bt@copyright@notice@upper{}
 \def\bt@copyright@notice@lower{\iflecture@er{copyright}{}{\lecture@r{copyright}}}
 
 \renewpairofpagestyles{scrheadings}{%
@@ -288,7 +291,7 @@ topmargin,background,contents={%
 
 \DeclareCaptionLabelFormat{bt-caption}{\bt@fig@style{\itshape\paletteA{#1~#2:\space\space}}}
 \DeclareCaptionLabelFormat{bt-caption-theorems}{\bt@fig@style{\itshape\paletteD{#1~#2\space\space}}}
-\captionsetup{format=plain,indention=1ex,textfont={color=gray,rm,sl,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.5\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
+\captionsetup{format=plain,indention=0ex,textfont={color=gray,rm,it,footnotesize},labelformat=bt-caption,labelsep=none,hypcapspace=.66\baselineskip,aboveskip=.5\baselineskip,justification=RaggedRight,singlelinecheck=false,font={footnotesize}}
 
 \setcounter{tocdepth}{1}
 
@@ -428,11 +431,11 @@ topmargin,background,contents={%
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
-beforeskip=1.25\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.25\baselineskip \@plus .33\baselineskip minus .65\baselineskip,%
 afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
-beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .33\baselineskip,%
+beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .65\baselineskip,%
 afterskip=-.25\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=false,tocindent=7.15em,afterskip=1ex,tocnumwidth=1.45em,%
@@ -455,7 +458,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \LetLtxMacro\bt@chapter\chapter
 \def\chapter{\@ifstar{\bt@star@chapter}{\@dblarg\bt@nostar@chapter}}
-\long\def\bt@star@chapter#1{\bt@chapter*{#1}\def\leftmark{#1}\def\rightmark{}}
+\long\def\bt@star@chapter#1{\hfuzz=\dimexpr\marginparsep+\marginparwidth\bt@chapter*{#1}\def\leftmark{#1}\def\rightmark{}\hfuzz\z@}
 \newif\ifappendix
 \newif\ifdisableside
 \def\disableside{\disablesidetrue}
@@ -463,6 +466,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 \def\@nextchap{\ifappendix\expandafter\@Alph\expandafter{\the\numexpr\c@chapter+1}\else\the\numexpr\c@chapter+1\fi}
 \long\def\bt@nostar@chapter[#1]#2#3{\clearpage
+\hfuzz=\dimexpr\marginparsep+\marginparwidth
 % csummary as contents:
 \ifx\\\detokenize{#3}\\\else
 % cheat the next addtocontents declaration; currently not patching for argument failure
@@ -472,7 +476,8 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \fi
 \pdfbookmark[0]{\@nextchap)\space#1}{bt@chap@@id@\thechapter}\nobreak\bt@chapter[\strut#1]{#2\label{bt@chp@\thechapter}}%
 \let\addcontentsline\oldaddcontentsline
-\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter. #1}\def\rightmark{}\minitoc}% chapter always gets the dot :D
+\expandafter\gdef\csname bt@chaptersummary@\thechapter\endcsname{#3}\def\leftmark{\thechapter. #1}\def\rightmark{}\minitoc
+\hfuzz\z@}% chapter always gets the dot :D
 
 \def\bt@sum@prechap#1{\vspace*{-\baselineskip}\par\begingroup\RaggedLeft\color{gray}\itshape\let\cvsep\newline#1\par\endgroup\bigskip\par}
 
@@ -512,7 +517,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 \supervisor{\bt@supervisors}
 % TODO: fix those hacks :D
 \AtEndPreamble{\def\lecture@personal@defaultsuffix{}}
-\newcommand*\NoBreakPar{\@afterheading}
+\newcommand*\NoBreakPar{\par\nobreak\@afterheading}
 \def\InputFrom#1{\def\input@path{#1}}
 
 
@@ -549,7 +554,7 @@ afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
   +m        % normal caption
   D()\relax % optional label
   +b        % bodiiiiii of ma auuuuun
-}{\checkoddpage\ifoddpage\else\noindent\hspace*{\dimexpr-\marginparsep-\marginparwidth}\relax\fi\begingroup\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\@bt@setfig\protect\protect\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}\ifx#3\relax\else\protect\label{#3}\fi}\vspace*{\widecustomraise}\end{minipage}\endgroup\par}
+}{\checkoddpage\ifoddpage\else\noindent\hspace*{\dimexpr-\marginparsep-\marginparwidth}\relax\fi\begingroup\hfuzz=\dimexpr\marginparsep+\marginparwidth+1cm\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\protect\bt@cpstart@hook{figure}\sbox0{#4}\vb@xt@\z@{\usebox0}\par\vspace*{\dimexpr\ht0+\dp0-\widecustomraise}\sidenote[1.33\baselineskip]{\protect\@bt@setfig\protect\protect\protect\captionof{figure}[\bt@fco{#1}{#2}]{#2}\ifx#3\relax\else\protect\label{#3}\fi}\vspace*{\widecustomraise}\end{minipage}\endgroup\par}
 
 \NewDocumentEnvironment{fig}{%
   O{#2}     % short caption
@@ -596,13 +601,13 @@ D()\relax % optional label
 {}% empty endings
 
 
-\NewEnviron{widetbl}[2][]{\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\hfuzz=\dimexpr\marginparsep+\marginparwidth\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\bt@cpstart@hook{table}\vbox{\BODY}\vskip5pt\par\sidenote{\protect\@bt@settbl\protect\protect\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\par}
+\NewEnviron{widetbl}[2][]{\begingroup\hfuzz=\dimexpr\marginparsep+\marginparwidth\checkoddpage\ifoddpage\else\hskip\dimexpr-\marginparsep-\marginparwidth\relax\fi\relax\begin{minipage}{\linewidth+\marginparsep+\marginparwidth}\bt@cpstart@hook{table}\vbox{\BODY}\vskip5pt\par\sidenote{\protect\@bt@settbl\protect\protect\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\end{minipage}\endgroup\par}
 
 \NewEnviron{tbl}[2][]{\begin{table}\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\@bt@settbl\protect\protect\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY\end{table}}
 
 \NewEnviron{rawtbl}[2][]{\sidenote{\protect\disablesidetrue\protect\captionsetup{aboveskip=\z@}\protect\@bt@settbl\protect\protect\protect\captionof{table}[\bt@fco{#1}{#2}]{#2}}\BODY}
 
-\newenvironment{abstract}[1][]{\chapter*{Abstract}\begingroup\def\@arg@a{#1}}{\vskip4em\par\flushright
+\newenvironment{abstract}[1][]{\chapter*{Abstract}\begingroup\def\@arg@a{#1}}{\vskip3.33em\par\flushright
 \nohyper{\typesetAuthor\ifx\@arg@a\@empty\else\sidenote[\z@]{\@arg@a}\fi}{\footnotesize\\*
   \textcolor{gray}{\today}\par}%
 \endflushright\endgroup\par}
@@ -613,11 +618,11 @@ D()\relax % optional label
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
 \long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}\sidenote{\protect\bt@fnte{\thesection}{\arabic{side@fn}}{#1}}}
 % #1 section; #2 fn; #3 text
-\def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~\protect\disablesidetrue#3}
+\def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~\protect\disablesidetrue\hyphenpenalty1000 \exhyphenpenalty1000 #3}
 %
 \long\def\bt@csum@sitem#1{\@hangfrom{\textbullet~}{\ignorespaces#1}\par}
 % #1 is text #2 is chapter
-\long\def\csummary#1#2{\smash{\raisebox{-1.5\p@}{\sidenote[\z@]{\textbf{\protect\nohyper{\protect\hyperref[bt@chp@#2]{\ifappendix Appendix\else Chapter\fi~#2:}}}\smallskip\newline#1}}}}
+\long\def\csummary#1#2{\smash{\raisebox{-1.5\p@}{\sidenote[\z@]{\textbf{\protect\nohyper{\protect\hyperref[bt@chp@#2]{\ifappendix Appendix\else Chapter\fi~#2:}}}\vspace{1pt}\newline#1}}}}
 
 \long\def\smallcsummary#1{\protect\sidenote*[\z@]{\let\cvsep\item\smallitemize[itemsep=\smallskipamount]\item#1\endsmallitemize}}
 
@@ -630,8 +635,9 @@ D()\relax % optional label
 \def\bt@disabled@hyperlink#1#2{\bt@disablehyper\hyperlink{#1}{#2}}
 \AtBeginDocument{\let\hjs@hyperlink\bt@disabled@hyperlink}
 
-\ifbt@print
+\ifbt@nohs
 \PassOptionsToPackage{disable}{hierarchy-jumpers}
+\def\hjs@linkedchapter{\thechapter}
 \fi
 \usepackage[usefa]{hierarchy-jumpers}
 
@@ -649,6 +655,7 @@ D()\relax % optional label
 \def\bt@ragged@do#1#2{\checkoddpage\ifoddpage#1\else#2\fi}
 \let\btifodd\bt@ragged@do
 \def\bt@ragged{\bt@ragged@do{\RaggedRight}{\RaggedLeft\captionsetup{justification=RaggedLeft}}}
+\def\btinverseragged{\bt@ragged@do{\RaggedLeft}{\RaggedRight}}
 \long\def\bt@sn@gd#1#2{\raisebox{#1}{\bt@sn@gd@{#2}}}
 \long\def\bt@sn@gd@#1{\parbox\linewidth{\insidenotetrue\bt@ragged#1\vskip5pt}}
 \def\@sidenote{\@ifnextchar[{\s@sidenote}{\s@sidenote[\z@]}}
@@ -663,7 +670,7 @@ D()\relax % optional label
 \long\def\s@sidenote[#1]#2{\ifx#1\z@ \makenote*{\bt@sn@gd@{#2}}\else\makenote*{\bt@sn@gd{#1}{#2}}\fi}
 \long\def\s@@sidenote[#1]#2{\ifx#1\z@ \makenote{\protect\bt@sn@gd@{#2}}\else\makenote{\protect\bt@sn@gd{#1}{#2}}\fi}
 \fi
-\def\cvsep{\smallskip\newline}
+\def\cvsep{\vspace{1.5pt}\newline}
 \robustify\cvsep
 
 \RequirePackage[tight,k-tight,undotted]{minitoc}
@@ -758,7 +765,7 @@ D()\relax % optional label
   %   \MTC@WriteContentsline{#1}{mtcSP}{#3}{#4}%
   % \fi
 }
-\hfuzz=\dimexpr\marginparsep+\marginparwidth
+% \hfuzz=\dimexpr\marginparsep+\marginparwidth
 
 \c@topnumber\tw@
 \c@bottomnumber\@ne

@@ -27,6 +27,7 @@
   title/.store in           = \sirius@core@title,
   zoom/.store in            = \sirius@core@zoom,
   hl/.store in              = \sirius@core@hl,
+  time/.store in            = \sirius@core@time,
   % obfuscate/.store in       = \sirius@core@obfuscate,
   deterministic/.is if      = @sirisu@deterministic@,
   show-collector/.is if     = @sirisu@showcollector@,
@@ -85,9 +86,10 @@
   id/.store in             = \sirius@elem@id,
   tag/.store in            = \sirius@elem@tag,
   name/.store in           = \sirius@elem@name,
+  type/.store in           = \sirius@elem@type,
   defaults/.style={%
     id = \number\c@sirius@internal@id,
-    tag = property%
+    tag = property, type=,
   },
   /sirius/constraint/.cd,
   id/.store in             = \sirius@elem@id,
@@ -152,6 +154,7 @@
     "hl64": "\sirius@core@hl",
     "obfuscate64": { "layout": { "layouter": "grid", "layoutWidth": \sirius@core@layoutWidth, "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi, "deterministic": \if@sirisu@deterministic@ true\else false\fi},
     \ifx\sirius@core@auto@obfuscate\@empty\else"auto-obfuscate64": \sirius@core@auto@obfuscate,\fi
+    \ifcsname sirius@core@time\endcsname"time": \sirius@core@time,\fi
     "model-view-positions64": { "x": 0, "y": 0 },
     "model-view-zooms64": [ \sirius@core@zoom ]%
     % TODO: configure others
@@ -174,6 +177,9 @@
     \sirius@t{id}: \sirius@t{\sirius@elem@id},
     \sirius@t{tag}: \sirius@t{\sirius@elem@tag},
     \sirius@t{name}: \sirius@t{\sirius@elem@name},
+    \ifx\sirius@elem@type\@empty\else
+    \sirius@t{type}: \sirius@t{\sirius@elem@type},
+    \fi
     \sirius@t{formula}: \sirius@t{#3}%
   }}%
 }

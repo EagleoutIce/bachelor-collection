@@ -431,17 +431,17 @@ topmargin,background,contents={%
 
 \RedeclareSectionCommand[%
 runin=false,tocindent=1.85em,%
-beforeskip=1.25\baselineskip \@plus .33\baselineskip minus .65\baselineskip,%
+beforeskip=1.25\baselineskip \@plus \baselineskip minus .65\baselineskip,%
 afterskip=\bt@len@aftersec]{section}
 \RedeclareSectionCommand[%
 runin=false,tocindent=4.15em,%
-beforeskip=1.125\baselineskip \@plus .33\baselineskip minus .65\baselineskip,%
+beforeskip=1.125\baselineskip \@plus \baselineskip minus .65\baselineskip,%
 afterskip=-.25\parskip]{subsection}
 \RedeclareSectionCommand[%
 runin=false,tocindent=7.15em,afterskip=1ex,tocnumwidth=1.45em,%
-beforeskip=.4\baselineskip \@plus .25\baselineskip,afterskip=-.6\parskip, font=\sffamily\sbfamily]{subsubsection}
+beforeskip=.4\baselineskip \@plus .85\baselineskip,afterskip=-.6\parskip, font=\sffamily\sbfamily]{subsubsection}
 \RedeclareSectionCommand[%
-runin=false,beforeskip=.4\baselineskip \@plus .25\baselineskip,%
+runin=false,beforeskip=.4\baselineskip \@plus .65\baselineskip,%
 afterskip=-.6\parskip, font=\sffamily\sbfamily]{paragraph}
 
 

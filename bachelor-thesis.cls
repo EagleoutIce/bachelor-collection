@@ -616,7 +616,9 @@ D()\relax % optional label
 \newcounter{side@fn}[chapter]
 %
 \def\side@fn@lb#1{\protect\label{bt@sfn@#1}}
-\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}\sidenote{\protect\bt@fnte{\thesection}{\arabic{side@fn}}{#1}}}
+\def\footnoteSymbol{\label{bt@side@fn@tar:\thesection:\arabic{side@fn}}\textsuperscript{$\langle$\hyperref[bt@side@fn@side:\thesection:\arabic{side@fn}]{\@arabic\c@side@fn}$\rangle$}}
+\def\footnoteSide#1{\sidenote{\protect\bt@fnte{\thesection}{\arabic{side@fn}}{#1}}}
+\long\def\footnote#1{\phantomsection\stepcounter{side@fn}\footnoteSymbol\footnoteSide{#1}}
 % #1 section; #2 fn; #3 text
 \def\bt@fnte#1#2#3{\protect\phantomsection\protect\label{bt@side@fn@side:#1:#2}$\langle$\protect\hyperref[bt@side@fn@tar:#1:#2]{\protect\sbfamily#2}$\rangle$~\protect\disablesidetrue\hyphenpenalty1000 \exhyphenpenalty1000 #3}
 %

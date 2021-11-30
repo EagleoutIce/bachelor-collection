@@ -195,6 +195,9 @@ topmargin,background,contents={%
 \defpairofpagestyles[scrheadings]{bt@title}{}
 \AddLayersAtBeginOfPageStyle{scrheadings}{bt.digital.head.ruler}
 \AddLayersAtBeginOfPageStyle{plain.scrheadings}{bt.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{plain}{bt.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{empty}{bt.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{headings}{bt.digital.head.ruler}
 \pagestyle{scrheadings}
 
 \def\bt@@epage#1{%
@@ -210,6 +213,7 @@ topmargin,background,contents={%
 }
 
 \AddLayersAtBeginOfPageStyle{bt@chapter}{bt.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{plain.bt@chapter}{bt.digital.head.ruler}
 
 \defpairofpagestyles[scrheadings]{bt@frontmatter}{%
 \ihead{\parbox{.85\linewidth}{\strut\raggedright\leftmark\iflecture@e{\leftmark}{}{\iflecture@e{\rightmark}{}{~\textbullet~}}\rightmark\strut}}%
@@ -217,10 +221,12 @@ topmargin,background,contents={%
 }
 
 \AddLayersAtBeginOfPageStyle{bt@frontmatter}{bt.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{plain.bt@frontmatter}{bt.digital.head.ruler}
 
 \defpairofpagestyles[scrheadings]{bt@chapter@frontmatter}{\ofoot{\bt@runningpage}}
 
 \AddLayersAtBeginOfPageStyle{bt@chapter@frontmatter}{bt.digital.head.ruler}
+\AddLayersAtBeginOfPageStyle{plain.bt@chapter@frontmatter}{bt.digital.head.ruler}
 
 \appto\frontmatter{\pagestyle{bt@frontmatter}\renewcommand{\chapterpagestyle}{bt@chapter@frontmatter}}
 \appto\mainmatter{\pagestyle{scrheadings}\renewcommand{\chapterpagestyle}{bt@chapter}}

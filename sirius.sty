@@ -12,6 +12,7 @@
 \newif\if@sirisu@show@full@
 \newif\if@sirisu@deterministic@
 \newif\if@sirisu@hideunavailable@
+\newif\if@sirisu@hideoutside@
 \newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
 \def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}\egroup}
 \def\@@sirius#1{\typeout{casts: sirius #1}\immediate\write18{sirius #1}\egroup}
@@ -35,6 +36,7 @@
   layout-width/.store in    = \sirius@core@layoutWidth,
   cleanup/.store in         = \sirius@core@cleanup,
   hide-unavailable-blocks/.is if = @sirisu@hideunavailable@,
+  hide-outside/.is if       = @sirisu@hideoutside@,
   show-full/.is if          = @sirisu@show@full@,
   collector-width/.store in = \sirius@core@collector@width,
   auto-obfuscate/.store in  = \sirius@core@auto@obfuscate,
@@ -67,7 +69,7 @@
     description=Automatically generated sirius configuration,
     verbose=false,freshness=250,check-host=true,collapse=true,
     input-dir=./,output-dir=./,prefix=,postfix=,hooks-after=,
-    hl=,auto-obfuscate=%
+    hl=,auto-obfuscate=,hide-outside=false%
   },
   /sirius/block/.cd,
   id/.store in             = \sirius@block@id,
@@ -151,8 +153,9 @@
     ".show-full": \if@sirisu@show@full@ true\else false\fi,
     "collapse": "\sirius@core@collapse",
     "hide-unavailable-blocks": "\if@sirisu@hideunavailable@ true\else false\fi",
+    "ho": "\if@sirisu@hideoutside@ true\else false\fi",
     "hl64": "\sirius@core@hl",
-    "obfuscate64": { "layout": { "layouter": "grid", "layoutWidth": \sirius@core@layoutWidth, "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi, "deterministic": \if@sirisu@deterministic@ true\else false\fi},
+    "obfuscate64": { "layout": { "layouter": "grid", "layoutWidth": \sirius@core@layoutWidth, "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "collectorConstraintReduction", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi, "deterministic": \if@sirisu@deterministic@ true\else false\fi},
     \ifx\sirius@core@auto@obfuscate\@empty\else"auto-obfuscate64": \sirius@core@auto@obfuscate,\fi
     \ifcsname sirius@core@time\endcsname"time": \sirius@core@time,\fi
     "model-view-positions64": { "x": 0, "y": 0 },

@@ -156,7 +156,7 @@
     "ho": "\if@sirisu@hideoutside@ true\else false\fi",
     "hl64": "\sirius@core@hl",
     "obfuscate64": { "layout": { "layouter": "grid", "layoutWidth": \sirius@core@layoutWidth, "collector": { "width": \sirius@core@collector@width, "collapse": \if@sirisu@showcollector@ false\else true\fi } }, "cleanup": \ifcsname sirius@core@cleanup\endcsname[\sirius@core@cleanup]\else["cleanupOverwrites", "cleanupCollectorOrphans", "removeEmptyCanvas", "collectorConstraintReduction", "removeEmptyCollector"\if@sirisu@showcollector@\else, "collectorAsChild"\fi]\fi\ifcsname sirius@core@transformations\endcsname, "transformations": [\sirius@core@transformations]\fi, "deterministic": \if@sirisu@deterministic@ true\else false\fi},
-    \ifx\sirius@core@auto@obfuscate\@empty\else"auto-obfuscate64": \sirius@core@auto@obfuscate,\fi
+    \ifx\sirius@core@auto@obfuscate\@empty\else"auto-obfuscate64": "\sirius@core@auto@obfuscate",\fi
     \ifcsname sirius@core@time\endcsname"time": \sirius@core@time,\fi
     "model-view-positions64": { "x": 0, "y": 0 },
     "model-view-zooms64": [ \sirius@core@zoom ]%

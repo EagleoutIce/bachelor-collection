@@ -61,8 +61,19 @@
 \RequirePackage[defaultlines=3,all]{nowidow}
 \RequirePackage{cuted}
 
+\usepackage{fontawesome}
+\let\faHome\undefined
+\let\faRepeat\undefined
+\let\faWifi\undefined
+\let\faSignal\undefined
+
+\let\AddToHookOld\AddToHook
+\def\AddToHook#1#2{\typeout{Muted hook for #1}}
+\RequirePackage{fontawesome5}
+\let\AddToHook\AddToHookOld
+
 %% General Layout & Packages
-\RequirePackage{relsize,lastpage,fontawesome5,afterpage,xstring,graphicx}
+\RequirePackage{relsize,lastpage,afterpage,xstring,graphicx}
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 
@@ -647,7 +658,7 @@ D()\relax % optional label
 \PassOptionsToPackage{disable}{hierarchy-jumpers}
 \def\hjs@linkedchapter{\thechapter}
 \fi
-\usepackage[usefa]{hierarchy-jumpers}
+% \usepackage[usefa]{hierarchy-jumpers}
 
 \def\chapterextra{}
 \def\chapterprs{\color{lgray}\scalebox{5.5}{\huge\thechapter}}

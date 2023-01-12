@@ -61,8 +61,21 @@
 \RequirePackage[defaultlines=3,all]{nowidow}
 \RequirePackage{cuted}
 
+\typeout{Hey}
+\usepackage{fontawesome}
+\let\faHome\@undefined
+\let\faRepeat\@undefined
+\let\faWifi\@undefined
+\let\faSignal\@undefined
+
+\typeout{Ho}
+\let\AddToHookOld\AddToHook
+\def\AddToHook#1#2{\typeout{Muted: #1}}
+\usepackage{fontawesome5}
+\let\AddToHook\AddToHookOld
+
 %% General Layout & Packages
-\RequirePackage{relsize,lastpage,fontawesome5,afterpage,xstring,graphicx}
+\RequirePackage{relsize,lastpage,afterpage,xstring,graphicx}
 \RequirePackage[en-US]{datetime2}
 \RequirePackage[draft=false]{scrlayer-scrpage}
 

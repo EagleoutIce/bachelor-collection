@@ -14,8 +14,8 @@
 \newif\if@sirisu@hideunavailable@
 \newif\if@sirisu@hideoutside@
 \newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
-\def\@sirius[#1]#2{\typeout{casts: sirius #2 '#1'}\immediate\write18{sirius #2 '#1'}\egroup}
-\def\@@sirius#1{\typeout{casts: sirius #1}\immediate\write18{sirius #1}\egroup}
+\def\@sirius[#1]#2{\typeout{casts: \SiriusExecutable\space #2 '#1'}\immediate\write18{\SiriusExecutable\space #2 '#1'}\egroup}
+\def\@@sirius#1{\typeout{casts: \SiriusExecutable\space #1}\immediate\write18{\SiriusExecutable\space #1}\egroup}
 % TODO: improve obfuscate passthrough
 \pgfkeys{%
   /sirius/.cd,

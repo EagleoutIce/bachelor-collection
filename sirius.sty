@@ -14,7 +14,7 @@
 \newif\if@sirisu@hideunavailable@
 \newif\if@sirisu@hideoutside@
 \newcommand*\sirius{\bgroup\def\%{\char"25}\@ifnextchar[\@sirius\@@sirius}
-\def\SiriusExecutable{sirius}
+\providecommand\SiriusExecutable{sirius}
 \def\@sirius[#1]#2{\typeout{casts: \SiriusExecutable\space #2 '#1'}\immediate\write18{\SiriusExecutable\space #2 '#1'}\egroup}
 \def\@@sirius#1{\typeout{casts: \SiriusExecutable\space #1}\immediate\write18{\SiriusExecutable\space #1}\egroup}
 % TODO: improve obfuscate passthrough
@@ -62,6 +62,7 @@
   offset r/.store in       = \sirius@core@defaults@offset@r,
   offset b/.store in       = \sirius@core@defaults@offset@b,
   hooks-after/.store in    = \sirius@core@defaults@hooks@after,
+  extra-args/.store in    = \sirius@core@defaults@extra@args,
   defaults/.style={
     api-version=6,snapshots=[],collector-width=400,
     start-year=2020,end-year=2040,zoom=1,layout-width=1500,%
@@ -70,7 +71,7 @@
     description=Automatically generated sirius configuration,
     verbose=false,freshness=250,check-host=true,collapse=true,
     input-dir=./,output-dir=./,prefix=,postfix=,hooks-after=,
-    hl=,auto-obfuscate=,hide-outside=false%
+    hl=,auto-obfuscate=,hide-outside=false,extra-args=,%
   },
   /sirius/block/.cd,
   id/.store in             = \sirius@block@id,
@@ -143,7 +144,8 @@
       "retain": \sirius@core@defaults@retain,
       "bb": "\sirius@core@defaults@bb",
       "offsets": "\sirius@core@defaults@offset@l\space\sirius@core@defaults@offset@b\space\sirius@core@defaults@offset@r\space\sirius@core@defaults@offset@t",%
-      ".hook-after": [\sirius@core@defaults@hooks@after]%
+      ".hook-after": [\sirius@core@defaults@hooks@after],%
+      "extra-args": "\sirius@core@defaults@extra@args"%
     }% TODO: configure others
   }%
 }}

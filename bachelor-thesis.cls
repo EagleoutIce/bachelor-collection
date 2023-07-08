@@ -62,14 +62,14 @@
 \RequirePackage{cuted}
 
 \usepackage{fontawesome}
-\let\faHome\undefined
-\let\faRepeat\undefined
-\let\faWifi\undefined
-\let\faSignal\undefined
+\let\faHome\@undefined
+\let\faRepeat\@undefined
+\let\faWifi\@undefined
+\let\faSignal\@undefined
 
 \let\AddToHookOld\AddToHook
-\def\AddToHook#1#2{\typeout{Muted hook for #1}}
-\RequirePackage{fontawesome5}
+\def\AddToHook#1#2{\typeout{Muted: #1}}
+\usepackage{fontawesome5}
 \let\AddToHook\AddToHookOld
 
 %% General Layout & Packages
